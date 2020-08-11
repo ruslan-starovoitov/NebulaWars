@@ -91,6 +91,8 @@ namespace Code.Scenes.LobbyScene.Scripts
          
          if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(playerServiceId))
          {
+            var usernameMenuController = FindObjectOfType<UsernameMenuController>();
+            usernameMenuController.ShowMenu();
             //Создать новый serviceId
             playerServiceId = $"playerServiceId_{new System.Random().Next(1, int.MaxValue)}";
             username = $"username {new System.Random().Next(1, ushort.MaxValue)}";

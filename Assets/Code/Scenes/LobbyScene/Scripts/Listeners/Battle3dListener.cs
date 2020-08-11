@@ -15,7 +15,8 @@ namespace Code.Scenes.LobbyScene.Scripts.Listeners
 
         public void Open3dBattleScene()
         {
-            // Destroy(lobbyEcsController);
+            Destroy(lobbyEcsController);
+            SceneManager.LoadScene("Scenes/3dBattle");
         }
     }
 }
