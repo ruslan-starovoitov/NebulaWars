@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using System;
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -101,7 +101,7 @@ namespace NetworkLibrary.NetworkLibrary.Udp.ServerToPlayer.PositionMessages
 
         public MessageType GetMessageType() => MessageType.Positions;
     }
-    
+
     [ZeroFormattable]
     public struct Vector2
     {

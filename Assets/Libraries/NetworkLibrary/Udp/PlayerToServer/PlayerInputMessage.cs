@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿using NetworkLibrary.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using NetworkLibrary.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
 using ZeroFormatter;
 
 namespace NetworkLibrary.NetworkLibrary.Udp.PlayerToServer.UserInputMessage
