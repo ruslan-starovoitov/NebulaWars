@@ -3,7 +3,8 @@ using ZeroFormatter;
 
 namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
 {
-    public abstract class MessageHandler<TMessage> : IMessageHandler where TMessage : ITypedMessage
+    public abstract class MessageHandler<TMessage> : IMessageHandler 
+        where TMessage : ITypedMessage
     {
         public void Handle(MessageWrapper messageWrapper)
         {

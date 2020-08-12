@@ -1,8 +1,10 @@
 ﻿using System;
 using Code.Common.Logger;
 using Code.Common.NetworkStatistics;
+using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using Code.Scenes.BattleScene.Udp.MessageProcessing;
+using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
 using NetworkLibrary.NetworkLibrary.Udp;
 using ZeroFormatter;
 
@@ -22,13 +24,15 @@ namespace Code.Scenes.BattleScene.Udp
             packetLossEvent = new EventProbability(30);
         }
         
-        public void Initialize(UdpSendUtils udpSendUtils, int matchId)
+        public void Initialize(UdpSendUtils udpSendUtils, int matchId, ITransformStorage transformStorage
+        ,IPlayersStorage playersStorage)
         {
             if (messageProcessor != null)
             {
                 throw new Exception("Повторная инициализация");
             }
-            messageProcessor= new MessageProcessor(udpSendUtils, matchId);
+            
+            messageProcessor= new MessageProcessor(udpSendUtils, matchId, transformStorage, playersStorage);
         }
 
         public void HandleBytes(byte[] datagram)

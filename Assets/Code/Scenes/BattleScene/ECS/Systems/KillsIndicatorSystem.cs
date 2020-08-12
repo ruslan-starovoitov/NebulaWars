@@ -83,7 +83,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems
         }
 
         private static string GetName(int playerId) =>
-            MyMatchDataStorage.Instance.GetMatchModel()
+            MatchModelStorage.Instance.GetMatchModel()
                 .PlayerModels.FirstOrDefault(player => player.AccountId == playerId)
                 .Nickname;
 

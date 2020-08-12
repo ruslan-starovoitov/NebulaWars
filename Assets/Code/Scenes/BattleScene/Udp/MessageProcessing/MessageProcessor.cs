@@ -4,6 +4,7 @@ using NetworkLibrary.NetworkLibrary.Udp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
 
 namespace Code.Scenes.BattleScene.Udp.MessageProcessing
 {
@@ -16,14 +17,14 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing
         private readonly HashSet<uint> receivedMessagesRudp;
         private readonly RudpConfirmationSender rudpConfirmationSender;
 
-        public MessageProcessor(UdpSendUtils udpSendUtils, int matchId)
+        public MessageProcessor(UdpSendUtils udpSendUtils, int matchId, ITransformStorage transformStorage, IPlayersStorage playersStorage)
         {
             receivedMessagesRudp = new HashSet<uint>();
             rudpConfirmationSender = new RudpConfirmationSender(udpSendUtils);
             var lastEnum = Enum.GetValues(typeof(MessageType)).Cast<MessageType>().Max();
             handlers = new IMessageHandler[(int)lastEnum + 1];
-            handlers[(int)MessageType.PlayerInfo] = new PlayerInfoMessageHandler();
-            handlers[(int)MessageType.Positions] = new PositionsMessageHandler();
+            handlers[(int)MessageType.PlayerInfo] = new PlayerInfoMessageHandler(playersStorage);
+            handlers[(int)MessageType.Positions] = new PositionsMessageHandler(transformStorage);
             handlers[(int)MessageType.Radiuses] = new RadiusesMessageHandler();
             handlers[(int)MessageType.Parents] = new ParentsMessageHandler();
             handlers[(int)MessageType.Detaches] = new DetachesMessageHandler();
@@ -47,10 +48,12 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing
             {
                 rudpConfirmationSender.Handle(messageWrapper);
                 //Если мы уже обработали это сообщение, то мы его пропускаем.
-                if (!receivedMessagesRudp.Add(messageWrapper.MessageId)) return;
+                if (!receivedMessagesRudp.Add(messageWrapper.MessageId))
+                {
+                    return;
+                }
             }
-            
-            
+
             handlers[(int)messageWrapper.MessageType].Handle(messageWrapper);
         }
     }

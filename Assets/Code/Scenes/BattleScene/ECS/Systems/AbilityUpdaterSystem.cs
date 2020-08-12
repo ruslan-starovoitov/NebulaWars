@@ -9,27 +9,26 @@ using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS.Systems
 {
-    public class AbilityUpdaterSystem : IExecuteSystem, ITearDownSystem
+    public class AbilityUpdaterSystem : IExecuteSystem
     {
         private static volatile float maxCooldown;
+        private readonly CooldownInfo _cooldownInfo;
         private static volatile float currentCooldown;
+        // private readonly IApproximator<float> approximator;
         private static volatile bool maxCooldownWasChanged;
         private static volatile bool currentCooldownWasChanged;
-        private readonly CooldownInfo _cooldownInfo;
-        private readonly IApproximator<float> approximator;
         private readonly ILog log = LogManager.CreateLogger(typeof(AbilityUpdaterSystem));
 
-        public AbilityUpdaterSystem(CooldownInfo abilityCooldownInfo, IApproximator<float> abilityCooldownApproximator)
+        public AbilityUpdaterSystem(CooldownInfo abilityCooldownInfo)
         {
             if (abilityCooldownInfo == null)
             {
                 throw new NullReferenceException($"{nameof(AbilityUpdaterSystem)} {nameof(abilityCooldownInfo)} was null");
             }
 
-            approximator = abilityCooldownApproximator;
 
-            approximator.Set(new Dictionary<ushort, float> { { 0, float.PositiveInfinity } }, Time.time - Time.deltaTime);
-            approximator.Set(new Dictionary<ushort, float> { { 0, float.PositiveInfinity } }, Time.time);
+            // approximator.Set(new Dictionary<ushort, float> { { 0, float.PositiveInfinity } }, Time.time - Time.deltaTime);
+            // approximator.Set(new Dictionary<ushort, float> { { 0, float.PositiveInfinity } }, Time.time);
 
             _cooldownInfo = abilityCooldownInfo;
         }
@@ -54,18 +53,13 @@ namespace Code.Scenes.BattleScene.ECS.Systems
                 maxCooldownWasChanged = false;
             }
 
-            _cooldownInfo.SetCooldown(approximator.Get(Time.time)[0]);
+            // _cooldownInfo.SetCooldown(approximator.Get(Time.time)[0]);
 
             if (currentCooldownWasChanged)
             {
-                approximator.Set(new Dictionary<ushort, float> {{0, currentCooldown}}, Time.time);
+                // approximator.Set(new Dictionary<ushort, float> {{0, currentCooldown}}, Time.time);
                 currentCooldownWasChanged = false;
             }
-        }
-
-        public void TearDown()
-        {
-            approximator.Clear();
         }
     }
 }

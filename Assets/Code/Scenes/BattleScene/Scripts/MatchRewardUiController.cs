@@ -85,7 +85,7 @@ namespace Code.Scenes.BattleScene.Scripts
         private IEnumerator ShowPlayerAchievementsCoroutine()
         {
             //Достать данные из глобальных классов
-            BattleRoyaleClientMatchModel matchModel = MyMatchDataStorage.Instance.GetMatchModel();
+            BattleRoyaleClientMatchModel matchModel = MatchModelStorage.Instance.GetMatchModel();
             int matchId = matchModel.MatchId;
             if (PlayerIdStorage.TryGetServiceId(out string playerServiceId))
             {

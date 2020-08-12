@@ -90,10 +90,14 @@ namespace NetworkLibrary.NetworkLibrary.Udp.ServerToPlayer.PositionMessages
     }
 
     [ZeroFormattable]
-    public struct PositionsMessage : ITypedMessage
+    public class PositionsMessage : ITypedMessage
     {
-        [Index(0)] public Dictionary<ushort, ViewTransform> entitiesInfo;
+        [Index(0)] public virtual Dictionary<ushort, ViewTransform> entitiesInfo { get; set; }
 
+        public PositionsMessage()
+        {
+            
+        }
         public PositionsMessage(Dictionary<ushort, ViewTransform> entitiesInfo)
         {
             this.entitiesInfo = entitiesInfo;
@@ -141,67 +145,70 @@ namespace NetworkLibrary.NetworkLibrary.Udp.ServerToPlayer.PositionMessages
     public struct ViewTransform
     {
         [Index(0)] public ushort __x;
-        [Index(1)] public ushort __y;
+        [Index(1)] public ushort __z;
         [Index(2)] public ushort __angle;
         [Index(3)] public ViewTypeId typeId;
 
         [IgnoreFormat] public float X => Mathf.HalfToFloat(__x);
-        [IgnoreFormat] public float Y => Mathf.HalfToFloat(__y);
+        [IgnoreFormat] public float Z => Mathf.HalfToFloat(__z);
         [IgnoreFormat] public float Angle
         {
             get => Mathf.HalfToFloat(__angle);
             set => __angle = Mathf.FloatToHalf(value);
         }
 
-        public ViewTransform(ushort x, ushort y, ushort angle, ViewTypeId typeId)
+        public ViewTransform(ushort x, ushort z, ushort angle, ViewTypeId typeId)
         {
             __x = x;
-            __y = y;
+            __z = z;
             __angle = angle;
             this.typeId = typeId;
         }
         
-        public ViewTransform(float x, float y, float angle, ViewTypeId typeId)
+        public ViewTransform(float x, float z, float angle, ViewTypeId typeId)
         {
             __x = Mathf.FloatToHalf(x);
-            __y = Mathf.FloatToHalf(y);
+            __z = Mathf.FloatToHalf(z);
             __angle = Mathf.FloatToHalf(angle);
             this.typeId = typeId;
         }
 
-        public ViewTransform(float x, float y, ViewTypeId typeId) : this(x, y, 0f, typeId)
+        public ViewTransform(float x, float z, ViewTypeId typeId) 
+            : this(x, z, 0f, typeId)
         { }
 
-        public ViewTransform(Vector2 position, ViewTypeId typeId) : this(position.X, position.Y, typeId)
+        public ViewTransform(Vector2 position, ViewTypeId typeId) 
+            : this(position.X, position.Y, typeId)
         { }
 
-        public ViewTransform(Vector2 position, float angle, ViewTypeId typeId) : this(position.X, position.Y, angle, typeId)
+        public ViewTransform(Vector2 position, float angle, ViewTypeId typeId) 
+            : this(position.X, position.Y, angle, typeId)
         { }
 
-        public Vector2 GetPosition() => new Vector2(X, Y);
+        public Vector3 GetPosition() => new Vector3(X, 0, Z);
 
         public static ViewTransform operator +(ViewTransform t1, ViewTransform t2)
         {
             if(t1.typeId != t2.typeId) throw new NotSupportedException(nameof(typeId) + " не совпали!");
-            return new ViewTransform(t1.X + t2.X, t1.Y + t2.Y, t1.Angle + t2.Angle, t2.typeId);
+            return new ViewTransform(t1.X + t2.X, t1.Z + t2.Z, t1.Angle + t2.Angle, t2.typeId);
         }
 
         public static ViewTransform operator -(ViewTransform t1, ViewTransform t2)
         {
             if (t1.typeId != t2.typeId) throw new NotSupportedException(nameof(typeId) + " не совпали!");
-            return new ViewTransform(t1.X - t2.X, t1.Y - t2.Y, t1.Angle - t2.Angle, t2.typeId);
+            return new ViewTransform(t1.X - t2.X, t1.Z - t2.Z, t1.Angle - t2.Angle, t2.typeId);
         }
 
         public static ViewTransform operator *(ViewTransform t, float k)
         {
-            return new ViewTransform(t.X * k, t.Y * k, t.Angle * k, t.typeId);
+            return new ViewTransform(t.X * k, t.Z * k, t.Angle * k, t.typeId);
         }
 
         public static ViewTransform operator *(float k, ViewTransform t) => t * k;
 
         public static ViewTransform operator /(ViewTransform t, float k)
         {
-            return new ViewTransform(t.X / k, t.Y / k, t.Angle / k, t.typeId);
+            return new ViewTransform(t.X / k, t.Z / k, t.Angle / k, t.typeId);
         }
     }
     

@@ -1,111 +1,74 @@
-﻿using Code.Scenes.BattleScene.ScriptableObjects;
-using Code.Scenes.BattleScene.Udp.MessageProcessing.Synchronizers;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Code.Common.Logger;
+using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
 using Entitas;
 using NetworkLibrary.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
-using System.Collections.Generic;
-using System.Linq;
-using Code.Scenes.BattleScene.ECS.Components.Game.TimerComponents;
-using Code.Scenes.BattleScene.Experimental;
-using Libraries.NetworkLibrary.Udp.ServerToPlayer.BattleStatus;
 using UnityEngine;
 
-// ReSharper disable once CheckNamespace
-namespace Code.BattleScene.ECS.Systems
+namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 {
     /// <summary>
-    /// Создаёт/Обновляет значение компонета позиции игрового объекта, если есть новое сообщение от сервера.
+    /// Хранит все состояния мира
     /// </summary>
-    public class UpdateTransformSystem : IExecuteSystem
+    public class UpdateTransformSystem : IExecuteSystem, ITransformStorage
     {
-        private static readonly object LockObj = new object();
-        private static Dictionary<ushort, ViewTransform> _transforms = new Dictionary<ushort, ViewTransform>();
-        private static uint _lastMessageId;
-        private static bool WasProcessed = true;
+        private bool needExecute;
         private readonly GameContext gameContext;
+        private readonly object lockObj = new object();
         private readonly IGroup<GameEntity> gameEntitiesGroup;
-        private readonly List<GameEntity> buffer;
-        private const int predictedCapacity = 128;
-        private const float TimeDelay = ClientTimeManager.TimeDelay;
-
+        private readonly ILog log = LogManager.CreateLogger(typeof(UpdateTransformSystem));
+        private readonly List<Dictionary<ushort, ViewTransform>> history = new List<Dictionary<ushort, ViewTransform>>();
+        
         public UpdateTransformSystem(Contexts contexts)
         {
             gameContext = contexts.game;
-            gameEntitiesGroup = gameContext.GetGroup(GameMatcher.AllOf(GameMatcher.Position, GameMatcher.Direction));
-            buffer = new List<GameEntity>(predictedCapacity);
-            _lastMessageId = 0;
-            WasProcessed = true;
-            _transforms.Clear();
+            gameEntitiesGroup = gameContext.GetGroup(GameMatcher.Transform);
         }
 
-        public static void SetNewTransforms(uint messageId, Dictionary<ushort, ViewTransform> values)
+        public void SetNewTransforms(uint messageId, Dictionary<ushort, ViewTransform> values)
         {
-            lock (LockObj)
+            lock (lockObj)
             {
-                if (WasProcessed)
-                {
-                    _transforms = values;
-                    WasProcessed = false;
-                }
-                else
-                {
-                    if (messageId > _lastMessageId)
-                    {
-                        foreach (var pair in values)
-                        {
-                            _transforms[pair.Key] = pair.Value;
-                        }
-
-                        _lastMessageId = messageId;
-                    }
-                    else
-                    {
-                        foreach (var pair in _transforms)
-                        {
-                            values[pair.Key] = pair.Value;
-                        }
-
-                        _transforms = values;
-                    }
-                }
+                history.Add(values);
+                needExecute = true;
             }
         }
 
         public void Execute()
         {
-            Dictionary<ushort, ViewTransform> viewTransforms;
-            lock (LockObj)
+            if (!needExecute)
             {
-                if (WasProcessed) return;
-                WasProcessed = true;
-                viewTransforms = new Dictionary<ushort, ViewTransform>(_transforms);
+                return;
+            }
+            // log.Debug("обработка новых координат");
+            
+            Dictionary<ushort, ViewTransform> newViewTransforms;
+            lock (lockObj)
+            {
+                newViewTransforms = history.Last();
+                needExecute = false;
             }
 
-            //Зона всегда является объектом с id = 0
-            if (viewTransforms.TryGetValue(0, out var zoneTransform))
-            {
-                if (gameContext.hasZoneInfo)
-                {
-                    gameContext.zoneInfo.position = zoneTransform.GetPosition();
-                }
-            }
-
-            //Перебор локальных сущностей
-            foreach (var gameEntity in gameEntitiesGroup.GetEntities(buffer))
+            //Перебор существующих сущностей
+            foreach (var gameEntity in gameEntitiesGroup.GetEntities())
             {
                 ushort currentId = gameEntity.id.value;
-                bool thereIsThisObject = viewTransforms.ContainsKey(currentId);
-                if (thereIsThisObject)
+                // log.Debug("Существующая сущность x "+newViewTransforms[currentId].X+" z "+newViewTransforms[currentId].Z);
+                bool entityRemained = newViewTransforms.ContainsKey(currentId);
+                if (entityRemained)
                 {
                     //Объект остался
-                    UpdateTransform(gameEntity, viewTransforms[currentId]);
+                    UpdateTransform(gameEntity, newViewTransforms[currentId]);
                     //Пометка того, что объект обработан
-                    viewTransforms.Remove(currentId);
+                    newViewTransforms.Remove(currentId);
                 }
             }
 
             //Добавление новых объектов
-            foreach (var newEntity in viewTransforms.OrderBy(pair => pair.Key))
+            foreach (var newEntity in newViewTransforms.OrderBy(pair => pair.Key))
             {
+                // log.Debug("новая сущность x "+newEntity.Value.X+" z "+newEntity.Value.Z);
                 AddNewObject(newEntity.Key, newEntity.Value);
             }
         }
@@ -115,51 +78,16 @@ namespace Code.BattleScene.ECS.Systems
             var newObject = gameContext.CreateEntity();
             newObject.AddId(id);
             newObject.AddViewType(newTransform.typeId);
-            newObject.AddDelayedSpawn(newTransform.typeId, newTransform.X, newTransform.Y, newTransform.Angle, TimeDelay);
-            newObject.AddPosition(new Vector3(newTransform.X, newTransform.Y, -0.00001f * id));
-            newObject.AddDirection(newTransform.Angle);
+            newObject.AddTransform(newTransform.GetPosition(), newTransform.Angle);
         }
 
-        private static void UpdateTransform(GameEntity entity, ViewTransform newTransform)
+        private void UpdateTransform(GameEntity entity, ViewTransform newTransform)
         {
-            entity.isHidden = false;
-            entity.ReplacePosition(new Vector3(newTransform.X, newTransform.Y, entity.position.value.z));
-            entity.ReplaceDirection(newTransform.Angle);
-            var oldViewType = entity.viewType.id;
+            entity.ReplaceTransform(newTransform.GetPosition(), newTransform.Angle);
+            ViewTypeId oldViewType = entity.viewType.id;
             if (oldViewType != newTransform.typeId)
             {
-                var timeDelay = TimeDelay;
-                if (ViewObjectsBase.Instance.GetViewObject(oldViewType).TryGetDeathDelay(out var deathDelay))
-                {
-                    timeDelay -= deathDelay;
-                }
                 entity.ReplaceViewType(newTransform.typeId);
-                if (entity.hasDelayedRecreation)
-                {
-                    var component = new DelayedRecreationComponent
-                    {
-                        typeId = newTransform.typeId,
-                        positionX = newTransform.X,
-                        positionY = newTransform.Y,
-                        direction = newTransform.Angle,
-                        time = timeDelay
-                    };
-                    if (entity.hasManyDelayedRecreations)
-                    {
-                        entity.manyDelayedRecreations.components.Enqueue(component);
-                    }
-                    else
-                    {
-                        var queue = new Queue<DelayedRecreationComponent>();
-                        queue.Enqueue(component);
-
-                        entity.AddManyDelayedRecreations(queue);
-                    }
-                }
-                else
-                {
-                    entity.AddDelayedRecreation(newTransform.typeId, newTransform.X, newTransform.Y, newTransform.Angle, timeDelay);
-                }
             }
         }
     }

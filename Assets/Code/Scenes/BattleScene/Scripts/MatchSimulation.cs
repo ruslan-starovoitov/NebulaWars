@@ -1,15 +1,21 @@
-﻿using Code.BattleScene.ECS.Systems;
+﻿using System;
+using System.Collections.Generic;
+using Code.BattleScene.ECS.Systems;
 using Code.Common.Logger;
 using Code.Common.Storages;
 using Code.Scenes.BattleScene.ECS.Systems;
 using Code.Scenes.BattleScene.ECS.Systems.AudioSystems;
+using Code.Scenes.BattleScene.ECS.Systems.EnvironmentSystems;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
 using Code.Scenes.BattleScene.ECS.Systems.TearDownSystems;
 using Code.Scenes.BattleScene.Experimental.Approximation;
 using Code.Scenes.BattleScene.Udp.Experimental;
+using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
 using Entitas;
+using NetworkLibrary.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
 using UnityEngine;
+using Vector2 = UnityEngine.Vector2;
 
 namespace Code.Scenes.BattleScene.Scripts
 {
@@ -17,13 +23,17 @@ namespace Code.Scenes.BattleScene.Scripts
     /// Отвечает за управление ecs системами.
     /// </summary>
     [RequireComponent(typeof(BattleUiController))]
-    public class MatchSimulation:MonoBehaviour
+    public class MatchSimulation:MonoBehaviour, ITransformStorage, IPlayersStorage
     {
         private Systems systems;
         private Contexts contexts;
         private UdpController udpControllerSingleton;
         private BattleUiController battleUiController;
+        
+        private UpdatePlayersSystem updatePlayersSystem;
         private AbilityButtonListenerSystem abilitySystem;
+        private UpdateTransformSystem updateTransformSystem;
+        
         private readonly ILog log = LogManager.CreateLogger(typeof(MatchSimulation));
 
         private void Awake()
@@ -49,26 +59,30 @@ namespace Code.Scenes.BattleScene.Scripts
 
         private Systems CreateSystems(UdpSendUtils udpSendUtils)
         {
-            float prevFrameTime = Time.time - Time.deltaTime;
-            int aliveCount = MyMatchDataStorage.Instance.GetMatchModel().PlayerModels.Length;
-            abilitySystem = new AbilityButtonListenerSystem(contexts);
             contexts = Contexts.sharedInstance;
+            var matchModel = MatchModelStorage.Instance.GetMatchModel();
+            int aliveCount = MatchModelStorage.Instance.GetMatchModel().PlayerModels.Length;
+            abilitySystem = new AbilityButtonListenerSystem(contexts);
+            updateTransformSystem = new UpdateTransformSystem(contexts);
+            updatePlayersSystem = new UpdatePlayersSystem(contexts, matchModel);
             systems = new Systems()
-                    .Add(new UpdateTransformSystem(contexts))
-                    .Add(new UpdateRadiusSystem(contexts, new FloatLinearInterpolator(prevFrameTime)))
-                    .Add(new UpdatePlayersSystem(contexts))
+                    .Add(updateTransformSystem)
+                    .Add(updatePlayersSystem)
+                    .Add(new PrefabSpawnerSystem(contexts))
+                    
                     .Add(new SpawnSoundSystem(contexts))
                     .Add(new DeathSoundSystem(contexts))
                     .Add(new DestroySystem(contexts))
-                    .Add(new CameraAndBackgroundMoveSystem(contexts, battleUiController.GetMainCamera(),battleUiController.GetBackgrounds(), battleUiController.GetLoadingImage()))
+                    
+                    .Add(new GameObjectsTransformUpdaterSystem(contexts))
+                    .Add(new CameraMoveSystem(contexts, battleUiController.GetMainCamera()))
+                    .Add(new LoadingImageSwitcherSystem(contexts, battleUiController.GetLoadingImage()))
                     .Add(new JoysticksInputSystem(contexts, battleUiController.GetMovementJoystick(), battleUiController.GetAttackJoystick()))
-                    // .Add(abilitySystem)
                     .Add(new PlayerInputSenderSystem(contexts, udpSendUtils))
                     .Add(new AbilityInputClearingSystem(contexts))
                     .Add(new RudpMessagesSenderSystem(udpSendUtils))
-                    .Add(new HealthAndShieldPointsUpdaterSystem(battleUiController.GetHealthSlider(), battleUiController.GetHealthText(), battleUiController.GetShieldSlider(), battleUiController.GetShieldText(), new FloatLinearInterpolator(prevFrameTime), battleUiController.GetVignette()))
                     .Add(new KillsIndicatorSystem(battleUiController.GetKillMessage(), battleUiController.GetKillIndicator(), battleUiController.GetKillsText(), battleUiController.GetAliveText(), aliveCount))
-                    .Add(new AbilityUpdaterSystem(battleUiController.GetAbilityCooldownInfo(), new FloatLinearInterpolator(prevFrameTime)))
+                    .Add(new AbilityUpdaterSystem(battleUiController.GetAbilityCooldownInfo()))
                     .Add(new GameContextClearSystem(contexts))
                 ;
             return systems;
@@ -98,6 +112,16 @@ namespace Code.Scenes.BattleScene.Scripts
         {
             log.Info("Уничтожение ecs контроллера.");
             Destroy(this);
+        }
+
+        public void SetNewTransforms(uint messageId, Dictionary<ushort, ViewTransform> entitiesInfo)
+        {
+            updateTransformSystem.SetNewTransforms(messageId, entitiesInfo);
+        }
+
+        public void SetNewPlayers(Dictionary<int, ushort> newPlayers)
+        {
+            updatePlayersSystem.SetNewPlayers(newPlayers);
         }
     }
 }

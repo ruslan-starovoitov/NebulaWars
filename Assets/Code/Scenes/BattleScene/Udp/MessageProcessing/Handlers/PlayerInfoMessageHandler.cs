@@ -6,10 +6,17 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
 {
     public class PlayerInfoMessageHandler : MessageHandler<PlayerInfoMessage>
     {
+        private readonly IPlayersStorage playersStorage;
+
+        public PlayerInfoMessageHandler(IPlayersStorage playersStorage)
+        {
+            this.playersStorage = playersStorage;
+        }
+        
         protected override void Handle(in PlayerInfoMessage message, uint messageId, bool needResponse)
         {
             PlayerIdStorage.PlayerEntityId = message.EntityIds[PlayerIdStorage.AccountId];
-            UpdatePlayersSystem.SetNewPlayers(message.EntityIds);
+            playersStorage.SetNewPlayers(message.EntityIds);
         }
     }
 }

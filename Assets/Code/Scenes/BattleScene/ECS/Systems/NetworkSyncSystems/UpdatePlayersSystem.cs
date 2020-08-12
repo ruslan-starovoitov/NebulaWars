@@ -9,28 +9,26 @@ using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 {
-    public class UpdatePlayersSystem : IExecuteSystem, ITearDownSystem
+    public class UpdatePlayersSystem : IExecuteSystem, ITearDownSystem, IPlayersStorage
     {
-        private static readonly object LockObj = new object();
-        private static Dictionary<int, ushort> entityIds; // accountId -> entityId
-        private static bool WasProcessed = true;
         private readonly GameContext gameContext;
-        private readonly Dictionary<int, BattleRoyalePlayerModel> _playerInfos;
+        private Dictionary<int, ushort> entityIds; //accountId, entityId 
+        private readonly object lockObj = new object();
+        private readonly Dictionary<int, BattleRoyalePlayerModel> playerInfos; //accountId, account
         private readonly ILog log = LogManager.CreateLogger(typeof(UpdatePlayersSystem));
         
-        public UpdatePlayersSystem(Contexts contexts)
+        public UpdatePlayersSystem(Contexts contexts, BattleRoyaleClientMatchModel matchModel)
         {
             gameContext = contexts.game;
-            _playerInfos = MyMatchDataStorage.Instance.GetMatchModel().PlayerModels
-                .ToDictionary(info => info.AccountId);
+            playerInfos = matchModel.PlayerModels
+                .ToDictionary(item => item.AccountId);
         }
 
-        public static void SetNewPlayers(Dictionary<int, ushort> newPlayers)
+        public void SetNewPlayers(Dictionary<int, ushort> newPlayers)
         {
-            lock (LockObj)
+            lock (lockObj)
             {
                 entityIds = newPlayers;
-                WasProcessed = false;
             }
         }
 
@@ -41,10 +39,20 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 
         public void Execute()
         {
-            lock (LockObj)
+            lock (lockObj)
             {
-                if (WasProcessed) return;
-                var currentEntityIds = new Dictionary<int, ushort>(entityIds); // чтобы можно было удалять внутри foreach
+                if (entityIds == null)
+                {
+                    return;
+                }
+                if (entityIds.Count == 0)
+                {
+                    return;
+                }
+                
+                log.Debug("Обработка новых игроков "+entityIds.Count);
+                // чтобы можно было удалять внутри foreach
+                var currentEntityIds = new Dictionary<int, ushort>(entityIds); 
 
                 foreach (var pair in currentEntityIds)
                 {
@@ -58,12 +66,10 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                             log.Error("hasPlayer "+entity.id.value);
                             entity.RemovePlayer();
                         }
-                        entity.AddPlayer(accountId, _playerInfos[accountId].Nickname);
+                        entity.AddPlayer(accountId, playerInfos[accountId].Nickname);
                         entityIds.Remove(accountId);
                     }
                 }
-
-                WasProcessed = entityIds.Count == 0;
             }
         }
     }

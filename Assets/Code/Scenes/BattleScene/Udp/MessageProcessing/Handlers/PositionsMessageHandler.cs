@@ -5,9 +5,16 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
 {
     public class PositionsMessageHandler:MessageHandler<PositionsMessage>
     {
+        private readonly ITransformStorage transformStorage;
+
+        public PositionsMessageHandler(ITransformStorage transformStorage)
+        {
+            this.transformStorage = transformStorage;
+        }
+        
         protected override void Handle(in PositionsMessage message, uint messageId, bool needResponse)
         {
-            UpdateTransformSystem.SetNewTransforms(messageId, message.entitiesInfo);
+            transformStorage.SetNewTransforms(messageId, message.entitiesInfo);
         }
     }
 }

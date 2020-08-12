@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Code.Common.Logger;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using Entitas;
 using UnityEngine;
@@ -9,6 +11,7 @@ namespace Code.BattleScene.ECS.Systems
     public class PlayerInputSenderSystem : ReactiveSystem<InputEntity>
     {
         private readonly UdpSendUtils udpSendUtils;
+        private readonly ILog log = LogManager.CreateLogger(typeof(PlayerInputSenderSystem));
 
         public PlayerInputSenderSystem(Contexts contexts, UdpSendUtils udpSendUtils) : base(contexts.input)
         {
@@ -47,7 +50,14 @@ namespace Code.BattleScene.ECS.Systems
                 useAbility |= inputEntity.isTryingToUseAbility;
             }
 
-            udpSendUtils.SendInputMessage(x, y, angle, useAbility);
+            try
+            {
+                udpSendUtils.SendInputMessage(x, y, angle, useAbility);
+            }
+            catch (Exception e)
+            {
+                log.Error("Упало при отправке");
+            }
         }
     }
 }

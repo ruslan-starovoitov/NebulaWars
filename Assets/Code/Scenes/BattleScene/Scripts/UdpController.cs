@@ -22,10 +22,12 @@ namespace Code.Scenes.BattleScene.Scripts
         
         private void Awake()
         {
+            var matchSimulation = FindObjectOfType<MatchSimulation>();
+            
             //Если в прошлом бою уже был создан UdpClient
             udpClientWrapper?.Stop();
             
-            BattleRoyaleClientMatchModel matchData = MyMatchDataStorage.Instance.GetMatchModel();
+            BattleRoyaleClientMatchModel matchData = MatchModelStorage.Instance.GetMatchModel();
             int matchId = matchData.MatchId;
             int gameServerPort = matchData.GameServerPort;
             string gameServerIp = matchData.GameServerIp;
@@ -43,7 +45,7 @@ namespace Code.Scenes.BattleScene.Scripts
             udpClient.Connect(serverIpEndPoint);
             udpClientWrapper = new BattleUdpClientWrapper(udpMediator, udpClient);
             udpSendUtils = new UdpSendUtils(matchId, udpClientWrapper);
-            udpMediator.Initialize(udpSendUtils, matchId);
+            udpMediator.Initialize(udpSendUtils, matchId, matchSimulation, matchSimulation);
             udpClientWrapper.StartReceiveThread();   
         }
         

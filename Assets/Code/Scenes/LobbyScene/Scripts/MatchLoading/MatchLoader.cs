@@ -91,7 +91,7 @@ namespace Code.Scenes.LobbyScene.Scripts.MatchLoading
         
         private static void SetMatchData(BattleRoyaleClientMatchModel matchData)
         {
-            MyMatchDataStorage.Instance.SetMatchData(matchData);
+            MatchModelStorage.Instance.SetMatchData(matchData);
 
             ushort playerTemporaryIdForOneMatch = matchData.PlayerTemporaryId;
             PlayerIdStorage.SetTmpPlayerId(playerTemporaryIdForOneMatch);
