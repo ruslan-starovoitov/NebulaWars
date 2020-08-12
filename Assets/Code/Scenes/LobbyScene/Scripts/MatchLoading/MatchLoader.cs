@@ -86,7 +86,7 @@ namespace Code.Scenes.LobbyScene.Scripts.MatchLoading
             log.Info(nameof(gameRoomData.GameServerPort)+" "+gameRoomData.GameServerPort);
             SetMatchData(gameRoomData);
             
-            lobbySceneSwitcher.LoadSceneAsync("BattleScene");
+            lobbySceneSwitcher.LoadSceneAsync("New3dBattleScene");
         }
         
         private static void SetMatchData(BattleRoyaleClientMatchModel matchData)

@@ -1,4 +1,5 @@
-﻿using Code.Common;
+﻿using System.Threading.Tasks;
+using Code.Common;
 using Code.Common.Logger;
 using Code.Scenes.BattleScene.Scripts;
 using Libraries.NetworkLibrary.Udp.ServerToPlayer.BattleStatus;
@@ -17,16 +18,22 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
 
         protected override void Handle(in ShowPlayerAchievementsMessage message, uint messageId, bool needResponse)
         {
-            log.Info($"Показать результаты боя игрока {nameof(message.MatchId)} {message.MatchId}");
+            log.Debug($"Показать результаты боя игрока {nameof(message.MatchId)} {message.MatchId}");
 
-            if (matchId == message.MatchId)
-            {
-                UnityThread.Execute(() => MatchRewardUiController.Instance().ShowPlayerAchievements());
-            }
-            else
-            {
-                log.Error($"не тот матч!");
-            }
+            // Task.Run(async () =>
+            // {
+            //     await Task.Delay(5000);
+            //     UnityThread.Execute(() => MatchRewardUiController.Instance().ShowPlayerAchievements());
+            // });
+            
+            // if (matchId == message.MatchId)
+            // {
+            //     
+            // }
+            // else
+            // {
+            //     log.Error($"не тот матч!");
+            // }
         }
     }
 }

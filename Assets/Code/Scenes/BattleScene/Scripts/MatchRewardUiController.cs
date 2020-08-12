@@ -72,7 +72,7 @@ namespace Code.Scenes.BattleScene.Scripts
             }
 
             isAnimationStarted = true;
-            matchEcsController.StopBattleSystems();
+            matchEcsController.SelfDestruct();
             
             StartCoroutine(ShowPlayerAchievementsCoroutine());
         }

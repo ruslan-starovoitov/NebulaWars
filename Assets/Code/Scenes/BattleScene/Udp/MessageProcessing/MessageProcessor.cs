@@ -50,6 +50,7 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing
                 if (!receivedMessagesRudp.Add(messageWrapper.MessageId)) return;
             }
             
+            
             handlers[(int)messageWrapper.MessageType].Handle(messageWrapper);
         }
     }

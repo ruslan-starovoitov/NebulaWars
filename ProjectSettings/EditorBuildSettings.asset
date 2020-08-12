@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/2dLootboxScene.unity
     guid: be8b2e15cf03ae94c9ddade8caa85d2d
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/BattleScene.unity
     guid: 21b1b4922675a5140a5b9365bc63f927
   - enabled: 1
@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/3dBattle.unity
     guid: 10985f004c90ccf43adadaae682240af
+  - enabled: 1
+    path: Assets/Scenes/New3dBattleScene.unity
+    guid: 47f1b67e384cf544fad02cdbc1e58dd3
   m_configObjects: {}
