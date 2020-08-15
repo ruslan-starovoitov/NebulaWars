@@ -3,19 +3,17 @@ using System.Collections.Generic;
 using Code.BattleScene.ECS.Systems;
 using Code.Common.Logger;
 using Code.Common.Storages;
-using Code.Scenes.BattleScene.ECS.Systems;
-using Code.Scenes.BattleScene.ECS.Systems.AudioSystems;
 using Code.Scenes.BattleScene.ECS.Systems.EnvironmentSystems;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
 using Code.Scenes.BattleScene.ECS.Systems.TearDownSystems;
-using Code.Scenes.BattleScene.Experimental.Approximation;
 using Code.Scenes.BattleScene.Udp.Experimental;
+using Code.Scenes.BattleScene.Udp.MessageProcessing;
 using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
 using Entitas;
+using Libraries.NetworkLibrary.Udp.ServerToPlayer;
 using NetworkLibrary.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
 using UnityEngine;
-using Vector2 = UnityEngine.Vector2;
 
 namespace Code.Scenes.BattleScene.Scripts
 {
@@ -23,7 +21,8 @@ namespace Code.Scenes.BattleScene.Scripts
     /// Отвечает за управление ecs системами.
     /// </summary>
     [RequireComponent(typeof(BattleUiController))]
-    public class MatchSimulation:MonoBehaviour, ITransformStorage, IPlayersStorage
+    public class MatchSimulation:MonoBehaviour, ITransformStorage, IPlayersStorage, IHealthPointsStorage,
+        IMaxHealthPointsMessagePackStorage
     {
         private Systems systems;
         private Contexts contexts;
@@ -31,8 +30,9 @@ namespace Code.Scenes.BattleScene.Scripts
         private BattleUiController battleUiController;
         
         private UpdatePlayersSystem updatePlayersSystem;
-        private AbilityButtonListenerSystem abilitySystem;
+        private HealthUpdaterSystem healthUpdaterSystem;
         private UpdateTransformSystem updateTransformSystem;
+        private MaxHealthUpdaterSystem maxHealthUpdaterSystem;
         
         private readonly ILog log = LogManager.CreateLogger(typeof(MatchSimulation));
 
@@ -46,7 +46,6 @@ namespace Code.Scenes.BattleScene.Scripts
         {
             UdpSendUtils udpSendUtils = udpControllerSingleton.GetUdpSendUtils();
             systems = CreateSystems(udpSendUtils);
-            Contexts.sharedInstance.game.ReplaceZoneInfo(Vector2.zero, 10f);
             systems.ActivateReactiveSystems();
             systems.Initialize();
         }
@@ -62,37 +61,47 @@ namespace Code.Scenes.BattleScene.Scripts
             contexts = Contexts.sharedInstance;
             var matchModel = MatchModelStorage.Instance.GetMatchModel();
             int aliveCount = MatchModelStorage.Instance.GetMatchModel().PlayerModels.Length;
-            abilitySystem = new AbilityButtonListenerSystem(contexts);
             updateTransformSystem = new UpdateTransformSystem(contexts);
             updatePlayersSystem = new UpdatePlayersSystem(contexts, matchModel);
+            
+            healthUpdaterSystem = new HealthUpdaterSystem(contexts);
+            maxHealthUpdaterSystem = new MaxHealthUpdaterSystem(contexts);
+            Vector3 cameraShift = new Vector3(0, 60, -30);
             systems = new Systems()
                     .Add(updateTransformSystem)
                     .Add(updatePlayersSystem)
                     .Add(new PrefabSpawnerSystem(contexts))
                     
-                    .Add(new SpawnSoundSystem(contexts))
-                    .Add(new DeathSoundSystem(contexts))
-                    .Add(new DestroySystem(contexts))
                     
                     .Add(new GameObjectsTransformUpdaterSystem(contexts))
-                    .Add(new CameraMoveSystem(contexts, battleUiController.GetMainCamera()))
+                    .Add(new CameraMoveSystem(contexts, battleUiController.GetMainCamera(), cameraShift))
                     .Add(new LoadingImageSwitcherSystem(contexts, battleUiController.GetLoadingImage()))
+                    
+                    
+                    
+                    .Add(healthUpdaterSystem)
+                    .Add(maxHealthUpdaterSystem)
+                    
+                    .Add(new HealthBarSpawnSystem(contexts, new HealthBarStorage()))
+                    .Add(new HealthBarSliderUpdaterSystem(contexts))
+                    .Add(new HealthBarRotatingSystem(contexts, cameraShift))
+                    .Add(new HealthTextUpdatingSystem(contexts))
+                    
+                    
+                    
+                    
+                    
                     .Add(new JoysticksInputSystem(contexts, battleUiController.GetMovementJoystick(), battleUiController.GetAttackJoystick()))
                     .Add(new PlayerInputSenderSystem(contexts, udpSendUtils))
-                    .Add(new AbilityInputClearingSystem(contexts))
+                    // .Add(new AbilityInputClearingSystem(contexts))
                     .Add(new RudpMessagesSenderSystem(udpSendUtils))
-                    .Add(new KillsIndicatorSystem(battleUiController.GetKillMessage(), battleUiController.GetKillIndicator(), battleUiController.GetKillsText(), battleUiController.GetAliveText(), aliveCount))
-                    .Add(new AbilityUpdaterSystem(battleUiController.GetAbilityCooldownInfo()))
+                    // .Add(new KillsIndicatorSystem(battleUiController.GetKillMessage(), battleUiController.GetKillIndicator(), battleUiController.GetKillsText(), battleUiController.GetAliveText(), aliveCount))
+                    // .Add(new AbilityUpdaterSystem(battleUiController.GetAbilityCooldownInfo()))
                     .Add(new GameContextClearSystem(contexts))
                 ;
             return systems;
         }
-
-        public void AbilityButton_OnPointerDown()
-        {
-            abilitySystem.AbilityButton_OnClick();
-        }
-
+        
         private void StopSystems()
         {
             systems.DeactivateReactiveSystems();
@@ -122,6 +131,16 @@ namespace Code.Scenes.BattleScene.Scripts
         public void SetNewPlayers(Dictionary<int, ushort> newPlayers)
         {
             updatePlayersSystem.SetNewPlayers(newPlayers);
+        }
+
+        public void SetNewHealthPoints(HealthPointsMessagePack message)
+        {
+            healthUpdaterSystem.SetNewHealthPoints(message);
+        }
+
+        public void SetNewMaxHealthPoints(MaxHealthPointsMessagePack message)
+        {
+            maxHealthUpdaterSystem.SetNewMaxHealthPoints(message);
         }
     }
 }

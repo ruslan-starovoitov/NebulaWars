@@ -1,11 +1,11 @@
 ﻿using Code.Common.Logger;
-using Code.Scenes.BattleScene.Experimental;
 using Code.Scenes.BattleScene.Udp;
 using Code.Scenes.BattleScene.Udp.Connection;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using System.Net;
 using System.Net.Sockets;
 using Code.Common.Storages;
+using Code.Scenes.BattleScene.Udp.MessageProcessing;
 using NetworkLibrary.NetworkLibrary.Http;
 using UnityEngine;
 
@@ -17,9 +17,9 @@ namespace Code.Scenes.BattleScene.Scripts
     public class UdpController : MonoBehaviour
     {
         private UdpSendUtils udpSendUtils;
-        private BattleUdpClientWrapper udpClientWrapper;
+        private UdpClientWrapper udpClientWrapper;
         private readonly ILog log = LogManager.CreateLogger(typeof(UdpController));
-        
+
         private void Awake()
         {
             var matchSimulation = FindObjectOfType<MatchSimulation>();
@@ -32,7 +32,7 @@ namespace Code.Scenes.BattleScene.Scripts
             int gameServerPort = matchData.GameServerPort;
             string gameServerIp = matchData.GameServerIp;
             IPEndPoint serverIpEndPoint = new IPEndPoint(IPAddress.Parse(gameServerIp), gameServerPort);
-            UdpMediator udpMediator = new UdpMediator();
+            ByteArrayHandler byteArrayHandler = new ByteArrayHandler();
             
             log.Info("Установка прослушки udp.");
             UdpClient udpClient = new UdpClient
@@ -43,9 +43,11 @@ namespace Code.Scenes.BattleScene.Scripts
                 }
             };
             udpClient.Connect(serverIpEndPoint);
-            udpClientWrapper = new BattleUdpClientWrapper(udpMediator, udpClient);
+            udpClientWrapper = new UdpClientWrapper(udpClient, byteArrayHandler);
             udpSendUtils = new UdpSendUtils(matchId, udpClientWrapper);
-            udpMediator.Initialize(udpSendUtils, matchId, matchSimulation, matchSimulation);
+            MessageWrapperHandler messageWrapperHandler = new MessageWrapperHandler(udpSendUtils, matchId,
+                matchSimulation, matchSimulation, matchSimulation, matchSimulation);
+            byteArrayHandler.Initialize(messageWrapperHandler);
             udpClientWrapper.StartReceiveThread();   
         }
         

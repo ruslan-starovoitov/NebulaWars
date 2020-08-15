@@ -11,7 +11,7 @@ public partial class GameEntity {
     public Code.Scenes.BattleScene.ECS.Components.Game.TransformComponent transform { get { return (Code.Scenes.BattleScene.ECS.Components.Game.TransformComponent)GetComponent(GameComponentsLookup.Transform); } }
     public bool hasTransform { get { return HasComponent(GameComponentsLookup.Transform); } }
 
-    public void AddTransform(UnityEngine.Vector2 newPosition, float newAngle) {
+    public void AddTransform(UnityEngine.Vector3 newPosition, float newAngle) {
         var index = GameComponentsLookup.Transform;
         var component = (Code.Scenes.BattleScene.ECS.Components.Game.TransformComponent)CreateComponent(index, typeof(Code.Scenes.BattleScene.ECS.Components.Game.TransformComponent));
         component.position = newPosition;
@@ -19,7 +19,7 @@ public partial class GameEntity {
         AddComponent(index, component);
     }
 
-    public void ReplaceTransform(UnityEngine.Vector2 newPosition, float newAngle) {
+    public void ReplaceTransform(UnityEngine.Vector3 newPosition, float newAngle) {
         var index = GameComponentsLookup.Transform;
         var component = (Code.Scenes.BattleScene.ECS.Components.Game.TransformComponent)CreateComponent(index, typeof(Code.Scenes.BattleScene.ECS.Components.Game.TransformComponent));
         component.position = newPosition;

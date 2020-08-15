@@ -7,7 +7,7 @@ namespace Code.Scenes.LobbyScene.Scripts
         private void Awake()
         {
 #if UNITY_EDITOR
-            Application.targetFrameRate = 30;
+            Application.targetFrameRate = 60;
 #endif
         }
     }

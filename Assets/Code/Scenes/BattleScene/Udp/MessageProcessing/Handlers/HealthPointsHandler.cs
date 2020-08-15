@@ -1,13 +1,20 @@
-﻿using Code.Scenes.BattleScene.ECS.Systems;
+﻿using Code.Scenes.BattleScene.Scripts;
 using Libraries.NetworkLibrary.Udp.ServerToPlayer;
 
 namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
 {
-    public class HealthPointsHandler:MessageHandler<HealthPointsMessage>
+    public class HealthPointsPackHandler:MessageHandler<HealthPointsMessagePack>
     {
-        protected override void Handle(in HealthPointsMessage message, uint messageId, bool needResponse)
+        private readonly IHealthPointsStorage healthPointsStorage;
+
+        public HealthPointsPackHandler(IHealthPointsStorage healthPointsStorage)
         {
-            HealthAndShieldPointsUpdaterSystem.SetHealthPoints(message.Value);
+            this.healthPointsStorage = healthPointsStorage;
+        }
+        
+        protected override void Handle(in HealthPointsMessagePack message, uint messageId, bool needResponse)
+        {
+            healthPointsStorage.SetNewHealthPoints(message);
         }
     }
 }

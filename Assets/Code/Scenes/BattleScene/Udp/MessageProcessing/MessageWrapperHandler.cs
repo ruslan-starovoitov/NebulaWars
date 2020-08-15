@@ -4,23 +4,29 @@ using NetworkLibrary.NetworkLibrary.Udp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Code.Common.Logger;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
+using Code.Scenes.BattleScene.Scripts;
+using Code.Scenes.BattleScene.Udp.Connection;
 
 namespace Code.Scenes.BattleScene.Udp.MessageProcessing
 {
     /// <summary>
     /// Перенаправляет входящее сообщение на нужный обработчик. 
     /// </summary>
-    public class MessageProcessor
+    public class MessageWrapperHandler
     {
         private readonly IMessageHandler[] handlers;
         private readonly HashSet<uint> receivedMessagesRudp;
-        private readonly RudpConfirmationSender rudpConfirmationSender;
+        private readonly DeliveryConfirmationSender deliveryConfirmationSender;
+        private readonly ILog log = LogManager.CreateLogger(typeof(MessageWrapperHandler));
 
-        public MessageProcessor(UdpSendUtils udpSendUtils, int matchId, ITransformStorage transformStorage, IPlayersStorage playersStorage)
+        public MessageWrapperHandler(UdpSendUtils udpSendUtils, int matchId, 
+            ITransformStorage transformStorage, IPlayersStorage playersStorage,
+            IHealthPointsStorage healthPointsStorage, IMaxHealthPointsMessagePackStorage maxHealthPointsMessagePackStorage)
         {
             receivedMessagesRudp = new HashSet<uint>();
-            rudpConfirmationSender = new RudpConfirmationSender(udpSendUtils);
+            deliveryConfirmationSender = new DeliveryConfirmationSender(udpSendUtils);
             var lastEnum = Enum.GetValues(typeof(MessageType)).Cast<MessageType>().Max();
             handlers = new IMessageHandler[(int)lastEnum + 1];
             handlers[(int)MessageType.PlayerInfo] = new PlayerInfoMessageHandler(playersStorage);
@@ -30,7 +36,7 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing
             handlers[(int)MessageType.Detaches] = new DetachesMessageHandler();
             handlers[(int)MessageType.Destroys] = new DestroysMessageHandler();
             handlers[(int)MessageType.Hides] = new HidesMessageHandler();
-            handlers[(int)MessageType.HealthPoints] = new HealthPointsHandler();
+            handlers[(int)MessageType.HealthPointsMessagePack] = new HealthPointsPackHandler(healthPointsStorage);
             handlers[(int)MessageType.DeliveryConfirmation] = new RudpConfirmationReceiver();
             handlers[(int)MessageType.MaxHealthPoints] = new MaxHealthPointsHandler();
             handlers[(int)MessageType.ShieldPoints] = new ShieldPointsHandler();
@@ -40,13 +46,14 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing
             handlers[(int)MessageType.CooldownsInfos] = new CooldownsInfosHandler();
             handlers[(int)MessageType.Cooldowns] = new CooldownsHandler();
             handlers[(int)MessageType.FrameRate] = new FrameRateHandler();
+            handlers[(int)MessageType.MaxHealthPointsMessagePack] = new MaxHealthPointsMessagePackHandler(maxHealthPointsMessagePackStorage);
         }
         
         public void Handle(MessageWrapper messageWrapper)
         {
             if (messageWrapper.NeedResponse)
             {
-                rudpConfirmationSender.Handle(messageWrapper);
+                deliveryConfirmationSender.Send(messageWrapper);
                 //Если мы уже обработали это сообщение, то мы его пропускаем.
                 if (!receivedMessagesRudp.Add(messageWrapper.MessageId))
                 {
@@ -54,7 +61,15 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing
                 }
             }
 
-            handlers[(int)messageWrapper.MessageType].Handle(messageWrapper);
+            try
+            {
+                handlers[(int) messageWrapper.MessageType].Handle(messageWrapper);
+            }
+            catch (Exception e)
+            {
+                log.Error(e.FullMessage());
+                log.Error(messageWrapper.MessageType.ToString());
+            }
         }
     }
 }

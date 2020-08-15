@@ -41,7 +41,11 @@ namespace Code.BattleScene.ECS.Systems
 #endif
             if (Math.Abs(attackJoystick.Horizontal) > 0.001 && Math.Abs(attackJoystick.Vertical) > 0.001)
             {
-                var attackAngle = Mathf.Atan2(attackJoystick.Vertical, attackJoystick.Horizontal) * Mathf.Rad2Deg;
+                var attackAngle = Mathf.Atan2(attackJoystick.Horizontal,  attackJoystick.Vertical) * Mathf.Rad2Deg;
+                if (attackAngle < 0)
+                {
+                    attackAngle += 360;
+                }
                 inputContext.SetAttack(attackAngle);
             }
         }

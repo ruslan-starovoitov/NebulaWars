@@ -9,29 +9,26 @@ using UnityEngine;
 
 namespace Code.Scenes.BattleScene.Udp.Connection
 {
-   public abstract class UdpClientWrapper:IDisposable
+    public class UdpClientWrapper:IDisposable
     {
         private readonly UdpClient udpClient;
+        private readonly IByteArrayHandler byteArrayHandler;
         private CancellationTokenSource cancellationTokenSource;
         private readonly ILog log = LogManager.CreateLogger(typeof(UdpClientWrapper));
 
-        protected UdpClientWrapper(UdpClient udpClient)
+        public UdpClientWrapper(UdpClient udpClient, IByteArrayHandler byteArrayHandler)
         {
             this.udpClient = udpClient;
+            this.byteArrayHandler = byteArrayHandler;
         }
         
         public void StartReceiveThread()
         {
             cancellationTokenSource = new CancellationTokenSource();
-            ThreadPool.QueueUserWorkItem(ThreadWork);
+            ThreadPool.QueueUserWorkItem(Listen);
         }
         
-        private async void ThreadWork(object state)
-        {
-            await Listen();
-        }
-
-        private async Task Listen()
+        private async void Listen(object state)
         {
             while (!cancellationTokenSource.IsCancellationRequested)
             {
@@ -39,14 +36,14 @@ namespace Code.Scenes.BattleScene.Udp.Connection
                 {
                     UdpReceiveResult result = await udpClient.ReceiveAsync();
                     byte[] receiveBytes = result.Buffer;
-                    HandleBytes(receiveBytes);
+                    byteArrayHandler.HandleBytes(receiveBytes);
                 }
                 catch (SocketException e)
                 {
                     // 10004 thrown when socket is closed
                     if (e.ErrorCode != 10004)
                     {
-                        log.Error("Socket exception while receiving data from udp client: " + e.Message);
+                        log.Error("Socket exception while receiving data from udp client: " + e.FullMessage());
                     }
                 }
                 catch (ObjectDisposedException e)
@@ -55,7 +52,7 @@ namespace Code.Scenes.BattleScene.Udp.Connection
                 }
                 catch (Exception e)
                 {
-                    log.Error("Error receiving data from udp client: " + e.Message);
+                    log.Error("Error receiving data from udp client: " + e.FullMessage());
                 }
             }
         }
@@ -70,8 +67,6 @@ namespace Code.Scenes.BattleScene.Udp.Connection
             cancellationTokenSource.Cancel();
             udpClient.Close();
         }
-
-        protected abstract void HandleBytes(byte[] data);
 
         public void Dispose()
         {

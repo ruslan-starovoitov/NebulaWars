@@ -23,12 +23,10 @@ namespace Code.Scenes.BattleScene.Scripts
             // log.Debug("Кол-во объектов для обновления позиции "+viewAndTransformGroup.count);
             foreach (var entity in viewAndTransformGroup)
             {
-                float x = entity.transform.position.x;
-                float y = entity.transform.position.y;
-                float z = entity.transform.position.z;
-                Vector3 vector3 = new Vector3(x, y, z);
+                Vector3 vector3 = entity.transform.position;
+                float angle = entity.transform.angle;
                 entity.view.gameObject.transform.position = vector3;
-                entity.view.gameObject.transform.rotation = Quaternion.Euler(0,entity.transform.angle, 0);
+                entity.view.gameObject.transform.rotation = Quaternion.Euler(0, angle, 0);
             }
         }
     }

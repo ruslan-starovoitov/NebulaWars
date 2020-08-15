@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Code.Common.Logger;
 using Entitas;
+using Entitas.Unity;
 using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
@@ -10,11 +11,13 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
     /// </summary>
     public class PrefabSpawnerSystem:ReactiveSystem<GameEntity>
     {
+        private readonly ViewTypePathStorage viewTypeStorage;
         private readonly ILog log = LogManager.CreateLogger(typeof(PrefabSpawnerSystem));
-        
+
         public PrefabSpawnerSystem(Contexts contexts) 
             : base(contexts.game)
         {
+            viewTypeStorage = new ViewTypePathStorage();
         }
 
         protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
@@ -31,10 +34,12 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
         {
             foreach (var entity in entities)
             {
-                log.Debug("Создание новой 3d модели");
-                GameObject prefab = Resources.Load<GameObject>("Prefabs/3dWarships/StarSparrow1");
+                var viewType = entity.viewType.id;
+                string path = viewTypeStorage.GetPath(viewType);
+                GameObject prefab = Resources.Load<GameObject>(path);
                 var go = Object.Instantiate(prefab, entity.transform.position, Quaternion.identity);
                 entity.AddView(go);
+                go.Link(entity);
             }
         }
     }

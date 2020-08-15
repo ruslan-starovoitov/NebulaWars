@@ -3,16 +3,16 @@ using NetworkLibrary.NetworkLibrary.Udp;
 
 namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
 {
-    public class RudpConfirmationSender
+    public class DeliveryConfirmationSender
     {
         private readonly UdpSendUtils udpSendUtils;
 
-        public RudpConfirmationSender(UdpSendUtils udpSendUtils)
+        public DeliveryConfirmationSender(UdpSendUtils udpSendUtils)
         {
             this.udpSendUtils = udpSendUtils;
         }
         
-        public void Handle(MessageWrapper messageWrapper)
+        public void Send(MessageWrapper messageWrapper)
         {
             udpSendUtils.SendDeliveryConfirmationMessage(messageWrapper.MessageId);
         }

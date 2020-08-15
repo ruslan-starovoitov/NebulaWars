@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 {
     /// <summary>
-    /// Хранит все состояния мира
+    /// Принимает все состояния мира. Обновляет все transform-ы и создаёт объекты
     /// </summary>
     public class UpdateTransformSystem : IExecuteSystem, ITransformStorage
     {
@@ -50,11 +50,25 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                 needExecute = false;
             }
 
+
+            var gameEntities = gameEntitiesGroup.GetEntities();
+            if (gameEntities == null)
+            {
+                log.Debug("gameEntities is null");
+                return;
+            }
+            
+            if (gameEntities.Length ==  0)
+            {
+                log.Debug("gameEntities is empty");
+            }
+
+
             //Перебор существующих сущностей
             foreach (var gameEntity in gameEntitiesGroup.GetEntities())
             {
                 ushort currentId = gameEntity.id.value;
-                // log.Debug("Существующая сущность x "+newViewTransforms[currentId].X+" z "+newViewTransforms[currentId].Z);
+                // log.Debug("Существующая сущность currentId "+currentId);
                 bool entityRemained = newViewTransforms.ContainsKey(currentId);
                 if (entityRemained)
                 {
@@ -66,11 +80,18 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
             }
 
             //Добавление новых объектов
-            foreach (var newEntity in newViewTransforms.OrderBy(pair => pair.Key))
+            var test = newViewTransforms.OrderBy(pair => pair.Key);
+
+            
+            // log.Debug("test.Count() "+test.Count());
+            
+                
+            foreach (var newEntity in test)
             {
-                // log.Debug("новая сущность x "+newEntity.Value.X+" z "+newEntity.Value.Z);
+                // log.Debug("новая сущность  id "+newEntity.Key);
                 AddNewObject(newEntity.Key, newEntity.Value);
             }
+            
         }
 
         private void AddNewObject(ushort id, ViewTransform newTransform)
@@ -83,7 +104,8 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 
         private void UpdateTransform(GameEntity entity, ViewTransform newTransform)
         {
-            entity.ReplaceTransform(newTransform.GetPosition(), newTransform.Angle);
+            var vector = newTransform.GetPosition();
+            entity.ReplaceTransform(vector, newTransform.Angle);
             ViewTypeId oldViewType = entity.viewType.id;
             if (oldViewType != newTransform.typeId)
             {

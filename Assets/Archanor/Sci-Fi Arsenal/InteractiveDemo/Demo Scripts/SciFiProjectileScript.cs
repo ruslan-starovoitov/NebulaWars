@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace SciFiArsenal
 {
-public class SciFiProjectileScript : MonoBehaviour
+    public class SciFiProjectileScript : MonoBehaviour
 {
     public GameObject impactParticle;
     public GameObject projectileParticle;

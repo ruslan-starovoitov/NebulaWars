@@ -35,10 +35,15 @@ public static class GameComponentsLookup {
     public const int View = 24;
     public const int ViewType = 25;
     public const int ZoneInfo = 26;
-    public const int Id = 27;
-    public const int Position = 28;
+    public const int HealthBar = 27;
+    public const int HealthBarParent = 28;
+    public const int Health = 29;
+    public const int Id = 30;
+    public const int MaxHealth = 31;
+    public const int NeedHealthBar = 32;
+    public const int Position = 33;
 
-    public const int TotalComponents = 29;
+    public const int TotalComponents = 34;
 
     public static readonly string[] componentNames = {
         "DeathSound",
@@ -68,7 +73,12 @@ public static class GameComponentsLookup {
         "View",
         "ViewType",
         "ZoneInfo",
+        "HealthBar",
+        "HealthBarParent",
+        "Health",
         "Id",
+        "MaxHealth",
+        "NeedHealthBar",
         "Position"
     };
 
@@ -100,7 +110,12 @@ public static class GameComponentsLookup {
         typeof(Code.Scenes.BattleScene.ECS.Components.Game.ViewComponents.ViewComponent),
         typeof(Code.Scenes.BattleScene.ECS.Components.Game.ViewComponents.ViewTypeComponent),
         typeof(Code.Scenes.BattleScene.ECS.Components.Game.ZoneInfoComponent),
+        typeof(Code.Scenes.BattleScene.ECS.Components.HealthBarComponent),
+        typeof(Code.Scenes.BattleScene.ECS.Components.HealthBarParent),
+        typeof(Code.Scenes.BattleScene.ECS.Components.HealthComponent),
         typeof(Code.Scenes.BattleScene.ECS.Components.IdComponent),
+        typeof(Code.Scenes.BattleScene.ECS.Components.MaxHealthComponent),
+        typeof(Code.Scenes.BattleScene.ECS.Components.NeedHealthBar),
         typeof(Code.Scenes.LobbyScene.ECS.PositionComponent)
     };
 }

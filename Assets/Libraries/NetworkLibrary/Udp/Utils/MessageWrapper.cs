@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using ZeroFormatter;
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using ZeroFormatter;
 
 namespace NetworkLibrary.NetworkLibrary.Udp
 {
@@ -48,6 +48,8 @@ namespace NetworkLibrary.NetworkLibrary.Udp
         Detaches = 25,
         Destroys = 26,
         Hides = 27,
-        FrameRate = 28
+        FrameRate = 28,
+        HealthPointsMessagePack = 29,
+        MaxHealthPointsMessagePack = 30,
     }
 }

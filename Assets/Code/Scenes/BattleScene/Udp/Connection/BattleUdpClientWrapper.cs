@@ -2,19 +2,8 @@
 
 namespace Code.Scenes.BattleScene.Udp.Connection
 {
-    public class BattleUdpClientWrapper:UdpClientWrapper
+    public interface IByteArrayHandler
     {
-        private readonly UdpMediator udpMediator;
-
-        public BattleUdpClientWrapper(UdpMediator udpMediator, UdpClient udpClient)
-            :base(udpClient)
-        {
-            this.udpMediator = udpMediator;
-        }
-
-        protected override void HandleBytes(byte[] data)
-        {
-            udpMediator.HandleBytes(data);
-        }
+        void HandleBytes(byte[] data);
     }
 }

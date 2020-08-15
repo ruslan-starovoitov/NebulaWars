@@ -12,10 +12,10 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
     public class UpdatePlayersSystem : IExecuteSystem, ITearDownSystem, IPlayersStorage
     {
         private readonly GameContext gameContext;
-        private Dictionary<int, ushort> entityIds; //accountId, entityId 
         private readonly object lockObj = new object();
-        private readonly Dictionary<int, BattleRoyalePlayerModel> playerInfos; //accountId, account
+        private Dictionary<int, ushort> entityIds; //accountId, entityId 
         private readonly ILog log = LogManager.CreateLogger(typeof(UpdatePlayersSystem));
+        private readonly Dictionary<int, BattleRoyalePlayerModel> playerInfos; //accountId, account
         
         public UpdatePlayersSystem(Contexts contexts, BattleRoyaleClientMatchModel matchModel)
         {
@@ -50,8 +50,8 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                     return;
                 }
                 
-                log.Debug("Обработка новых игроков "+entityIds.Count);
                 // чтобы можно было удалять внутри foreach
+                log.Debug("Обработка новых игроков "+entityIds.Count);
                 var currentEntityIds = new Dictionary<int, ushort>(entityIds); 
 
                 foreach (var pair in currentEntityIds)
@@ -68,6 +68,10 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                         }
                         entity.AddPlayer(accountId, playerInfos[accountId].Nickname);
                         entityIds.Remove(accountId);
+                    }
+                    else
+                    {
+                        log.Debug("Нет сущности с таким id");
                     }
                 }
             }

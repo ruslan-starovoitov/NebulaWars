@@ -8,14 +8,15 @@ namespace Code.Scenes.BattleScene.ECS.Systems.EnvironmentSystems
     public class CameraMoveSystem : IExecuteSystem
     {
         private readonly Camera mainCamera;
+        private readonly Vector3 cameraShift;
         private readonly GameContext gameContext;
-        private Vector3 cameraVelocity = Vector3.zero;
         private readonly ILog log = LogManager.CreateLogger(typeof(CameraMoveSystem));
 
-        public CameraMoveSystem(Contexts contexts, Camera camera)
+        public CameraMoveSystem(Contexts contexts, Camera camera, Vector3 cameraShift)
         {
             gameContext = contexts.game;
             mainCamera = camera;
+            this.cameraShift = cameraShift;
         }
 
         public void Execute()
@@ -33,13 +34,9 @@ namespace Code.Scenes.BattleScene.ECS.Systems.EnvironmentSystems
                 return;
             }
 
-
-            Vector3 playerPosition = playerEntity.transform.position;
+            Vector3 playerPosition = playerEntity.view.gameObject.transform.position;
             Transform currentCameraPosition = mainCamera.transform;
-            log.Debug($"playerPosition x {playerPosition.x} y {playerPosition.y}");
-            // var tmpPosition = currentCameraPosition.position;
-            Vector3 nextCameraPosition = new Vector3(playerPosition.x, 0, playerPosition.y) + new Vector3(0, 55, -37);
-            // Vector3 newPosition = Vector3.SmoothDamp(tmpPosition, nextCameraPosition, ref cameraVelocity, 0.3f);
+            Vector3 nextCameraPosition = playerPosition + cameraShift;
             currentCameraPosition.position = nextCameraPosition;
             mainCamera.transform.LookAt(playerPosition);
         }
