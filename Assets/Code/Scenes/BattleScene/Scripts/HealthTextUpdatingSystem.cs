@@ -31,7 +31,7 @@ namespace Code.Scenes.BattleScene.Scripts
                 int maxHealth = entity.maxHealth.value;
                 string value = $"{health}/{maxHealth}";
                 entity.healthBarParent.healthBarEntity.healthBar.healthPoints.text = value;
-                log.Debug("Изменение хп "+value);
+                // log.Debug("Изменение хп "+value);
             }
         }
     }
