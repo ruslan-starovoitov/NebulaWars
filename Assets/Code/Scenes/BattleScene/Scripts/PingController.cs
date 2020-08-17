@@ -44,7 +44,7 @@ namespace Code.Scenes.BattleScene.Scripts
 
         private void StopPing()
         {
-            cts.Cancel();
+            cts?.Cancel();
         }
     }
 }

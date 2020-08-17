@@ -43,11 +43,11 @@ namespace Code.Scenes.LightBakingController
                 return;
             }
 
-            Debug.LogError($"gameObject.name = {gameObject.name}");
+            // Debug.LogError($"gameObject.name = {gameObject.name}");
             LightmapData[] lightmaps = LightmapSettings.lightmaps;
             int[] offsetsIndexes = new int[m_Lightmaps.Length];
             int countTotal = lightmaps.Length;
-            Debug.LogError($"lightmaps.Length = {lightmaps.Length}");
+            // Debug.LogError($"lightmaps.Length = {lightmaps.Length}");
             List<LightmapData> combinedLightmaps = new List<LightmapData>();
 
             for (int i = 0; i < m_Lightmaps.Length; i++)
