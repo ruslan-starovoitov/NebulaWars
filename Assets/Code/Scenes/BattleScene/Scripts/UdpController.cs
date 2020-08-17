@@ -28,6 +28,11 @@ namespace Code.Scenes.BattleScene.Scripts
             udpClientWrapper?.Stop();
             
             BattleRoyaleClientMatchModel matchData = MatchModelStorage.Instance.GetMatchModel();
+            if (matchData == null)
+            {
+                log.Error("Нет данных о матче. Симуляция не работает.");
+                return;
+            }
             int matchId = matchData.MatchId;
             int gameServerPort = matchData.GameServerPort;
             string gameServerIp = matchData.GameServerIp;

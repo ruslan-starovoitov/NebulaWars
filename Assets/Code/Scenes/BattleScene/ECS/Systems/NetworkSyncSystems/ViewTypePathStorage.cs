@@ -6,7 +6,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
     {
         private readonly Dictionary<ViewTypeId, string> dict = new Dictionary<ViewTypeId, string>()
         {
-            {ViewTypeId.StarSparrow, "Prefabs/3dWarships/StarSparrow1"},
+            {ViewTypeId.StarSparrow, "Prefabs/3dWarships/StarSparrow1Baked"},
             {ViewTypeId.DefaultShoot, "Prefabs/3dWarships/BlueLaserSmallOBJ"}
         };
         

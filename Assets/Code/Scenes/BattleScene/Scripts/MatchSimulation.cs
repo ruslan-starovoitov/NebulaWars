@@ -12,6 +12,7 @@ using Code.Scenes.BattleScene.Udp.MessageProcessing;
 using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
 using Entitas;
 using Libraries.NetworkLibrary.Udp.ServerToPlayer;
+using NetworkLibrary.NetworkLibrary.Http;
 using NetworkLibrary.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
 using UnityEngine;
 
@@ -45,22 +46,30 @@ namespace Code.Scenes.BattleScene.Scripts
         private void Start()
         {
             UdpSendUtils udpSendUtils = udpControllerSingleton.GetUdpSendUtils();
-            systems = CreateSystems(udpSendUtils);
+            BattleRoyaleClientMatchModel matchModel = MatchModelStorage.Instance.GetMatchModel();
+            if (matchModel == null)
+            {
+                log.Error("Симуляция матча не запущена ");
+                return;
+            }
+            systems = CreateSystems(udpSendUtils, matchModel);
             systems.ActivateReactiveSystems();
             systems.Initialize();
         }
         
         private void Update()
         {
-            systems.Execute();
-            systems.Cleanup();
+            if (systems != null)
+            {
+                systems.Execute();
+                systems.Cleanup();  
+            }
         }
 
-        private Systems CreateSystems(UdpSendUtils udpSendUtils)
+        private Systems CreateSystems(UdpSendUtils udpSendUtils, BattleRoyaleClientMatchModel matchModel)
         {
             contexts = Contexts.sharedInstance;
-            var matchModel = MatchModelStorage.Instance.GetMatchModel();
-            int aliveCount = MatchModelStorage.Instance.GetMatchModel().PlayerModels.Length;
+            int aliveCount = matchModel.PlayerModels.Length;
             updateTransformSystem = new UpdateTransformSystem(contexts);
             updatePlayersSystem = new UpdatePlayersSystem(contexts, matchModel);
             
@@ -104,9 +113,12 @@ namespace Code.Scenes.BattleScene.Scripts
         
         private void StopSystems()
         {
-            systems.DeactivateReactiveSystems();
-            systems.TearDown();
-            systems.ClearReactiveSystems();
+            if (systems != null)
+            {
+                systems.DeactivateReactiveSystems();
+                systems.TearDown();
+                systems.ClearReactiveSystems();    
+            }
         }
 
         private void OnDestroy()

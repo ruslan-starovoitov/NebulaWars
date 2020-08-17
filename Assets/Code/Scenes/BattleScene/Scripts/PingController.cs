@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Threading;
+using Code.Common.Logger;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using UnityEngine;
 
@@ -12,11 +13,17 @@ namespace Code.Scenes.BattleScene.Scripts
     public class PingController:MonoBehaviour
     {
         private static volatile CancellationTokenSource cts;
-
+        private readonly ILog log = LogManager.CreateLogger(typeof(PingController));
+        
         private void Start()
         {
             var udpController = GetComponent<UdpController>();
             UdpSendUtils udpSendUtils = udpController.GetUdpSendUtils();
+            if (udpSendUtils == null)
+            {
+                log.Error("Отправка ping не работает.");
+                return;
+            }
             cts = new CancellationTokenSource();
             StartCoroutine(ServerPinging(udpSendUtils));
         }
