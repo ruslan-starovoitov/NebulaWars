@@ -1,16 +1,59 @@
-using Code.Common;
+using System;
+using System.Collections.Generic;
 using Code.Common.Storages;
-using Code.Scenes.BattleScene.Scripts;
 using Code.Scenes.BattleScene.Udp.Connection;
 using Libraries.NetworkLibrary.Udp.Common;
 using Libraries.NetworkLibrary.Udp.PlayerToServer;
 using NetworkLibrary.NetworkLibrary.Udp;
 using NetworkLibrary.NetworkLibrary.Udp.PlayerToServer.Ping;
 using NetworkLibrary.NetworkLibrary.Udp.PlayerToServer.UserInputMessage;
-using UnityEngine;
 
 namespace Code.Scenes.BattleScene.Udp.Experimental
 {
+    /// <summary>
+    /// Хранит последние n вводов игроков.
+    /// Ввод отправляется несколько раз для того, чтобы сервер получил все вводы.
+    /// </summary>
+    public class InputMessagesHistory
+    {
+        private readonly int matchId;
+        private readonly ushort playerTmpId;
+        private readonly SelfCleaningDictionary<InputMessageModel> dict;
+        private readonly InputModelValidator inputModelValidator = new InputModelValidator();
+        private readonly InputMessageIdFactory inputMessageIdFactory = new InputMessageIdFactory();
+
+        public InputMessagesHistory(ushort playerTmpId, int matchId)
+        {
+            this.playerTmpId = playerTmpId;
+            this.matchId = matchId;
+            dict = new SelfCleaningDictionary<InputMessageModel>(10);
+        }
+        
+        public void AddInput(InputMessageModel model)
+        {
+            inputModelValidator.Validate(model);
+            
+            int inputId = inputMessageIdFactory.Create();
+            dict.Add(inputId, model);
+        }
+
+        public InputMessagesPack GetInputModelsPack()
+        {
+            Dictionary<int, InputMessageModel> history = dict.Read();
+            if (history.Count > 10)
+            {
+                throw new Exception("Коллекция работает неправильно");
+            }
+            
+            InputMessagesPack pack = new InputMessagesPack()
+            {
+                MatchId = matchId,
+                TemporaryId = playerTmpId,
+                History = history
+            };
+            return pack;
+        }
+    }
     /// <summary>
     /// Принимает запросы на отправку сообщений от систем и перенаправляет их UdpClient-у
     /// </summary>
@@ -23,17 +66,6 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
         {
             this.matchId = matchId;
             this.udpClientWrapper = udpClientWrapper;
-        }
-
-        public void SendInputMessage(float movementX, float movementY, float attackAngle,bool useAbility)
-        {
-            ushort myId = PlayerIdStorage.TmpPlayerIdForMatch;
-            
-            // Debug.LogWarning($"{nameof(myId)} {myId}");
-            var message = new PlayerInputMessage(myId, matchId, movementX, movementY, 
-                attackAngle, useAbility);
-            byte[] data = MessageFactory.GetSerializedMessage(message, false, out uint messageId);
-            udpClientWrapper.Send(data);
         }
         
         public void SendPingMessage()
@@ -58,13 +90,7 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
             byte[] data = MessageFactory.GetSerializedMessage(messageWrapper);
             udpClientWrapper.Send(data);
         }
-        
-        public void SendMessage(MessageWrapper message)
-        {
-            byte[] data = MessageFactory.GetSerializedMessage(message);
-            udpClientWrapper.Send(data);
-        }
-        
+
         public void SendMessage(byte[] serializedMessage)
         {
             udpClientWrapper.Send(serializedMessage);
@@ -75,6 +101,13 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
             var myId = PlayerIdStorage.TmpPlayerIdForMatch;
             BattleExitMessage exitMessage = new BattleExitMessage(matchId, myId);
             MessageWrapper message = MessageFactory.GetMessage(exitMessage, false, out uint messageId);
+            byte[] data = MessageFactory.GetSerializedMessage(message);
+            udpClientWrapper.Send(data);
+        }
+
+        public void SendInputPack(InputMessagesPack pack)
+        {
+            MessageWrapper message = MessageFactory.GetMessage(pack, false, out uint messageId);
             byte[] data = MessageFactory.GetSerializedMessage(message);
             udpClientWrapper.Send(data);
         }

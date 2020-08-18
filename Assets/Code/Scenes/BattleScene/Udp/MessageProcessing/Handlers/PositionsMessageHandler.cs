@@ -14,7 +14,7 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
         
         protected override void Handle(in PositionsMessage message, uint messageId, bool needResponse)
         {
-            transformStorage.SetNewTransforms(messageId, message.entitiesInfo);
+            transformStorage.SetNewTransforms(message);
         }
     }
 }

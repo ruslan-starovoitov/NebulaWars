@@ -28,7 +28,7 @@ namespace Code.Scenes.LobbyScene.Scripts.AccountModel
 
         private void UpdateGameButton_OnClick()
         {
-            const string packageName = "com.tikaytech.nebulaWars";
+            const string packageName = "com.tikaytech.nebulaWars2";
             Application.OpenURL("market://details?id="+packageName);
         }
 

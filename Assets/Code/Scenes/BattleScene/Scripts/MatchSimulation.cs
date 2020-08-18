@@ -76,6 +76,10 @@ namespace Code.Scenes.BattleScene.Scripts
             healthUpdaterSystem = new HealthUpdaterSystem(contexts);
             maxHealthUpdaterSystem = new MaxHealthUpdaterSystem(contexts);
             Vector3 cameraShift = new Vector3(0, 60, -30);
+            ushort playerTmpId = matchModel.PlayerTemporaryId;
+            int matchId = matchModel.MatchId;
+            
+            InputMessagesHistory inputMessagesHistory = new InputMessagesHistory(playerTmpId, matchId);
             systems = new Systems()
                     .Add(updateTransformSystem)
                     .Add(updatePlayersSystem)
@@ -101,7 +105,7 @@ namespace Code.Scenes.BattleScene.Scripts
                     
                     
                     .Add(new JoysticksInputSystem(contexts, battleUiController.GetMovementJoystick(), battleUiController.GetAttackJoystick()))
-                    .Add(new PlayerInputSenderSystem(contexts, udpSendUtils))
+                    .Add(new PlayerInputSenderSystem(contexts, udpSendUtils, inputMessagesHistory, updateTransformSystem))
                     // .Add(new AbilityInputClearingSystem(contexts))
                     .Add(new RudpMessagesSenderSystem(udpSendUtils))
                     // .Add(new KillsIndicatorSystem(battleUiController.GetKillMessage(), battleUiController.GetKillIndicator(), battleUiController.GetKillsText(), battleUiController.GetAliveText(), aliveCount))
@@ -134,12 +138,7 @@ namespace Code.Scenes.BattleScene.Scripts
             log.Info("Уничтожение ecs контроллера.");
             Destroy(this);
         }
-
-        public void SetNewTransforms(uint messageId, Dictionary<ushort, ViewTransform> entitiesInfo)
-        {
-            updateTransformSystem.SetNewTransforms(messageId, entitiesInfo);
-        }
-
+        
         public void SetNewPlayers(Dictionary<int, ushort> newPlayers)
         {
             updatePlayersSystem.SetNewPlayers(newPlayers);
@@ -153,6 +152,11 @@ namespace Code.Scenes.BattleScene.Scripts
         public void SetNewMaxHealthPoints(MaxHealthPointsMessagePack message)
         {
             maxHealthUpdaterSystem.SetNewMaxHealthPoints(message);
+        }
+
+        public void SetNewTransforms(in PositionsMessage message)
+        {
+            updateTransformSystem.SetNewTransforms(message);
         }
     }
 }

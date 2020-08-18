@@ -5,6 +5,6 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
 {
     public interface ITransformStorage
     {
-        void SetNewTransforms(uint messageId, Dictionary<ushort, ViewTransform> entitiesInfo);
+        void SetNewTransforms(in PositionsMessage message);
     }
 }

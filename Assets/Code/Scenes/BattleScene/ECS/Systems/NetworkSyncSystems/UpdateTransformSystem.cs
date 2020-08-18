@@ -8,31 +8,26 @@ using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 {
+    public interface ITickNumberStorage
+    {
+        int GetCurrentTickNumber();
+    }
     /// <summary>
     /// Принимает все состояния мира. Обновляет все transform-ы и создаёт объекты
     /// </summary>
-    public class UpdateTransformSystem : IExecuteSystem, ITransformStorage
+    public class UpdateTransformSystem : IExecuteSystem, ITransformStorage, ITickNumberStorage
     {
         private bool needExecute;
+        private int currentTickNumber;
         private readonly GameContext gameContext;
         private readonly object lockObj = new object();
         private readonly IGroup<GameEntity> gameEntitiesGroup;
+        private readonly List<PositionsMessage> history = new List<PositionsMessage>();
         private readonly ILog log = LogManager.CreateLogger(typeof(UpdateTransformSystem));
-        private readonly List<Dictionary<ushort, ViewTransform>> history = new List<Dictionary<ushort, ViewTransform>>();
-        
         public UpdateTransformSystem(Contexts contexts)
         {
             gameContext = contexts.game;
             gameEntitiesGroup = gameContext.GetGroup(GameMatcher.Transform);
-        }
-
-        public void SetNewTransforms(uint messageId, Dictionary<ushort, ViewTransform> values)
-        {
-            lock (lockObj)
-            {
-                history.Add(values);
-                needExecute = true;
-            }
         }
 
         public void Execute()
@@ -41,12 +36,12 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
             {
                 return;
             }
-            // log.Debug("обработка новых координат");
             
             Dictionary<ushort, ViewTransform> newViewTransforms;
             lock (lockObj)
             {
-                newViewTransforms = history.Last();
+                newViewTransforms = history.Last().entitiesInfo;
+                currentTickNumber = history.Last().TickNumber;
                 needExecute = false;
             }
 
@@ -111,6 +106,20 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
             {
                 entity.ReplaceViewType(newTransform.typeId);
             }
+        }
+
+        public void SetNewTransforms(in PositionsMessage message)
+        {
+            lock (lockObj)
+            {
+                history.Add(message);
+                needExecute = true;
+            }
+        }
+
+        public int GetCurrentTickNumber()
+        {
+            return currentTickNumber;
         }
     }
 }

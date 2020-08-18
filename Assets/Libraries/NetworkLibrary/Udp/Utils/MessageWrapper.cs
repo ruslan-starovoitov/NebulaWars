@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using ZeroFormatter;
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using ZeroFormatter;
 
 namespace NetworkLibrary.NetworkLibrary.Udp
 {
@@ -26,7 +26,7 @@ namespace NetworkLibrary.NetworkLibrary.Udp
 
     public enum MessageType:byte
     {
-        PlayerInput = 3,
+        PlayerInputMessagesPack = 3,
         PlayerPing = 5,
         Positions = 6,
         DeliveryConfirmation = 7,
@@ -51,5 +51,6 @@ namespace NetworkLibrary.NetworkLibrary.Udp
         FrameRate = 28,
         HealthPointsMessagePack = 29,
         MaxHealthPointsMessagePack = 30,
+        InputMessageModel=31
     }
 }

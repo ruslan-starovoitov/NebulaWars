@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using System;
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,19 +6,19 @@ using ZeroFormatter;
          
 namespace NetworkLibrary.NetworkLibrary.Udp.ServerToPlayer.PositionMessages
 {
-    [ZeroFormattable]
-    public struct TestPositionsMessage 
-    {
-        [Index(0)] public Dictionary<ushort, ViewTransform>EntitiesInfo { get; set; }
-        [Index(1)] public Dictionary<ushort, ushort>__RadiusInfo { get; set; }
-        
-        public TestPositionsMessage(Dictionary<ushort, ViewTransform>entitiesInfo,
-            Dictionary<ushort, ushort> radiusInfo)
-        {
-            EntitiesInfo = entitiesInfo;
-            __RadiusInfo = radiusInfo;
-        }
-    }
+    // [ZeroFormattable]
+    // public struct TestPositionsMessage 
+    // {
+    //     [Index(0)] public Dictionary<ushort, ViewTransform>EntitiesInfo { get; set; }
+    //     [Index(1)] public Dictionary<ushort, ushort>__RadiusInfo { get; set; }
+    //     
+    //     public TestPositionsMessage(Dictionary<ushort, ViewTransform>entitiesInfo,
+    //         Dictionary<ushort, ushort> radiusInfo)
+    //     {
+    //         EntitiesInfo = entitiesInfo;
+    //         __RadiusInfo = radiusInfo;
+    //     }
+    // }
 
     [ZeroFormattable]
     public struct RadiusesMessage : ITypedMessage
@@ -92,15 +92,18 @@ namespace NetworkLibrary.NetworkLibrary.Udp.ServerToPlayer.PositionMessages
     [ZeroFormattable]
     public class PositionsMessage : ITypedMessage
     {
+        //entityId, transform
         [Index(0)] public virtual Dictionary<ushort, ViewTransform> entitiesInfo { get; set; }
+        [Index(1)] public virtual int TickNumber { get; set; }
 
         public PositionsMessage()
         {
             
         }
-        public PositionsMessage(Dictionary<ushort, ViewTransform> entitiesInfo)
+        public PositionsMessage(Dictionary<ushort, ViewTransform> entitiesInfo, int tickNumber)
         {
             this.entitiesInfo = entitiesInfo;
+            TickNumber = tickNumber;
         }
 
         public MessageType GetMessageType() => MessageType.Positions;

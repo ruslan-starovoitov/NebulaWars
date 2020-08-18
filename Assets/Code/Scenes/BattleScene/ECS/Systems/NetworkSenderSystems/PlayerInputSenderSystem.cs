@@ -1,40 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using Code.Common.Logger;
+﻿using Code.Common.Logger;
+using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using Entitas;
-using UnityEngine;
+using NetworkLibrary.NetworkLibrary.Udp.PlayerToServer.UserInputMessage;
 
-// ReSharper disable once CheckNamespace
-namespace Code.BattleScene.ECS.Systems
+namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems
 {
-    public class PlayerInputSenderSystem : ReactiveSystem<InputEntity>
+    public class PlayerInputSenderSystem : IExecuteSystem
     {
         private readonly UdpSendUtils udpSendUtils;
+        private readonly IGroup<InputEntity> inputGroup;
+        private readonly ITickNumberStorage tickNumberStorage;
+        private readonly InputMessagesHistory inputMessagesHistory;
         private readonly ILog log = LogManager.CreateLogger(typeof(PlayerInputSenderSystem));
 
-        public PlayerInputSenderSystem(Contexts contexts, UdpSendUtils udpSendUtils) : base(contexts.input)
+        public PlayerInputSenderSystem(Contexts contexts, UdpSendUtils udpSendUtils, 
+            InputMessagesHistory inputMessagesHistory, ITickNumberStorage tickNumberStorage)
         {
             this.udpSendUtils = udpSendUtils;
+            this.inputMessagesHistory = inputMessagesHistory;
+            this.tickNumberStorage = tickNumberStorage;
+            inputGroup = contexts.input.GetGroup(InputMatcher.AnyOf(InputMatcher.Movement,
+                InputMatcher.Attack, InputMatcher.TryingToUseAbility));
         }
 
-        protected override ICollector<InputEntity> GetTrigger(IContext<InputEntity> context)
-        {
-            var matcher = InputMatcher.AnyOf(InputMatcher.Movement, InputMatcher.Attack, InputMatcher.TryingToUseAbility);
-            return context.CreateCollector(matcher);
-        }
-
-        protected override bool Filter(InputEntity entity)
-        {
-            return entity.hasMovement || entity.hasAttack || entity.isTryingToUseAbility;
-        }
-
-        protected override void Execute(List<InputEntity> entities)
+        public void Execute()
         {
             float x = 0f, y = 0f, angle = float.NaN;
             bool useAbility = false;
 
-            foreach (var inputEntity in entities)
+            foreach (var inputEntity in inputGroup)
             {
                 if (inputEntity.hasMovement)
                 {
@@ -49,15 +44,20 @@ namespace Code.BattleScene.ECS.Systems
 
                 useAbility |= inputEntity.isTryingToUseAbility;
             }
+            
+            InputMessageModel inputMessageModel = new InputMessageModel()
+            {
+                Angle = angle,
+                X = x,
+                Y = y,
+                UseAbility = useAbility,
+                TickNumber = tickNumberStorage.GetCurrentTickNumber()
+            };
+            
+            inputMessagesHistory.AddInput(inputMessageModel);
 
-            try
-            {
-                udpSendUtils.SendInputMessage(x, y, angle, useAbility);
-            }
-            catch (Exception e)
-            {
-                log.Error("Упало при отправке");
-            }
+            var pack = inputMessagesHistory.GetInputModelsPack();
+            udpSendUtils.SendInputPack(pack);
         }
     }
 }
