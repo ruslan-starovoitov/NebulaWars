@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Code.BattleScene.ECS.Systems;
 using Code.Common.Logger;
 using Code.Common.Storages;
@@ -7,16 +6,16 @@ using Code.Scenes.BattleScene.ECS.Systems.EnvironmentSystems;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
 using Code.Scenes.BattleScene.ECS.Systems.TearDownSystems;
+using Code.Scenes.BattleScene.Scripts;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using Code.Scenes.BattleScene.Udp.MessageProcessing;
 using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
-using Entitas;
 using Libraries.NetworkLibrary.Udp.ServerToPlayer;
 using NetworkLibrary.NetworkLibrary.Http;
 using NetworkLibrary.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
 using UnityEngine;
 
-namespace Code.Scenes.BattleScene.Scripts
+namespace Code.Scenes.BattleScene.ECS
 {
     /// <summary>
     /// Отвечает за управление ecs системами.
@@ -25,7 +24,7 @@ namespace Code.Scenes.BattleScene.Scripts
     public class MatchSimulation:MonoBehaviour, ITransformStorage, IPlayersStorage, IHealthPointsStorage,
         IMaxHealthPointsMessagePackStorage
     {
-        private Systems systems;
+        private Entitas.Systems systems;
         private Contexts contexts;
         private UdpController udpControllerSingleton;
         private BattleUiController battleUiController;
@@ -66,7 +65,7 @@ namespace Code.Scenes.BattleScene.Scripts
             }
         }
 
-        private Systems CreateSystems(UdpSendUtils udpSendUtils, BattleRoyaleClientMatchModel matchModel)
+        private Entitas.Systems CreateSystems(UdpSendUtils udpSendUtils, BattleRoyaleClientMatchModel matchModel)
         {
             contexts = Contexts.sharedInstance;
             int aliveCount = matchModel.PlayerModels.Length;
@@ -80,7 +79,8 @@ namespace Code.Scenes.BattleScene.Scripts
             int matchId = matchModel.MatchId;
             
             InputMessagesHistory inputMessagesHistory = new InputMessagesHistory(playerTmpId, matchId);
-            systems = new Systems()
+            systems = new Entitas.Systems()
+                    .Add(new PingSystem(udpSendUtils))
                     .Add(updateTransformSystem)
                     .Add(updatePlayersSystem)
                     .Add(new PrefabSpawnerSystem(contexts))

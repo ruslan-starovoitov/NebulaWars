@@ -5,7 +5,7 @@ using Entitas;
 using Libraries.NetworkLibrary.Udp.ServerToPlayer.BattleStatus;
 using UnityEngine;
 
-namespace Code.BattleScene.ECS.Systems
+namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 {
     public class TimeSpeedSystem : IExecuteSystem, ITearDownSystem
     {

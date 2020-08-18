@@ -5,6 +5,7 @@ using Code.Scenes.BattleScene.Udp.Experimental;
 using System.Net;
 using System.Net.Sockets;
 using Code.Common.Storages;
+using Code.Scenes.BattleScene.ECS;
 using Code.Scenes.BattleScene.Udp.MessageProcessing;
 using NetworkLibrary.NetworkLibrary.Http;
 using UnityEngine;

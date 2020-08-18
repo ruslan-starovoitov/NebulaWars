@@ -4,14 +4,9 @@ using Code.Common.Logger;
 using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
 using Entitas;
 using NetworkLibrary.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
-using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 {
-    public interface ITickNumberStorage
-    {
-        int GetCurrentTickNumber();
-    }
     /// <summary>
     /// Принимает все состояния мира. Обновляет все transform-ы и создаёт объекты
     /// </summary>

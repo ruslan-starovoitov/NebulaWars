@@ -8,6 +8,7 @@ using Code.Common;
 using Code.Common.Logger;
 using Code.Common.Statistics;
 using Code.Common.Storages;
+using Code.Scenes.BattleScene.ECS;
 using Code.Scenes.BattleScene.Experimental;
 using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
 using Libraries.NetworkLibrary.Experimental;

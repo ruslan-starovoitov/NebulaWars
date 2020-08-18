@@ -1,5 +1,6 @@
 ﻿using Code.Common;
 using Code.Common.Logger;
+using Code.Scenes.BattleScene.ECS;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
