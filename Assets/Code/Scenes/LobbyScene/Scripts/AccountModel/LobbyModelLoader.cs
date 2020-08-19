@@ -35,6 +35,10 @@ namespace Code.Scenes.LobbyScene.Scripts.AccountModel
                             log.Error("Не удалось получить id игрока");
                             continue;
                         }
+                        else
+                        {
+                            log.Error("id игрока получен");
+                        }
 
                         if (!PlayerIdStorage.TryGetUsername(out string username))
                         {

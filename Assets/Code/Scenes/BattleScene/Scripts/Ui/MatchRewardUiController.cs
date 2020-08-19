@@ -52,7 +52,7 @@ namespace Code.Scenes.BattleScene.Scripts
         [SerializeField] private GameObject exitButton;
 
         private bool isAnimationStarted;
-        private MatchSimulation matchSimulation;
+        private ClientMatchSimulation clientMatchSimulation;
         private BattleUiController battleUiController;
         private LobbyLoaderController lobbyLoaderController;
         private readonly ILog log = LogManager.CreateLogger(typeof(MatchRewardUiController));
@@ -63,7 +63,7 @@ namespace Code.Scenes.BattleScene.Scripts
             canvasCameraSpace.SetActive(false);
             battleUiController = GetComponent<BattleUiController>();
             lobbyLoaderController = GetComponent<LobbyLoaderController>();
-            matchSimulation = GetComponent<MatchSimulation>();
+            clientMatchSimulation = GetComponent<ClientMatchSimulation>();
         }
 
         public void ShowPlayerAchievements()
@@ -74,7 +74,7 @@ namespace Code.Scenes.BattleScene.Scripts
             }
 
             isAnimationStarted = true;
-            matchSimulation.SelfDestruct();
+            clientMatchSimulation.SelfDestruct();
             
             StartCoroutine(ShowPlayerAchievementsCoroutine());
         }

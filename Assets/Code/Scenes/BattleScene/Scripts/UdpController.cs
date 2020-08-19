@@ -23,7 +23,7 @@ namespace Code.Scenes.BattleScene.Scripts
 
         private void Awake()
         {
-            var matchSimulation = FindObjectOfType<MatchSimulation>();
+            var matchSimulation = FindObjectOfType<ClientMatchSimulation>();
             
             //Если в прошлом бою уже был создан UdpClient
             udpClientWrapper?.Stop();

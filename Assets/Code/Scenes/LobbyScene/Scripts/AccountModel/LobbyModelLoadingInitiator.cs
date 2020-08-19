@@ -29,7 +29,6 @@ namespace Code.Scenes.LobbyScene.Scripts.AccountModel
 
         private void Start()
         {
-            log.Debug("тут");
             NetworkStatisticsStorage.Instance.PrintSavedMatches();
             StartCoroutine(UpdateAccountData());
         }
