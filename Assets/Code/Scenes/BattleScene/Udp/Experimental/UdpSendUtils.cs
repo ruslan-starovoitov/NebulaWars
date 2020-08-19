@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Code.Common;
 using Code.Common.Storages;
 using Code.Scenes.BattleScene.Udp.Connection;
-using Libraries.NetworkLibrary.Udp.Common;
-using Libraries.NetworkLibrary.Udp.PlayerToServer;
-using NetworkLibrary.NetworkLibrary.Udp;
-using NetworkLibrary.NetworkLibrary.Udp.PlayerToServer.Ping;
-using NetworkLibrary.NetworkLibrary.Udp.PlayerToServer.UserInputMessage;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.Common;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.PlayerToServer;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.Utils;
 
 namespace Code.Scenes.BattleScene.Udp.Experimental
 {

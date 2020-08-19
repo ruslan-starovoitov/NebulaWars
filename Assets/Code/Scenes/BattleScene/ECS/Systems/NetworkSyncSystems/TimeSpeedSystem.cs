@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Code.Scenes.BattleScene.Experimental.Approximation;
 using Entitas;
-using Libraries.NetworkLibrary.Udp.ServerToPlayer.BattleStatus;
 using Plugins.submodules.SharedCode.Logger;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.BattleStatus;
 using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems

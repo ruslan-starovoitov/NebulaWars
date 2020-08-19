@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Code.Scenes.BattleScene.Scripts;
 using Entitas;
-using Libraries.NetworkLibrary.Udp.ServerToPlayer;
 using Plugins.submodules.SharedCode.Logger;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.Health;
 
 namespace Code.Scenes.BattleScene.ECS.NewSystems
 {

@@ -1,5 +1,5 @@
 ﻿using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
-using NetworkLibrary.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
 
 namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
 {

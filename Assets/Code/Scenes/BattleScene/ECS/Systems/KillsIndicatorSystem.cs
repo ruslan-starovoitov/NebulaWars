@@ -2,8 +2,6 @@
 using Code.Scenes.BattleScene.Experimental;
 using Code.Scenes.BattleScene.Scripts;
 using Entitas;
-using Libraries.NetworkLibrary.Udp.ServerToPlayer.BattleStatus;
-
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,6 +9,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Code.Common.Storages;
 using Plugins.submodules.SharedCode.Logger;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.BattleStatus;
 using UnityEngine;
 using UnityEngine.UI;
 

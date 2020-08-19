@@ -1,12 +1,11 @@
 ﻿using Entitas;
-using Libraries.NetworkLibrary.Udp.ServerToPlayer.BattleStatus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Code.Common;
 using Code.Scenes.BattleScene.Experimental;
 using Code.Scenes.BattleScene.Experimental.Approximation;
 using Plugins.submodules.SharedCode.Logger;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.Cooldown;
 using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS.Systems

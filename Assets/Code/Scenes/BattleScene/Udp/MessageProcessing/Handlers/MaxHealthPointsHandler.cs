@@ -1,5 +1,5 @@
 ﻿using Code.Scenes.BattleScene.ECS.Systems;
-using Libraries.NetworkLibrary.Udp.ServerToPlayer;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.Health;
 
 namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
 {

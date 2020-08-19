@@ -2,9 +2,8 @@
 using System.Linq;
 using NetworkLibrary.NetworkLibrary.Http;
 using ZeroFormatter;
-using ShopModel = Libraries.NetworkLibrary.Http.Lobby.Shop.ShopModel;
 
-namespace Code.Scenes.LobbyScene.Scripts.Shop
+namespace Code.Common
 {
     public static class ShopModelExtensions
     {

@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Code.Scenes.BattleScene.Scripts;
-using NetworkLibrary.NetworkLibrary.Udp;
 using Plugins.submodules.SharedCode.Logger;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.Utils;
 using UnityEngine;
 
 namespace Code.Common.NetworkStatistics

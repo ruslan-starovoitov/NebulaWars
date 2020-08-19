@@ -1,7 +1,7 @@
 ﻿using Code.Common.Storages;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
-using Libraries.NetworkLibrary.Udp.ServerToPlayer.BattleStatus;
 using Plugins.submodules.SharedCode.Logger;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.BattleStatus;
 
 namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
 {

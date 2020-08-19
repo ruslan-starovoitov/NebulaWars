@@ -6,6 +6,7 @@ using Code.Common;
 using Code.Common.Storages;
 using NetworkLibrary.NetworkLibrary.Http;
 using Plugins.submodules.SharedCode.Logger;
+using Plugins.submodules.SharedCode.NetworkLibrary.Http;
 using UnityEngine;
 using UnityEngine.UI;
 

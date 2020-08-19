@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using NetworkLibrary.NetworkLibrary.Udp;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.Utils;
 using ZeroFormatter;
 
 //TODO я не смог в ioc поэтому впихнул синглтон. не делайте так.

@@ -1,8 +1,7 @@
-﻿using Code.Common;
+﻿using Plugins.submodules.SharedCode.NetworkLibrary.Udp.Utils;
 using ZeroFormatter;
 
-// ReSharper disable once CheckNamespace
-namespace NetworkLibrary.NetworkLibrary.Udp
+namespace Code.Common
 {
     public static class MessageFactory
     {

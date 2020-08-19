@@ -1,13 +1,14 @@
 ﻿using Code.Scenes.BattleScene.Udp.Experimental;
 using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
-using NetworkLibrary.NetworkLibrary.Udp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Code.Scenes.BattleScene.ECS;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
 using Code.Scenes.BattleScene.Scripts;
 using Code.Scenes.BattleScene.Udp.Connection;
 using Plugins.submodules.SharedCode.Logger;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.Utils;
 
 namespace Code.Scenes.BattleScene.Udp.MessageProcessing
 {
@@ -34,7 +35,7 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing
             handlers[(int)MessageType.Radiuses] = new RadiusesMessageHandler();
             handlers[(int)MessageType.Parents] = new ParentsMessageHandler();
             handlers[(int)MessageType.Detaches] = new DetachesMessageHandler();
-            handlers[(int)MessageType.Destroys] = new DestroysMessageHandler();
+            // handlers[(int)MessageType.Destroys] = new DestroysMessageHandler();
             handlers[(int)MessageType.Hides] = new HidesMessageHandler();
             handlers[(int)MessageType.HealthPointsMessagePack] = new HealthPointsPackHandler(healthPointsStorage);
             handlers[(int)MessageType.DeliveryConfirmation] = new RudpConfirmationReceiver();

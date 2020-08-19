@@ -7,7 +7,7 @@ using Code.Common.Storages;
 using NetworkLibrary.NetworkLibrary.Http;
 using Plugins.submodules.SharedCode.Logger;
 using ZeroFormatter;
-using ShopModel = Libraries.NetworkLibrary.Http.Lobby.Shop.ShopModel;
+
 
 namespace Code.Scenes.LobbyScene.Scripts.Shop
 {

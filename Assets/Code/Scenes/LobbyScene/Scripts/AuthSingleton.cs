@@ -10,6 +10,7 @@ using GooglePlayGames.BasicApi;
 using NetworkLibrary.NetworkLibrary.Http;
 using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.Logger;
+using Plugins.submodules.SharedCode.NetworkLibrary.Http;
 using UnityEngine;
 namespace Code.Scenes.LobbyScene.Scripts
 {

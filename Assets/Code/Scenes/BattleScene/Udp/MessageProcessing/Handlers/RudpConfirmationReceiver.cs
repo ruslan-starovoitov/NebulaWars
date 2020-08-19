@@ -1,5 +1,5 @@
 ﻿using Code.Scenes.BattleScene.Udp.Experimental;
-using Libraries.NetworkLibrary.Udp.Common;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.Common;
 
 namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
 {

@@ -6,8 +6,8 @@ using Code.Scenes.BattleScene.Udp.Connection;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using Code.Scenes.BattleScene.Udp.MessageProcessing;
 using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
-using NetworkLibrary.NetworkLibrary.Udp;
 using Plugins.submodules.SharedCode.Logger;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.Utils;
 using ZeroFormatter;
 
 namespace Code.Scenes.BattleScene.Udp
