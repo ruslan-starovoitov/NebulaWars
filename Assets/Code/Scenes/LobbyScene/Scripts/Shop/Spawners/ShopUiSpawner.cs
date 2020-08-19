@@ -5,6 +5,7 @@ using Code.Scenes.LobbyScene.Scripts.Shop.Spawners.ItemSpawners;
 using NetworkLibrary.NetworkLibrary.Http;
 using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
+using ShopModel = Libraries.NetworkLibrary.Http.Lobby.Shop.ShopModel;
 
 namespace Code.Scenes.LobbyScene.Scripts.Shop.Spawners
 {

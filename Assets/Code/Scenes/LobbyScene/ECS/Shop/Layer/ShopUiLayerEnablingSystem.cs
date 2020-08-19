@@ -6,6 +6,7 @@ using Code.Scenes.LobbyScene.Scripts.Shop;
 using Code.Scenes.LobbyScene.Scripts.Shop.Spawners;
 using Code.Scenes.LobbyScene.Scripts.UiStorages;
 using Entitas;
+using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.UI;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
+using Code.Common;
 using Code.Common.NetworkStatistics;
 using Code.Common.Statistics;
 using Code.Scenes.LobbyScene.Utils;
@@ -28,6 +29,7 @@ namespace Code.Scenes.LobbyScene.Scripts.AccountModel
 
         private void Start()
         {
+            log.Debug("тут");
             NetworkStatisticsStorage.Instance.PrintSavedMatches();
             StartCoroutine(UpdateAccountData());
         }

@@ -7,6 +7,7 @@ using Code.Scenes.LobbyScene.Scripts;
 using Code.Scenes.LobbyScene.Scripts.WarshipsUi;
 using Entitas;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.UI;

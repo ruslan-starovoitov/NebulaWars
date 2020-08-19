@@ -1,7 +1,8 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using System.Collections.Generic;
-  using ZeroFormatter;
+﻿using System.Collections.Generic;
+using NetworkLibrary.NetworkLibrary.Http;
+using ZeroFormatter;
 
-namespace NetworkLibrary.NetworkLibrary.Http
+namespace Libraries.NetworkLibrary.Http.Lobby.Shop
 {
     /// <summary>
     /// Хранит в себе всю информацию про раздылы в магазине.

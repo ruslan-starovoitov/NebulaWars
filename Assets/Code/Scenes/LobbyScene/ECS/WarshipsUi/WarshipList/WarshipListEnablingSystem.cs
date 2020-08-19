@@ -5,6 +5,7 @@ using Code.Scenes.LobbyScene.ECS.CommonLayoutSwitcher;
 using Code.Scenes.LobbyScene.Scripts.UiStorages;
 using Code.Scenes.LobbyScene.Scripts.WarshipsUi;
 using Entitas;
+using Plugins.submodules.SharedCode;
 using UnityEngine;
 using UnityEngine.UI;
 

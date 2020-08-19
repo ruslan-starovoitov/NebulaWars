@@ -17,62 +17,68 @@ namespace Code.Scenes.LobbyScene.Scripts.AccountModel
         public async Task<LobbyModel> Load(CancellationToken cts)
         {
             log.Info("Старт скачивания модели аккаунта");
-            HttpClient httpClient = new HttpClient();
-            int attemptNumber = 0;
-            while (true)
+            using (HttpClient httpClient = new HttpClient())
             {
-                log.Info("Номер попытки "+attemptNumber++);
-                await Task.Delay(1000, cts);
-                try
+                int attemptNumber = 0;
+                while (true)
                 {
-                    if (!PlayerIdStorage.TryGetServiceId(out string playerServiceId))
+                    if (attemptNumber != 0)
                     {
-                        log.Warn("Не удалось получить id игрока");
-                        continue;
+                        await Task.Delay(3000, cts);
                     }
-
-                    if (!PlayerIdStorage.TryGetUsername(out string username))
+                    log.Info("Номер попытки "+attemptNumber++);
+                    
+                    try
                     {
-                        log.Warn("Не удалось получить username игрока");
-                        continue;
-                    }
+                        if (!PlayerIdStorage.TryGetServiceId(out string playerServiceId))
+                        {
+                            log.Error("Не удалось получить id игрока");
+                            continue;
+                        }
 
-                    HttpResponseMessage response;
-                    using (MultipartFormDataContent formData = new MultipartFormDataContent())
+                        if (!PlayerIdStorage.TryGetUsername(out string username))
+                        {
+                            log.Error("Не удалось получить username игрока");
+                            continue;
+                        }
+
+                        HttpResponseMessage response;
+                        using (MultipartFormDataContent formData = new MultipartFormDataContent())
+                        {
+                            formData.Add(new StringContent(playerServiceId), nameof(playerServiceId));
+                            formData.Add(new StringContent(username), nameof(username));
+                            response = await httpClient.PostAsync(NetworkGlobals.InitializeLobbyUrl, formData, cts);
+                        }
+
+
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            log.Error("Статус ответа " + response.StatusCode);
+                            continue;
+                        }
+
+                        string base64String = await response.Content.ReadAsStringAsync();
+                        if (base64String.Length == 0)
+                        {
+                            log.Error("Ответ пуст ");
+                            continue;
+                        }
+
+                        byte[] data = Convert.FromBase64String(base64String);
+                        log.Info("Длина ответа в байтах " + data.Length);
+                        LobbyModel result = ZeroFormatterSerializer.Deserialize<LobbyModel>(data);
+                        log.Info("Десериализация прошла нормально");
+                        return result;
+                    }
+                    catch (TaskCanceledException e)
                     {
-                        formData.Add(new StringContent(playerServiceId), nameof(playerServiceId));
-                        formData.Add(new StringContent(username), nameof(username));
-                        response = await httpClient.PostAsync(NetworkGlobals.InitializeLobbyUrl, formData, cts);
+                        log.Error("Task был отменён");
                     }
-
-
-                    if (!response.IsSuccessStatusCode)
+                    catch (Exception e)
                     {
-                        log.Warn("Статус ответа " + response.StatusCode);
-                        continue;
+                        UiSoundsManager.Instance().PlayError();
+                        log.Error("Упало при скачивании модели "+e.Message +" "+e.StackTrace);
                     }
-
-                    string base64String = await response.Content.ReadAsStringAsync();
-                    if (base64String.Length == 0)
-                    {
-                        log.Warn("Ответ пуст ");
-                        continue;
-                    }
-
-                    byte[] data = Convert.FromBase64String(base64String);
-                    log.Info("Длина ответа в байтах " + data.Length);
-                    LobbyModel result = ZeroFormatterSerializer.Deserialize<LobbyModel>(data);
-                    log.Info("Десериализация прошла нормально");
-                    return result;
-                }
-                catch (TaskCanceledException e)
-                {
-                    log.Warn("Task был отменён");
-                }
-                catch (Exception e)
-                {
-                    UiSoundsManager.Instance().PlayError();
-                    log.Error("Упало при скачивании модели "+e.Message +" "+e.StackTrace);
                 }
             }
         }

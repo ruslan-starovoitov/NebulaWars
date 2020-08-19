@@ -11,6 +11,7 @@ using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using ZeroFormatter;
 using Logger = Plugins.submodules.SharedCode.Logger.Logger;
+using ShopModel = Libraries.NetworkLibrary.Http.Lobby.Shop.ShopModel;
 
 namespace Code.Scenes.LobbyScene.Scripts.Shop
 {
