@@ -1,8 +1,8 @@
 using Code.Common;
-using Code.Common.Logger;
 using Entitas;
 using System;
 using System.Linq;
+using Plugins.submodules.SharedCode.Logger;
 using Object = UnityEngine.Object;
 
 namespace Code.Scenes.LobbyScene.ECS.AccountData.MovingAwards.Images

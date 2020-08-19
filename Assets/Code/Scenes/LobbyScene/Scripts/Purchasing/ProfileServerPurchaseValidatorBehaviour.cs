@@ -1,8 +1,8 @@
 ﻿using Code.Common;
-using Code.Common.Logger;
 using System.Collections;
 using System.Threading.Tasks;
 using Code.Scenes.LobbyScene.Scripts.Purchasing;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
 namespace Code.Scenes.LobbyScene.Scripts

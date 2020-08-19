@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Code.Common.Logger;
 using Code.Scenes.BattleScene.ScriptableObjects;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
 namespace Code.Scenes.BattleScene.Experimental

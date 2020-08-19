@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using Code.Common;
-using Code.Common.Logger;
 using Libraries.NetworkLibrary.Experimental;
+using Plugins.submodules.SharedCode.Logger;
 using ZeroFormatter;
 
 namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers

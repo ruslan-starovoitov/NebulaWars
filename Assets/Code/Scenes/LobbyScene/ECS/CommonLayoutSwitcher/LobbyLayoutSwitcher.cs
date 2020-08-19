@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Code.Common.Logger;
 using Code.Scenes.LobbyScene.Scripts.Shop.PurchaseConfirmation;
 using Entitas;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.LobbyScene.ECS.CommonLayoutSwitcher
 {

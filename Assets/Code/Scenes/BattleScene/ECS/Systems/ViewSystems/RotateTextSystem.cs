@@ -1,6 +1,6 @@
 ﻿using System;
-using Code.Common.Logger;
 using Entitas;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS.Systems.ViewSystems

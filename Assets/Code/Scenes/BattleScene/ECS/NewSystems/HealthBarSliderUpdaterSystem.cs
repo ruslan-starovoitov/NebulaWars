@@ -1,9 +1,7 @@
-﻿using System;
-using Code.Common.Logger;
-using Code.Scenes.BattleScene.Udp.Connection;
-using Entitas;
+﻿using Entitas;
+using Plugins.submodules.SharedCode.Logger;
 
-namespace Code.Scenes.BattleScene.Scripts
+namespace Code.Scenes.BattleScene.ECS.NewSystems
 {
     /// <summary>
     /// Обновляет слайдер и текст на полоске жизни.

@@ -3,12 +3,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Code.Common;
-using Code.Common.Logger;
 using Code.Common.Storages;
 using Code.Scenes.LobbyScene.Scripts.Shop;
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 namespace Code.Scenes.LobbyScene.Scripts
 {

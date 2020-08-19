@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Code.Common.Logger;
+using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Common
 {

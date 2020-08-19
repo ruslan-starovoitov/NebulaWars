@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Code.Common.Logger;
 using Code.Scenes.BattleScene.Udp.MessageProcessing;
 using Entitas;
 using Libraries.NetworkLibrary.Udp.ServerToPlayer;
+using Plugins.submodules.SharedCode.Logger;
 
-namespace Code.Scenes.BattleScene.Scripts
+namespace Code.Scenes.BattleScene.ECS.NewSystems
 {
     public class MaxHealthUpdaterSystem : IExecuteSystem, IMaxHealthPointsMessagePackStorage
     {

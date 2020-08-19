@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Globalization;
-using Code.Common.Logger;
 using Code.Scenes.LobbyScene.Scripts.Shop.PurchaseConfirmation.UiWindow;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.UI;
 using ZeroFormatter;

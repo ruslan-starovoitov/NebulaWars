@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Code.Common;
-using Code.Common.Logger;
 using Code.Common.Storages;
+using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.LobbyScene.Scripts.WarshipsUi
 {

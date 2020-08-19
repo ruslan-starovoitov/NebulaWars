@@ -1,5 +1,4 @@
-﻿using Code.Common.Logger;
-using Code.Scenes.BattleScene.Udp;
+﻿using Code.Scenes.BattleScene.Udp;
 using Code.Scenes.BattleScene.Udp.Connection;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using System.Net;
@@ -8,6 +7,7 @@ using Code.Common.Storages;
 using Code.Scenes.BattleScene.ECS;
 using Code.Scenes.BattleScene.Udp.MessageProcessing;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
 namespace Code.Scenes.BattleScene.Scripts

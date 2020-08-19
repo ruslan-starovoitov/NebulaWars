@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Code.Common.Logger;
 using Code.Scenes.LobbyScene.Scripts.Purchasing;
 using Code.Scenes.LobbyScene.Scripts.Shop.Spawners;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using ZeroFormatter;
-using Logger = Code.Common.Logger.Logger;
+using Logger = Plugins.submodules.SharedCode.Logger.Logger;
 
 namespace Code.Scenes.LobbyScene.Scripts.Shop
 {

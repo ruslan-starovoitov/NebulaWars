@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Code.Common;
-using Code.Common.Logger;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;

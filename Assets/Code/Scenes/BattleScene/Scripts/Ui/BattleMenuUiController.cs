@@ -1,9 +1,9 @@
-﻿using Code.Common;
+﻿using System.Collections;
+using Code.Common;
 using Code.Scenes.BattleScene.Udp.Experimental;
-using System.Collections;
 using UnityEngine;
 
-namespace Code.Scenes.BattleScene.Scripts
+namespace Code.Scenes.BattleScene.Scripts.Ui
 {
     [RequireComponent(typeof(LobbyLoaderController))]
     [RequireComponent(typeof(BattleUiController))]

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Code.Common.Logger;
 using Code.Scenes.LobbyScene.ECS;
 using Entitas;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;

@@ -1,6 +1,6 @@
 using System;
-using Code.Common.Logger;
 using Entitas;
+using Plugins.submodules.SharedCode.Logger;
 using Object = UnityEngine.Object;
 
 namespace Code.Scenes.LobbyScene.ECS.AccountData.MovingAwards.MovingAwardsText

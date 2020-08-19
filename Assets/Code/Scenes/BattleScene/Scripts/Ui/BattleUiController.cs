@@ -1,11 +1,11 @@
-﻿using Code.Common.Logger;
-using Code.Scenes.BattleScene.Experimental;
+﻿using Code.Scenes.BattleScene.Experimental;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
 
 //TODO большое говно
-namespace Code.Scenes.BattleScene.Scripts
+namespace Code.Scenes.BattleScene.Scripts.Ui
 {
     /// <summary>
     /// Отвечает за переключение режимов ui. При старте подготавливает их для боя.

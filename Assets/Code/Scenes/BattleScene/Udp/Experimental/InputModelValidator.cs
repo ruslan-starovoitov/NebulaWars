@@ -1,6 +1,6 @@
 ﻿using System;
-using Code.Common.Logger;
 using NetworkLibrary.NetworkLibrary.Udp.PlayerToServer.UserInputMessage;
+using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.BattleScene.Udp.Experimental
 {

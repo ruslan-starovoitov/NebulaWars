@@ -1,6 +1,6 @@
-﻿using Code.Common.Logger;
-using Code.Scenes.BattleScene.ECS.Components.Game.TimerComponents;
+﻿using Code.Scenes.BattleScene.ECS.Components.Game.TimerComponents;
 using Code.Scenes.BattleScene.ScriptableObjects;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS.Systems

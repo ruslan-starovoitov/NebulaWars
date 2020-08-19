@@ -1,5 +1,5 @@
 using System;
-using Code.Common.Logger;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;

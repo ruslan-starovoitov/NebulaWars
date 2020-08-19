@@ -1,10 +1,10 @@
 using System;
 using Code.Common;
-using Code.Common.Logger;
 using Code.Scenes.LobbyScene.Scripts.Purchasing;
 using Code.Scenes.LobbyScene.Scripts.Shop.PurchaseConfirmation.UiWindow;
 using JetBrains.Annotations;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
 namespace Code.Scenes.LobbyScene.Scripts.Shop

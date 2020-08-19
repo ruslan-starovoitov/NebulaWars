@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Threading.Tasks;
 using Code.Common;
-using Code.Common.Logger;
 using Code.Common.Storages;
 using Code.Scenes.LobbyScene.Scripts.UiStorages;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

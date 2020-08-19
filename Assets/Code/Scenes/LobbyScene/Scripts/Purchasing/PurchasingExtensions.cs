@@ -1,6 +1,6 @@
 ﻿using Code.Common;
-using Code.Common.Logger;
 using System;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine.Purchasing;
 
 namespace Code.Scenes.LobbyScene.Scripts

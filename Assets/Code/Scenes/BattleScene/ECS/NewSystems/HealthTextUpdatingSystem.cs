@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Code.Common.Logger;
 using Entitas;
+using Plugins.submodules.SharedCode.Logger;
 
-namespace Code.Scenes.BattleScene.Scripts
+namespace Code.Scenes.BattleScene.ECS.NewSystems
 {
     public class HealthTextUpdatingSystem : ReactiveSystem<GameEntity>
     {

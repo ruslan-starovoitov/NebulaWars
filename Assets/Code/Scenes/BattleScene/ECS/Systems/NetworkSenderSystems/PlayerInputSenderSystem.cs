@@ -1,8 +1,8 @@
-﻿using Code.Common.Logger;
-using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
+﻿using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using Entitas;
 using NetworkLibrary.NetworkLibrary.Udp.PlayerToServer.UserInputMessage;
+using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems
 {

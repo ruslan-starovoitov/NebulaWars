@@ -1,8 +1,8 @@
-using Code.Common.Logger;
 using Entitas;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
-namespace Code.Scenes.BattleScene.Scripts
+namespace Code.Scenes.BattleScene.ECS.NewSystems
 {
     /// <summary>
     /// Задаёт всем обьектам позициб и поворот по данным из памяти

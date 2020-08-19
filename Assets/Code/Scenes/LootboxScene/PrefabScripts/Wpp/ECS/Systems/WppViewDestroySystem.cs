@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
 using Code.Common;
-using Code.Common.Logger;
 using Entitas;
 using Entitas.Unity;
+using Plugins.submodules.SharedCode.Logger;
 using Object = UnityEngine.Object;
 
 namespace Code.Scenes.LootboxScene.PrefabScripts.Wpp.ECS.Systems

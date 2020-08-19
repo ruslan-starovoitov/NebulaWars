@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
-using Code.Common.Logger;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.UI;
 using ZeroFormatter;

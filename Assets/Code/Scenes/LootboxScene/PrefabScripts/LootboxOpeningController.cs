@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using Code.Common;
-using Code.Common.Logger;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
 namespace Code.Scenes.LootboxScene.PrefabScripts

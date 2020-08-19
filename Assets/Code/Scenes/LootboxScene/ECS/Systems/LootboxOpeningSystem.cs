@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Code.Common.Experimental.SystemsOrderChecker;
-using Code.Common.Logger;
 using Code.Scenes.LootboxScene.Scripts;
 using Entitas;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
 namespace Code.Scenes.LootboxScene.ECS.Systems

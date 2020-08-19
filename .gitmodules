@@ -1,0 +1,3 @@
+[submodule "Assets/Plugins/submodules/NebulaWarsSharedCode"]
+	path = Assets/Plugins/submodules/NebulaWarsSharedCode
+	url = https://github.com/shhar/NebulaWarsSharedCode

@@ -1,7 +1,7 @@
 using Code.Common;
-using Code.Common.Logger;
 using Entitas;
 using System.Collections.Generic;
+using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.LobbyScene.ECS.WarshipsUi.WarshipOverview.Skins
 {

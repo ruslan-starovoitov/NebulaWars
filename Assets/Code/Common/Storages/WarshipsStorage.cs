@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Concurrent;
-using Code.Common.Logger;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Common.Storages
 {

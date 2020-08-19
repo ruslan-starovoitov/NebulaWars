@@ -1,7 +1,7 @@
 using System;
-using Code.Common.Logger;
 using Code.Scenes.LobbyScene.ECS.Extensions;
 using Entitas;
+using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.LootboxScene.PrefabScripts.Wpp.ECS.Systems
 {

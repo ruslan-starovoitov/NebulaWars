@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Code.Common.Logger;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.UI;
 

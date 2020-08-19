@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Code.Common.Logger;
 using Code.Scenes.LobbyScene.Scripts.UiStorages;
 using Entitas;
+using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.LobbyScene.ECS.LobbySceneUi
 {

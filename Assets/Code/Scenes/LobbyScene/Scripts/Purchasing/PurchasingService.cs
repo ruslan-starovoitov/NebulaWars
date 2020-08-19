@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Code.Common;
-using Code.Common.Logger;
 using Code.Common.Storages;
 using Code.Scenes.LobbyScene.Scripts.Shop.PurchaseConfirmation.UiWindow;
 using NetworkLibrary.Http.Utils;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Extension;

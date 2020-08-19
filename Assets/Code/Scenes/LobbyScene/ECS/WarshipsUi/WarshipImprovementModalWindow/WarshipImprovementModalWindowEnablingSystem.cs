@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Code.Common;
-using Code.Common.Logger;
 using Code.Scenes.LobbyScene.ECS.CommonLayoutSwitcher;
 using Code.Scenes.LobbyScene.Scripts;
 using Code.Scenes.LobbyScene.Scripts.WarshipsUi;
 using Entitas;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.UI;
 

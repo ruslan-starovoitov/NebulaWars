@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Code.Common;
-using Code.Common.Logger;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.UI;
 

@@ -1,4 +1,4 @@
-﻿using Code.Common.Logger;
+﻿using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Common.Storages
 {

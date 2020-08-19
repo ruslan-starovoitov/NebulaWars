@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Code.Common;
-using Code.Common.Logger;
 using Code.Common.Storages;
 using JetBrains.Annotations;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using ZeroFormatter;
 
 namespace Code.Scenes.LobbyScene.Scripts.Listeners

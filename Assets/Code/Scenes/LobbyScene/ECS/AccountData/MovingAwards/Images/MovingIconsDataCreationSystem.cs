@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Code.Common.Logger;
 using Code.Scenes.LobbyScene.ECS.AccountData.MovingAwards.Images.Experimental;
 using Code.Scenes.LobbyScene.Scripts.UiStorages;
 using Entitas;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using Random = System.Random;
 

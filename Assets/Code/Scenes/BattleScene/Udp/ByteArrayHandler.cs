@@ -1,5 +1,4 @@
 ﻿using System;
-using Code.Common.Logger;
 using Code.Common.NetworkStatistics;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
 using Code.Scenes.BattleScene.Scripts;
@@ -8,6 +7,7 @@ using Code.Scenes.BattleScene.Udp.Experimental;
 using Code.Scenes.BattleScene.Udp.MessageProcessing;
 using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
 using NetworkLibrary.NetworkLibrary.Udp;
+using Plugins.submodules.SharedCode.Logger;
 using ZeroFormatter;
 
 namespace Code.Scenes.BattleScene.Udp

@@ -4,10 +4,10 @@ using NetworkLibrary.NetworkLibrary.Udp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Code.Common.Logger;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
 using Code.Scenes.BattleScene.Scripts;
 using Code.Scenes.BattleScene.Udp.Connection;
+using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.BattleScene.Udp.MessageProcessing
 {

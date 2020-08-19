@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Threading;
-using Code.Common.Logger;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using Entitas;
-using Unity.CodeEditor;
-using UnityEngine;
+using Plugins.submodules.SharedCode.Logger;
 
-namespace Code.Scenes.BattleScene.Scripts
+namespace Code.Scenes.BattleScene.ECS.NewSystems
 {
     /// <summary>
     /// Раз в n миллисекунд отправляет сообщение на игровой сервер для того, чтобы обновить ip адрес.

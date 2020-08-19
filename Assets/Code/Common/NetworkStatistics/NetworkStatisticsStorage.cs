@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Code.Common.Logger;
 using NetworkLibrary.NetworkLibrary.Udp;
+using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Common.NetworkStatistics
 {

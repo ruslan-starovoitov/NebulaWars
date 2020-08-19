@@ -1,6 +1,6 @@
 using System;
-using Code.Common.Logger;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.LobbyScene.ECS.AccountData.AccountDataChangingHandlers
 {

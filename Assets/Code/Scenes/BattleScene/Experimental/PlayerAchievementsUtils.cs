@@ -1,6 +1,6 @@
 ﻿using Code.Common;
-using Code.Common.Logger;
 using Libraries.NetworkLibrary.Experimental;
+using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.BattleScene.Experimental
 {

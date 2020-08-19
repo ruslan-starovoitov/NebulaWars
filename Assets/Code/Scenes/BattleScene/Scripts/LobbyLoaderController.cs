@@ -1,6 +1,6 @@
 ﻿using Code.Common;
-using Code.Common.Logger;
 using Code.Scenes.BattleScene.ECS;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

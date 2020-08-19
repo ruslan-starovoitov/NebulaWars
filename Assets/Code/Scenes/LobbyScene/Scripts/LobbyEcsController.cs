@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Code.Common;
-using Code.Common.Logger;
 using Code.Common.Storages;
 using Code.Scenes.BattleScene.ECS.Systems.TearDownSystems;
 using Code.Scenes.BattleScene.ECS.Systems.ViewSystems;
@@ -35,6 +34,7 @@ using Code.Scenes.LobbyScene.Scripts.WarshipsUi;
 using Code.Scenes.LobbyScene.Utils;
 using Entitas;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
 namespace Code.Scenes.LobbyScene.Scripts

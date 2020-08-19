@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Code.Common;
-using Code.Common.Logger;
 using Code.Scenes.LobbyScene.Scripts.Shop.PurchaseConfirmation.UiWindow;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
 namespace Code.Scenes.LobbyScene.Scripts.Shop.PurchaseConfirmation

@@ -3,13 +3,13 @@ using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Code.Common;
-using Code.Common.Logger;
 using Code.Common.NetworkStatistics;
 using Code.Common.Storages;
 using Code.Scenes.BattleScene.Experimental;
 using Code.Scenes.BattleScene.Scripts;
 using Code.Scenes.LobbyScene.Utils;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
 namespace Code.Scenes.LobbyScene.Scripts.MatchLoading

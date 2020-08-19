@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using Code.Common.Logger;
-using Entitas;
+﻿using Entitas;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
-namespace Code.Scenes.BattleScene.Scripts
+namespace Code.Scenes.BattleScene.ECS.NewSystems
 {
     /// <summary>
     /// Правильно поворачивает health bar после спавна

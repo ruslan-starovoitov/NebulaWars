@@ -1,5 +1,4 @@
 using Code.Common;
-using Code.Common.Logger;
 using Code.Scenes.LootboxScene.ECS.Systems;
 using Entitas;
 using NetworkLibrary.NetworkLibrary.Http;
@@ -7,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Code.Common.Experimental.SystemsOrderChecker;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
 namespace Code.Scenes.LootboxScene.Scripts

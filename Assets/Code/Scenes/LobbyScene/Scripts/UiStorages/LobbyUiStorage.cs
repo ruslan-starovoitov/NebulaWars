@@ -1,5 +1,5 @@
 ﻿using Code.Common;
-using Code.Common.Logger;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;

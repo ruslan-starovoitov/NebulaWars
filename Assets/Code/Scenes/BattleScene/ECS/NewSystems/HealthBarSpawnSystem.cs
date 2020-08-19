@@ -1,12 +1,12 @@
-﻿using System;
-using Code.Common.Logger;
+﻿using Code.Scenes.BattleScene.Scripts;
 using Entitas;
+using Plugins.submodules.SharedCode.Logger;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace Code.Scenes.BattleScene.Scripts
+namespace Code.Scenes.BattleScene.ECS.NewSystems
 {
     /// <summary>
     /// Добавляет полоску жизни сущностям у которых есть hp и объект

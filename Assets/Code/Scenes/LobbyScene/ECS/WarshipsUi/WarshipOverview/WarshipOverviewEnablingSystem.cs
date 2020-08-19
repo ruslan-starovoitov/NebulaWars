@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Code.Common;
-using Code.Common.Logger;
 using Code.Common.Statistics;
 using Code.Scenes.LobbyScene.ECS.CommonLayoutSwitcher;
 using Code.Scenes.LobbyScene.ECS.Warships.Utils;
@@ -12,6 +11,7 @@ using Code.Scenes.LobbyScene.Scripts.Shop;
 using Code.Scenes.LobbyScene.Scripts.WarshipsUi;
 using Entitas;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine.UI;
 
 namespace Code.Scenes.LobbyScene.ECS.WarshipsUi.WarshipOverview

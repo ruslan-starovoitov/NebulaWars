@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using Code.Common.Logger;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

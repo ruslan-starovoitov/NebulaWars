@@ -1,11 +1,11 @@
 using System;
 using System.Linq;
 using System.Security.AccessControl;
-using Code.Common.Logger;
 using Code.Scenes.LobbyScene.Scripts.Shop.PurchaseConfirmation.UiWindow;
 using Code.Scenes.LobbyScene.Scripts.Shop.Spawners.ItemSpawners;
 using DataLayer.Tables;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.UI;
 

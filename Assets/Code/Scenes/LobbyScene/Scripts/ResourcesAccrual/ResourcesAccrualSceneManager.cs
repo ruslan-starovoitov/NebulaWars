@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Code.Common.Logger;
 using Code.Scenes.LobbyScene.Scripts.AccountModel;
 using Code.Scenes.LobbyScene.Scripts.Listeners;
 using Code.Scenes.LobbyScene.Scripts.Shop;
 using Code.Scenes.LobbyScene.Scripts.Shop.PurchaseConfirmation.UiWindow;
 using Code.Scenes.LootboxScene.Scripts;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
