@@ -18,24 +18,15 @@ namespace Code.Scenes.BattleScene.Udp
     public class ByteArrayHandler:IByteArrayHandler
     {
         private readonly EventProbability packetLossEvent;
-        private MessageWrapperHandler messageWrapperHandler;
+        private readonly MessageWrapperHandler messageWrapperHandler;
         private readonly ILog log = LogManager.CreateLogger(typeof(ByteArrayHandler));
 
-        public ByteArrayHandler()
+        public ByteArrayHandler(MessageWrapperHandler messageWrapperHandler)
         {
+            this.messageWrapperHandler = messageWrapperHandler;
             packetLossEvent = new EventProbability(30);
         }
         
-        public void Initialize(MessageWrapperHandler messageWrapperHandlerArg)
-        {
-            if (messageWrapperHandler != null)
-            {
-                throw new Exception("Повторная инициализация");
-            }
-
-            messageWrapperHandler = messageWrapperHandlerArg;
-        }
-
         public void HandleBytes(byte[] datagram)
         {
             //Для отладки на компьютере специально пропускаю пакеты

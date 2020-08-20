@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Code.Common;
+using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
@@ -12,23 +13,24 @@ namespace Code.Scenes.BattleScene.Udp.Connection
     public class UdpClientWrapper:IDisposable
     {
         private readonly UdpClient udpClient;
-        private readonly IByteArrayHandler byteArrayHandler;
         private CancellationTokenSource cancellationTokenSource;
         private readonly ILog log = LogManager.CreateLogger(typeof(UdpClientWrapper));
 
-        public UdpClientWrapper(UdpClient udpClient, IByteArrayHandler byteArrayHandler)
+        public UdpClientWrapper(UdpClient udpClient)
         {
             this.udpClient = udpClient;
-            this.byteArrayHandler = byteArrayHandler;
         }
         
-        public void StartReceiveThread()
+        public void StartReceiveThread(IByteArrayHandler byteArrayHandler)
         {
             cancellationTokenSource = new CancellationTokenSource();
-            ThreadPool.QueueUserWorkItem(Listen);
+            ThreadPool.QueueUserWorkItem(async o =>
+            {
+                await Listen(byteArrayHandler);
+            });
         }
         
-        private async void Listen(object state)
+        private async Task Listen(IByteArrayHandler byteArrayHandler)
         {
             while (!cancellationTokenSource.IsCancellationRequested)
             {

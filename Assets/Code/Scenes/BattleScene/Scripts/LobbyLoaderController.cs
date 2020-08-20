@@ -15,7 +15,7 @@ namespace Code.Scenes.BattleScene.Scripts
 
         public void LoadLobbyScene()
         {
-            Destroy(FindObjectOfType<ClientMatchSimulation>());
+            Destroy(FindObjectOfType<ClientMatchSimulationManager>());
             SceneManager.LoadScene("LobbyScene", LoadSceneMode.Single);
         }
     }

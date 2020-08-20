@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Code.BattleScene.ECS.Systems;
-using Code.Common.Storages;
-using Code.Prediction;
+﻿using Code.BattleScene.ECS.Systems;
 using Code.Scenes.BattleScene.ECS.NewSystems;
 using Code.Scenes.BattleScene.ECS.Systems.EnvironmentSystems;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems;
@@ -14,41 +11,25 @@ using Code.Scenes.BattleScene.Udp.MessageProcessing;
 using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
 using NetworkLibrary.NetworkLibrary.Http;
 using Plugins.submodules.SharedCode.Logger;
-using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.Health;
-using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
 using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS
 {
-    /// <summary>
-    /// Отвечает за управление ecs системами.
-    /// </summary>
-    [RequireComponent(typeof(BattleUiController))]
-    public class ClientMatchSimulation:MonoBehaviour, ITransformStorage, IPlayersStorage, 
-        IHealthPointsStorage, IMaxHealthPointsMessagePackStorage
+    public class ClientMatchSimulation
     {
         private Contexts contexts;
         private Entitas.Systems systems;
-        private UdpController udpControllerSingleton;
-        private BattleUiController battleUiController;
-        
         private UpdatePlayersSystem updatePlayersSystem;
         private HealthUpdaterSystem healthUpdaterSystem;
         private UpdateTransformSystem updateTransformSystem;
         private MaxHealthUpdaterSystem maxHealthUpdaterSystem;
-        
+        private readonly BattleUiController battleUiController;
         private readonly ILog log = LogManager.CreateLogger(typeof(ClientMatchSimulation));
 
-        private void Awake()
+        public ClientMatchSimulation(BattleUiController battleUiController, UdpSendUtils udpSendUtils,
+            BattleRoyaleClientMatchModel matchModel)
         {
-            udpControllerSingleton = GetComponent<UdpController>();
-            battleUiController = GetComponent<BattleUiController>();
-        }
-
-        private void Start()
-        {
-            UdpSendUtils udpSendUtils = udpControllerSingleton.GetUdpSendUtils();
-            BattleRoyaleClientMatchModel matchModel = MatchModelStorage.Instance.GetMatchModel();
+            this.battleUiController = battleUiController;
             if (matchModel == null)
             {
                 log.Error("Симуляция матча не запущена ");
@@ -58,8 +39,8 @@ namespace Code.Scenes.BattleScene.ECS
             systems.ActivateReactiveSystems();
             systems.Initialize();
         }
-        
-        private void Update()
+
+        public void Tick()
         {
             if (systems != null)
             {
@@ -118,7 +99,7 @@ namespace Code.Scenes.BattleScene.ECS
             return systems;
         }
         
-        private void StopSystems()
+        public void StopSystems()
         {
             if (systems != null)
             {
@@ -128,38 +109,24 @@ namespace Code.Scenes.BattleScene.ECS
             }
         }
 
-        private void OnDestroy()
+        public ITransformStorage GetITransformStorage()
         {
-            StopSystems();
-        }
-
-        /// <summary>
-        /// Нужно для того, чтобы камера не перемещалась к последней позиции корабля а замерла на 0 0.
-        /// </summary>
-        public void SelfDestruct()
+            return updateTransformSystem;
+        } 
+        
+        public IPlayersStorage GetIPlayersStorage()
         {
-            log.Info("Уничтожение ecs контроллера.");
-            Destroy(this);
+            return updatePlayersSystem;
         }
         
-        public void SetNewPlayers(Dictionary<int, ushort> newPlayers)
+        public IHealthPointsStorage GetIHealthPointsStorage()
         {
-            updatePlayersSystem.SetNewPlayers(newPlayers);
+            return healthUpdaterSystem;
         }
-
-        public void SetNewHealthPoints(HealthPointsMessagePack message)
+        
+        public IMaxHealthPointsMessagePackStorage GetIMaxHealthPointsMessagePackStorage()
         {
-            healthUpdaterSystem.SetNewHealthPoints(message);
-        }
-
-        public void SetNewMaxHealthPoints(MaxHealthPointsMessagePack message)
-        {
-            maxHealthUpdaterSystem.SetNewMaxHealthPoints(message);
-        }
-
-        public void SetNewTransforms(in PositionsMessage message)
-        {
-            updateTransformSystem.SetNewTransforms(message);
+            return maxHealthUpdaterSystem;
         }
     }
 }

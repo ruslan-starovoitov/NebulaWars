@@ -74,7 +74,7 @@ namespace Code.Scenes.BattleScene.Scripts
             }
 
             isAnimationStarted = true;
-            clientMatchSimulation.SelfDestruct();
+            // clientMatchSimulation.SelfDestruct();
             
             StartCoroutine(ShowPlayerAchievementsCoroutine());
         }

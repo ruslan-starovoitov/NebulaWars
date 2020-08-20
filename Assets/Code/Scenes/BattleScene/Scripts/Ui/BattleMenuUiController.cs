@@ -9,7 +9,7 @@ namespace Code.Scenes.BattleScene.Scripts.Ui
     [RequireComponent(typeof(BattleUiController))]
     public class BattleMenuUiController : MonoBehaviour
     {
-        private UdpSendUtils udpSendUtils;
+        // private UdpSendUtils udpSendUtils;
         private UiSoundsManager uiSoundsManager;
         private JoysticksManager joysticksManager;
         // private BattleUiController battleUiController;
@@ -28,7 +28,7 @@ namespace Code.Scenes.BattleScene.Scripts.Ui
 
         private void Start()
         {
-            udpSendUtils = GetComponent<UdpController>().GetUdpSendUtils();
+            // udpSendUtils = GetComponent<UdpManager>().GetUdpSendUtils();
             StartCoroutine(LateStart());
         }
 
@@ -42,7 +42,7 @@ namespace Code.Scenes.BattleScene.Scripts.Ui
 
         public void Button_Exit_Click()
         {
-            new StubBattleExitHelper().StubNotifyGameServerAsync(udpSendUtils).ConfigureAwait(false);
+            // new StubBattleExitHelper().StubNotifyGameServerAsync(udpSendUtils).ConfigureAwait(false);
             uiSoundsManager.PlayStop();
             lobbyLoaderController.LoadLobbyScene();
         }
