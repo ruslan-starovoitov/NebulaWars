@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
+﻿using System;
+using Code.Prediction;
 using Entitas;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
@@ -8,113 +7,65 @@ using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.PositionMe
 namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 {
     /// <summary>
-    /// Принимает все состояния мира. Обновляет все transform-ы и создаёт объекты
+    /// Отображает позиции всех обьектов с интерполяцией.
+    /// todo игрока и его пули обновлять не нужно
     /// </summary>
-    public class UpdateTransformSystem : IExecuteSystem, ITransformStorage, ITickNumberStorage
+    public class UpdateTransformSystem : IExecuteSystem
     {
-        private bool needExecute;
-        private int currentTickNumber;
         private readonly GameContext gameContext;
-        private readonly object lockObj = new object();
-        private readonly IGroup<GameEntity> gameEntitiesGroup;
-        private readonly List<PositionsMessage> history = new List<PositionsMessage>();
+        private readonly GameStateBuffer gameStateBuffer;
         private readonly ILog log = LogManager.CreateLogger(typeof(UpdateTransformSystem));
-        public UpdateTransformSystem(Contexts contexts)
+
+        public UpdateTransformSystem(Contexts contexts, GameStateBuffer gameStateBuffer)
         {
             gameContext = contexts.game;
-            gameEntitiesGroup = gameContext.GetGroup(GameMatcher.Transform);
+            this.gameStateBuffer = gameStateBuffer;
         }
 
         public void Execute()
         {
-            if (!needExecute)
+            if (!gameStateBuffer.IsReady(out int bufferLength))
             {
-                return;
+                string mes = $"Тик не должен вызыватсья, если gameStateBuffer не готов. " +
+                             $"{nameof(bufferLength)} = {bufferLength}";
+                throw new Exception(mes);
             }
             
-            Dictionary<ushort, ViewTransform> newViewTransforms;
-            lock (lockObj)
+            GameState gameState = gameStateBuffer.GetActualGameState();
+            foreach (var pair in gameState.transforms)
             {
-                newViewTransforms = history.Last().entitiesInfo;
-                currentTickNumber = history.Last().TickNumber;
-                needExecute = false;
-            }
-
-
-            var gameEntities = gameEntitiesGroup.GetEntities();
-            if (gameEntities == null)
-            {
-                log.Debug("gameEntities is null");
-                return;
-            }
-            
-            if (gameEntities.Length ==  0)
-            {
-                log.Debug("gameEntities is empty");
-            }
-
-
-            //Перебор существующих сущностей
-            foreach (var gameEntity in gameEntitiesGroup.GetEntities())
-            {
-                ushort currentId = gameEntity.id.value;
-                // log.Debug("Существующая сущность currentId "+currentId);
-                bool entityRemained = newViewTransforms.ContainsKey(currentId);
-                if (entityRemained)
+                ushort entityId = pair.Key;
+                ViewTransform viewTransform = pair.Value;
+                GameEntity gameEntity = gameContext.GetEntityWithId(entityId);
+                if (gameEntity == null)
                 {
-                    //Объект остался
-                    UpdateTransform(gameEntity, newViewTransforms[currentId]);
-                    //Пометка того, что объект обработан
-                    newViewTransforms.Remove(currentId);
+                    AddNewObject(entityId, viewTransform);
                 }
-            }
+                else
+                {
+                    UpdateTransform(gameEntity, viewTransform);
+                }
 
-            //Добавление новых объектов
-            var test = newViewTransforms.OrderBy(pair => pair.Key);
-
-            
-            // log.Debug("test.Count() "+test.Count());
-            
-                
-            foreach (var newEntity in test)
-            {
-                // log.Debug("новая сущность  id "+newEntity.Key);
-                AddNewObject(newEntity.Key, newEntity.Value);
             }
-            
         }
 
-        private void AddNewObject(ushort id, ViewTransform newTransform)
+        private void AddNewObject(ushort id, ViewTransform viewTransform)
         {
             var newObject = gameContext.CreateEntity();
             newObject.AddId(id);
-            newObject.AddViewType(newTransform.typeId);
-            newObject.AddTransform(newTransform.GetPosition(), newTransform.Angle);
+            newObject.AddViewType(viewTransform.viewTypeId);
+            newObject.AddTransform(viewTransform.GetPosition(), viewTransform.angle);
         }
 
-        private void UpdateTransform(GameEntity entity, ViewTransform newTransform)
+        private void UpdateTransform(GameEntity entity, ViewTransform viewTransform)
         {
-            var vector = newTransform.GetPosition();
-            entity.ReplaceTransform(vector, newTransform.Angle);
+            var vector = viewTransform.GetPosition();
+            entity.ReplaceTransform(vector, viewTransform.angle);
             ViewTypeId oldViewType = entity.viewType.id;
-            if (oldViewType != newTransform.typeId)
+            if (oldViewType != viewTransform.viewTypeId)
             {
-                entity.ReplaceViewType(newTransform.typeId);
+                entity.ReplaceViewType(viewTransform.viewTypeId);
             }
-        }
-
-        public void SetNewTransforms(in PositionsMessage message)
-        {
-            lock (lockObj)
-            {
-                history.Add(message);
-                needExecute = true;
-            }
-        }
-
-        public int GetCurrentTickNumber()
-        {
-            return currentTickNumber;
         }
     }
 }

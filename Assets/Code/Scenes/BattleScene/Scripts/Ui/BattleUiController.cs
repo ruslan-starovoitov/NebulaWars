@@ -52,7 +52,7 @@ namespace Code.Scenes.BattleScene.Scripts.Ui
             // lobbyLoaderController = GetComponent<LobbyLoaderController>();
             // zoneGroup.SetActive(true);
             overlayCanvas.SetActive(true);
-            gameViews.SetActive(true);
+            // gameViews.SetActive(true);
             if (QualitySettings.GetQualityLevel() < 2)
             {
                 UseSingleBackground();

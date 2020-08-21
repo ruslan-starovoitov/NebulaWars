@@ -1,4 +1,5 @@
 ﻿using Code.BattleScene.ECS.Systems;
+using Code.Prediction;
 using Code.Scenes.BattleScene.ECS.NewSystems;
 using Code.Scenes.BattleScene.ECS.Systems.EnvironmentSystems;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems;
@@ -19,12 +20,14 @@ namespace Code.Scenes.BattleScene.ECS
     {
         private Contexts contexts;
         private Entitas.Systems systems;
+        private GameStateBuffer gameStateBuffer;
         private UpdatePlayersSystem updatePlayersSystem;
         private HealthUpdaterSystem healthUpdaterSystem;
         private UpdateTransformSystem updateTransformSystem;
         private MaxHealthUpdaterSystem maxHealthUpdaterSystem;
         private readonly BattleUiController battleUiController;
         private readonly ILog log = LogManager.CreateLogger(typeof(ClientMatchSimulation));
+        private PingSystem pingSystem;
 
         public ClientMatchSimulation(BattleUiController battleUiController, UdpSendUtils udpSendUtils,
             BattleRoyaleClientMatchModel matchModel)
@@ -42,18 +45,29 @@ namespace Code.Scenes.BattleScene.ECS
 
         public void Tick()
         {
-            if (systems != null)
+            if (systems == null)
             {
-                systems.Execute();
-                systems.Cleanup();  
+                return;
             }
+
+            pingSystem.Execute();
+            
+            if (!gameStateBuffer.IsReady(out int bufferLength))
+            {
+                log.Info($"gameStateBuffer не готов. {nameof(bufferLength)} = {bufferLength}");
+                return;
+            }
+            
+            systems.Execute();
+            systems.Cleanup();
         }
 
         private Entitas.Systems CreateSystems(UdpSendUtils udpSendUtils, BattleRoyaleClientMatchModel matchModel)
         {
+            gameStateBuffer = new GameStateBuffer();
             contexts = Contexts.sharedInstance;
             int aliveCount = matchModel.PlayerModels.Length;
-            updateTransformSystem = new UpdateTransformSystem(contexts);
+            updateTransformSystem = new UpdateTransformSystem(contexts, gameStateBuffer);
             updatePlayersSystem = new UpdatePlayersSystem(contexts, matchModel);
             
             healthUpdaterSystem = new HealthUpdaterSystem(contexts);
@@ -61,10 +75,9 @@ namespace Code.Scenes.BattleScene.ECS
             Vector3 cameraShift = new Vector3(0, 60, -30);
             ushort playerTmpId = matchModel.PlayerTemporaryId;
             int matchId = matchModel.MatchId;
-            
+            pingSystem = new PingSystem(udpSendUtils);
             InputMessagesHistory inputMessagesHistory = new InputMessagesHistory(playerTmpId, matchId);
             systems = new Entitas.Systems()
-                    .Add(new PingSystem(udpSendUtils))
                     .Add(updateTransformSystem)
                     .Add(updatePlayersSystem)
                     .Add(new PrefabSpawnerSystem(contexts))
@@ -89,7 +102,7 @@ namespace Code.Scenes.BattleScene.ECS
                     
                     
                     .Add(new JoysticksInputSystem(contexts, battleUiController.GetMovementJoystick(), battleUiController.GetAttackJoystick()))
-                    .Add(new PlayerInputSenderSystem(contexts, udpSendUtils, inputMessagesHistory, updateTransformSystem))
+                    .Add(new PlayerInputSenderSystem(contexts, udpSendUtils, inputMessagesHistory, gameStateBuffer))
                     // .Add(new AbilityInputClearingSystem(contexts))
                     .Add(new RudpMessagesSenderSystem(udpSendUtils))
                     // .Add(new KillsIndicatorSystem(battleUiController.GetKillMessage(), battleUiController.GetKillIndicator(), battleUiController.GetKillsText(), battleUiController.GetAliveText(), aliveCount))
@@ -101,17 +114,19 @@ namespace Code.Scenes.BattleScene.ECS
         
         public void StopSystems()
         {
-            if (systems != null)
+            if (systems == null)
             {
-                systems.DeactivateReactiveSystems();
-                systems.TearDown();
-                systems.ClearReactiveSystems();    
+                return;
             }
+            
+            systems.DeactivateReactiveSystems();
+            systems.TearDown();
+            systems.ClearReactiveSystems();
         }
 
         public ITransformStorage GetITransformStorage()
         {
-            return updateTransformSystem;
+            return gameStateBuffer;
         } 
         
         public IPlayersStorage GetIPlayersStorage()

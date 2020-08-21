@@ -36,7 +36,6 @@ namespace Code.Scenes.BattleScene.ECS
             var maxHealthPointsMessagePackStorage = clientMatchSimulation.GetIMaxHealthPointsMessagePackStorage();
 
             
-            
             var messageWrapperHandler = new MessageWrapperHandler(udpSendUtils, matchModel.MatchId, transformStorage, playersStorage, healthPointsStorage, maxHealthPointsMessagePackStorage);
             ByteArrayHandler byteArrayHandler = new ByteArrayHandler(messageWrapperHandler);
             

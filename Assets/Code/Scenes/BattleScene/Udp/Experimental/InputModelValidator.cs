@@ -1,4 +1,5 @@
-﻿using Plugins.submodules.SharedCode.Logger;
+﻿using System;
+using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.PlayerToServer;
 
 namespace Code.Scenes.BattleScene.Udp.Experimental
@@ -8,9 +9,9 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
         private readonly ILog log = LogManager.CreateLogger(typeof(InputModelValidator));
         public void Validate(InputMessageModel model)
         {
-            if (model.TickNumber == 0)
+            if (Math.Abs(model.TickTimeMs) < 0.001)
             {
-                log.Error("Пустой номер тика");
+                log.Error("Пустое время тика");
             }
         }
     }

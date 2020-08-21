@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
+using UnityEngine;
 
 namespace Code.Scenes.BattleScene.Inperpolation
 {
@@ -85,7 +86,7 @@ namespace Code.Scenes.BattleScene.Inperpolation
 
 		//Returns a position between 4 Vector3 with Catmull-Rom spline algorithm
 		//http://www.iquilezles.org/www/articles/minispline/minispline.htm
-		private Vector3 GetCatmullRomPosition(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
+		public static Vector3 GetCatmullRomPosition(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
 		{
 			//The coefficients of the cubic polynomial (except the 0.5f * which I added later for performance)
 			Vector3 a = 2f * p1;
@@ -98,5 +99,19 @@ namespace Code.Scenes.BattleScene.Inperpolation
 
 			return pos;
 		}
+		
+		// public static ViewTransform Cunning(float t, ViewTransform p0, ViewTransform p1, ViewTransform p2, ViewTransform p3)
+		// {
+		// 	//The coefficients of the cubic polynomial (except the 0.5f * which I added later for performance)
+		// 	ViewTransform a = 2f * p1;
+		// 	ViewTransform b = p2 - p0;
+		// 	ViewTransform c = 2f * p0 - 5f * p1 + 4f * p2 - p3;
+		// 	ViewTransform d = -p0 + 3f * p1 - 3f * p2 + p3;
+		//
+		// 	//The cubic polynomial: a + b * t + c * t^2 + d * t^3
+		// 	ViewTransform pos = 0.5f * (a + (b * t) + (c * t * t) + (d * t * t * t));
+		//
+		// 	return pos;
+		// }
 	}
 }

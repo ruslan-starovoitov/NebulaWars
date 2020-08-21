@@ -1,4 +1,6 @@
-﻿namespace Code.Prediction
+﻿using System;
+
+namespace Code.Prediction
 {
     public class PredictionManager
     {
@@ -17,13 +19,13 @@
         }
         
         public GameState Reconcile(int currentTick, ServerGameStateData serverStateData, GameState currentState,
-            uint playerId)
+            ushort playerId)
         {
             GameState serverState =  serverStateData.GameState;
-            int serverTick = serverState.Time;
+            float serverTickTime =  serverState.tickMatchTimeSec;
             
             
-            GameState predictedState = localStateHistory.Get(serverTick);
+            GameState predictedState = localStateHistory.Get(serverTickTime);
 
             //if predicted state matches server last state use server predicted state with predicted player
             if (gameStateComparer.IsSame(predictedState, serverState, playerId))
@@ -36,11 +38,12 @@
 
             //if predicted state doesn't match server state, reapply local inputs to server state
             var last = localStateHistory.Put(serverState); // replace wrong predicted state with correct server state
-            for (int i = serverTick; i < currentTick; i++) 
-            {
-                //todo как это делать?
-                last = prediction.Predict(last); // resimulate all wrong states
-            }
+            throw new NotImplementedException();
+            // for (int i = serverTick; i < currentTick; i++) 
+            // {
+            //     //todo как это делать?
+            //     last = prediction.Predict(last); // resimulate all wrong states
+            // }
             return last;
         }
     }

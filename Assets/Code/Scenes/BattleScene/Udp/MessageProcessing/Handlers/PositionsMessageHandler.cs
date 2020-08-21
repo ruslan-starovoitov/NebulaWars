@@ -4,7 +4,7 @@ using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.PositionMe
 
 namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
 {
-    public class PositionsMessageHandler:MessageHandler<PositionsMessage>
+    public class PositionsMessageHandler:MessageHandler<TransformPackMessage>
     {
         private readonly ITransformStorage transformStorage;
 
@@ -13,7 +13,7 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
             this.transformStorage = transformStorage;
         }
         
-        protected override void Handle(in PositionsMessage message, uint messageId, bool needResponse)
+        protected override void Handle(in TransformPackMessage message, uint messageId, bool needResponse)
         {
             transformStorage.SetNewTransforms(message);
         }

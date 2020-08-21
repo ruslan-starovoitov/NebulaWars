@@ -51,7 +51,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems
                 X = x,
                 Y = y,
                 UseAbility = useAbility,
-                TickNumber = tickNumberStorage.GetCurrentTickNumber()
+                TickTimeMs = tickNumberStorage.GetCurrentTickNumber()
             };
             
             inputMessagesHistory.AddInput(inputMessageModel);

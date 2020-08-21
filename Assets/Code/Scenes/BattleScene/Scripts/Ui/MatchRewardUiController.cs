@@ -63,7 +63,7 @@ namespace Code.Scenes.BattleScene.Scripts
             canvasCameraSpace.SetActive(false);
             battleUiController = GetComponent<BattleUiController>();
             lobbyLoaderController = GetComponent<LobbyLoaderController>();
-            clientMatchSimulation = GetComponent<ClientMatchSimulation>();
+            // clientMatchSimulation = FindObjectOfType<ClientMatchSimulationManager>();
         }
 
         public void ShowPlayerAchievements()

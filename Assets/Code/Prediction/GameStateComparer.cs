@@ -7,7 +7,7 @@
         /// </summary>
         /// <param name="avatarId"></param>
         /// <returns></returns>
-        public bool IsSame(GameState s1, GameState s2, uint avatarId)
+        public bool IsSame(GameState s1, GameState s2, ushort avatarId)
         {
             if (s1 == null && s2 != null ||  s1 != null && s2 == null)
                 return false;
@@ -15,16 +15,17 @@
             if (s1 == null && s2 == null)
                 return false;
 
-            var entity1 = s1.WorldState[avatarId];
-            var entity2 = s2.WorldState[avatarId];
+            var entity1 = s1.transforms[avatarId];
+            var entity2 = s2.transforms[avatarId];
 
-            if (entity1 == null && entity2 == null)
-                return false;
+            // if (entity1 == null && entity2 == null)
+            //     return false;
+            //
+            // if (entity1 == null || entity2 == null)
+            //     return false;
 
-            if (entity1 == null || entity2 == null)
-                return false;
-
-            if (s1.Time != s2.Time)
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (s1.tickMatchTimeSec != s2.tickMatchTimeSec)
                 return false;
         
             //todo сравнение позиций

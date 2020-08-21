@@ -4,7 +4,7 @@ namespace Code.Prediction
 {
     public class GameStateHistory
     {
-        public GameState Get(int tick)
+        public GameState Get(float serverTickTime)
         {
             throw new NotImplementedException();
         }
