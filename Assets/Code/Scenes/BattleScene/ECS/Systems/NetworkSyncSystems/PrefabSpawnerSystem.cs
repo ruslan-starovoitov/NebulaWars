@@ -37,7 +37,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                 var viewType = entity.viewType.id;
                 string path = viewTypeStorage.GetPath(viewType);
                 GameObject prefab = Resources.Load<GameObject>(path);
-                var go = Object.Instantiate(prefab, entity.transform.position, Quaternion.identity);
+                GameObject go = Object.Instantiate(prefab, entity.transform.position, Quaternion.identity);
                 entity.AddView(go);
                 go.Link(entity);
             }

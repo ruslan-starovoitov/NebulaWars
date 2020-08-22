@@ -2,6 +2,6 @@
 {
     public interface ITickNumberStorage
     {
-        int GetCurrentTickNumber();
+        int? GetCurrentTickNumber();
     }
 }

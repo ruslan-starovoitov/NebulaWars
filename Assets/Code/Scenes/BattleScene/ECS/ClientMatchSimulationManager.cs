@@ -2,6 +2,7 @@
 using Code.Scenes.BattleScene.Scripts;
 using Code.Scenes.BattleScene.Scripts.Ui;
 using Code.Scenes.BattleScene.Udp;
+using Code.Scenes.BattleScene.Udp.Connection;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using Code.Scenes.BattleScene.Udp.MessageProcessing;
 using NetworkLibrary.NetworkLibrary.Http;
@@ -37,7 +38,14 @@ namespace Code.Scenes.BattleScene.ECS
 
             
             var messageWrapperHandler = new MessageWrapperHandler(udpSendUtils, matchModel.MatchId, transformStorage, playersStorage, healthPointsStorage, maxHealthPointsMessagePackStorage);
-            ByteArrayHandler byteArrayHandler = new ByteArrayHandler(messageWrapperHandler);
+           
+            IByteArrayHandler byteArrayHandler = new ByteArrayHandler(messageWrapperHandler);
+
+            //На клиенте после получения сообщения будет задержка.
+            //Это нужно для эмуляции сетевой задержки мобильных устройств.
+#if UNITY_EDITOR
+            byteArrayHandler = new ClientJitterSimulation(byteArrayHandler, 50,100);
+#endif
             
             udpManager.StartListening(byteArrayHandler);
         }

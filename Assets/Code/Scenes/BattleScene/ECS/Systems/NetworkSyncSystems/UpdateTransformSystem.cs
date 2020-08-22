@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Code.Prediction;
 using Entitas;
 using Plugins.submodules.SharedCode.Logger;
@@ -15,11 +17,13 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
     {
         private readonly GameContext gameContext;
         private readonly GameStateBuffer gameStateBuffer;
+        private readonly IGroup<GameEntity> withTransformGroup;
         private readonly ILog log = LogManager.CreateLogger(typeof(UpdateTransformSystem));
 
         public UpdateTransformSystem(Contexts contexts, GameStateBuffer gameStateBuffer)
         {
             gameContext = contexts.game;
+            withTransformGroup = contexts.game.GetGroup(GameMatcher.Transform);
             this.gameStateBuffer = gameStateBuffer;
         }
 
@@ -31,7 +35,9 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                              $"{nameof(bufferLength)} = {bufferLength}";
                 throw new Exception(mes);
             }
-            
+
+            IEnumerable<ushort> test = withTransformGroup.GetEntities().Select(item => item.id.value);
+            HashSet<ushort> ids = new HashSet<ushort>(test);
             GameState gameState = gameStateBuffer.GetActualGameState();
             foreach (var pair in gameState.transforms)
             {
@@ -45,7 +51,15 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                 else
                 {
                     UpdateTransform(gameEntity, viewTransform);
+                    ids.Remove(gameEntity.id.value);
                 }
+            }
+
+            foreach (ushort id in ids)
+            {
+                // log.Debug($"Удаление объекта id = {id}");
+                GameEntity gameEntity = gameContext.GetEntityWithId(id);
+                gameEntity.isDestroyed = true;
             }
         }
 

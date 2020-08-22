@@ -20,12 +20,20 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems
             this.udpSendUtils = udpSendUtils;
             this.inputMessagesHistory = inputMessagesHistory;
             this.tickNumberStorage = tickNumberStorage;
-            inputGroup = contexts.input.GetGroup(InputMatcher.AnyOf(InputMatcher.Movement,
-                InputMatcher.Attack, InputMatcher.TryingToUseAbility));
+            inputGroup = contexts.input.GetGroup(InputMatcher
+                .AnyOf(InputMatcher.Movement, InputMatcher.Attack, InputMatcher.TryingToUseAbility));
         }
 
         public void Execute()
         {
+            int? tickNumber = tickNumberStorage.GetCurrentTickNumber();
+            if (tickNumber == null)
+            {
+                log.Error("Слишком рано для вызова системы.");
+                return;
+            }
+            
+            
             float x = 0f, y = 0f, angle = float.NaN;
             bool useAbility = false;
 
@@ -51,7 +59,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems
                 X = x,
                 Y = y,
                 UseAbility = useAbility,
-                TickTimeMs = tickNumberStorage.GetCurrentTickNumber()
+                TickTimeMs = tickNumber.Value
             };
             
             inputMessagesHistory.AddInput(inputMessageModel);

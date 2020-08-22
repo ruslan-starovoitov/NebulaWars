@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Code.Scenes.BattleScene.ECS.NewSystems
 {
     /// <summary>
-    /// Правильно поворачивает health bar после спавна
+    /// Правильно поворачивает health bar
     /// </summary>
     public class HealthBarRotatingSystem : IExecuteSystem
     {
@@ -25,7 +25,7 @@ namespace Code.Scenes.BattleScene.ECS.NewSystems
             {
                 if (!entity.hasView)
                 {
-                    log.Error("Если у сущности есть health bar, то обязаьельно должен быть view");
+                    log.Error("Если у сущности есть health bar, то обязательно должен быть view");
                     continue;
                 }
                 entity.view.gameObject.transform.rotation = rotation;

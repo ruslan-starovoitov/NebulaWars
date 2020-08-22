@@ -120,24 +120,19 @@ namespace Code.Prediction
             }
         }
 
-        public int GetCurrentTickNumber()
+        public int? GetCurrentTickNumber()
         {
             lock (lockObj)
             {
                 if (!IsReady(out int bufferLength))
                 {
-                    throw new Exception($"gameStateBuffer не готов. {nameof(bufferLength)} = {bufferLength}");
+                    log.Error($"GetCurrentTickNumber gameStateBuffer не готов. {nameof(bufferLength)} = {bufferLength}");
+                    return null;
                 }
 
                 DateTime clientNow = DateTime.UtcNow;
                 float matchTime = GetMatchTime(clientNow);
-                int? tickNumber = GetTickNumber(matchTime);
-                if (tickNumber == null)
-                {
-                    throw new Exception("Этого вызова не должно произойти. gameStateBuffer не готов.");
-                }
-
-                return tickNumber.Value;
+                return GetTickNumber(matchTime);
             }
         }
 
@@ -210,7 +205,11 @@ namespace Code.Prediction
             int? p3TickNumber = GetClosetTickNumber(p2TickNumber.Value, TimeShift.Later);
             if (p3TickNumber == null)
             {
-                log.Error($"Не хватает кадров для интерполяции. Нужно сместить время старта матча назад. ");
+                string message = $"Не хватает кадров для интерполяции. Нужно сместить время старта матча назад. " +
+                                 $"p2TickNumber = {p2TickNumber.Value} " +
+                                 $"p2TickTime = {buffer[p2TickNumber.Value].tickMatchTimeSec} " +
+                                 $"matchTime = {matchTime}"; 
+                log.Error(message);
                 return MoveToLastSavedInterval(clientNow, out p0, out p1, out p2, out p3);;
             }
             

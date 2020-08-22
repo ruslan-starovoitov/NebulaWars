@@ -51,7 +51,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                 }
                 
                 // чтобы можно было удалять внутри foreach
-                log.Debug("Обработка новых игроков "+entityIds.Count);
+                log.Info("Обработка новых игроков "+entityIds.Count);
                 var currentEntityIds = new Dictionary<int, ushort>(entityIds); 
 
                 foreach (var pair in currentEntityIds)

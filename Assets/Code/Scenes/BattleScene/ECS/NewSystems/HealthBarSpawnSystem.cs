@@ -1,5 +1,6 @@
 ﻿using Code.Scenes.BattleScene.Scripts;
 using Entitas;
+using Entitas.Unity;
 using Plugins.submodules.SharedCode.Logger;
 using TMPro;
 using UnityEngine;
@@ -27,23 +28,22 @@ namespace Code.Scenes.BattleScene.ECS.NewSystems
         
         public void Execute()
         {
-            var test = needHealthBar.GetEntities();
-            for (var index = 0; index < test.Length; index++)
+            var entities = needHealthBar.GetEntities();
+            for (var index = 0; index < entities.Length; index++)
             {
-                var entity = test[index];
+                GameEntity entity = entities[index];
 
                 if (!entity.hasView)
                 {
                     log.Error("Если есть NeedHealthBar, то обязательно должен быть view");
+                    continue;
                 }
-            
-                
+
                 //Создать полоску
                 GameObject prefab = healthBarStorage.GetPrefab();
                 Transform parent = entity.view.gameObject.transform;
-                
-                //вынести это
                 GameObject go = Object.Instantiate(prefab, parent);
+                go.Link(entity);
                 Slider slider = go.transform.Find("Slider").GetComponent<Slider>();
                 if (slider == null)
                 {

@@ -1,6 +1,7 @@
 ﻿using Code.BattleScene.ECS.Systems;
 using Code.Prediction;
 using Code.Scenes.BattleScene.ECS.NewSystems;
+using Code.Scenes.BattleScene.ECS.Systems;
 using Code.Scenes.BattleScene.ECS.Systems.EnvironmentSystems;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
@@ -23,7 +24,6 @@ namespace Code.Scenes.BattleScene.ECS
         private GameStateBuffer gameStateBuffer;
         private UpdatePlayersSystem updatePlayersSystem;
         private HealthUpdaterSystem healthUpdaterSystem;
-        private UpdateTransformSystem updateTransformSystem;
         private MaxHealthUpdaterSystem maxHealthUpdaterSystem;
         private readonly BattleUiController battleUiController;
         private readonly ILog log = LogManager.CreateLogger(typeof(ClientMatchSimulation));
@@ -67,7 +67,6 @@ namespace Code.Scenes.BattleScene.ECS
             gameStateBuffer = new GameStateBuffer();
             contexts = Contexts.sharedInstance;
             int aliveCount = matchModel.PlayerModels.Length;
-            updateTransformSystem = new UpdateTransformSystem(contexts, gameStateBuffer);
             updatePlayersSystem = new UpdatePlayersSystem(contexts, matchModel);
             
             healthUpdaterSystem = new HealthUpdaterSystem(contexts);
@@ -78,7 +77,7 @@ namespace Code.Scenes.BattleScene.ECS
             pingSystem = new PingSystem(udpSendUtils);
             InputMessagesHistory inputMessagesHistory = new InputMessagesHistory(playerTmpId, matchId);
             systems = new Entitas.Systems()
-                    .Add(updateTransformSystem)
+                    .Add(new UpdateTransformSystem(contexts, gameStateBuffer))
                     .Add(updatePlayersSystem)
                     .Add(new PrefabSpawnerSystem(contexts))
                     
@@ -98,7 +97,8 @@ namespace Code.Scenes.BattleScene.ECS
                     .Add(new HealthTextUpdatingSystem(contexts))
                     
                     
-                    
+                    .Add(new HealthBarDestroyHelperSystem(contexts))
+                    .Add(new DestroyViewSystem(contexts))
                     
                     
                     .Add(new JoysticksInputSystem(contexts, battleUiController.GetMovementJoystick(), battleUiController.GetAttackJoystick()))
