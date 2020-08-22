@@ -1,23 +1,31 @@
-﻿using System;
+﻿using System.Collections.Concurrent;
 
 namespace Code.Prediction
 {
     public class GameStateHistory
     {
-        public GameState Get(float serverTickTime)
+        private readonly ConcurrentDictionary<int, GameState> history = new ConcurrentDictionary<int, GameState>();
+        public GameState Get(int serverTickNumber)
         {
-            throw new NotImplementedException();
+            return history[serverTickNumber];
         }
 
         /// <summary>
         /// Заменяет предсказаннео игровое состояние на настоящее с сервера
         /// </summary>
-        /// <param name="tempState"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         public GameState Put(GameState tempState)
         {
-            throw new NotImplementedException();
+            int tickNumber = tempState.tickNumber;
+            if (history.ContainsKey(tickNumber))
+            {
+                history[tickNumber] = tempState;
+            }
+            else
+            {
+                history.TryAdd(tickNumber, tempState);
+            }
+
+            return tempState;
         }
     }
 }

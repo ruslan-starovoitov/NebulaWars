@@ -1,6 +1,4 @@
-﻿using System.Net.Sockets;
-
-namespace Code.Scenes.BattleScene.Udp.Connection
+﻿namespace Code.Scenes.BattleScene.Udp.Connection
 {
     public interface IByteArrayHandler
     {

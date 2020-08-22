@@ -1,7 +1,8 @@
-﻿using System;
-
-namespace Code.Prediction
+﻿namespace Code.Prediction
 {
+    /// <summary>
+    /// При получении нового тика от игрового сервера проверяет, что аватар игрока был правильно предсказан
+    /// </summary>
     public class PredictionManager
     {
         private readonly Prediction prediction;
@@ -18,33 +19,40 @@ namespace Code.Prediction
             this.gameStateComparer = gameStateComparer;
         }
         
-        public GameState Reconcile(int currentTick, ServerGameStateData serverStateData, GameState currentState,
+        public GameState Reconcile(int currentTick, ServerGameStateData serverStateData, GameState currentState, 
             ushort playerId)
         {
-            GameState serverState =  serverStateData.GameState;
-            float serverTickTime =  serverState.tickMatchTimeSec;
-            
-            
-            GameState predictedState = localStateHistory.Get(serverTickTime);
+            GameState serverGameState =  serverStateData.GameState;
+            int serverTickNumber =  serverGameState.tickNumber;
+            GameState predictedState = localStateHistory.Get(serverTickNumber);
 
-            //if predicted state matches server last state use server predicted state with predicted player
-            if (gameStateComparer.IsSame(predictedState, serverState, playerId))
+            //если прогнозируемое состояние совпадает с последним состоянием сервера,
+            //прогнозируемое состояние сервера нужно применить к прогнозируемому игроку
+            if (gameStateComparer.IsSame(predictedState, serverGameState, playerId))
             {
                 GameState tempState = new GameState();
-                tempState.Copy(serverState);
+                tempState.Copy(serverGameState);
                 gameStateCopier.CopyPlayerEntities(currentState, tempState, playerId);
-                return localStateHistory.Put(tempState); // replace predicted state with correct server state
+                // заменить прогнозируемое состояние правильным состоянием сервера
+                return localStateHistory.Put(tempState); 
             }
-
-            //if predicted state doesn't match server state, reapply local inputs to server state
-            var last = localStateHistory.Put(serverState); // replace wrong predicted state with correct server state
-            throw new NotImplementedException();
-            // for (int i = serverTick; i < currentTick; i++) 
-            // {
-            //     //todo как это делать?
-            //     last = prediction.Predict(last); // resimulate all wrong states
-            // }
-            return last;
+            else
+            {
+                //если предсказанное состояние игрока не совпадает с настоящим,
+                //то пересимулировать положение игрока по историии ввода 
+            
+                //заменить предсказанное состояние на настоящее
+                GameState lastGameState = localStateHistory.Put(serverGameState);
+            
+                for (int i = serverTickNumber; i < currentTick; i++) 
+                {
+                    //todo как это делать?
+                    //пересоздать все неправильные состояния
+                    lastGameState = prediction.Predict(lastGameState);
+                }
+            
+                return lastGameState;
+            }
         }
     }
 }

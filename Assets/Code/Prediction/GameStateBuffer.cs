@@ -87,13 +87,14 @@ namespace Code.Prediction
             {
                 if (!IsReady(out int bufferLength))
                 {
-                    throw new Exception($"Этого вызова не должно быть. gameStateBuffer не готов. {nameof(bufferLength)} = {bufferLength}");
+                    string message = $"Этого вызова не должно быть. gameStateBuffer не готов." +
+                                     $" {nameof(bufferLength)} = {bufferLength}";
+                    throw new Exception(message);
                 }
 
                 DateTime clientNow = DateTime.UtcNow;
-                
-
-                float matchTime = GetGameStates(clientNow, out GameState p0, out GameState p1, out GameState p2, out GameState p3);
+                float matchTime = GetGameStates(clientNow, out GameState p0, out GameState p1, out GameState p2, 
+                    out GameState p3);
                 
                 // log.Debug($"matchTime = {matchTime} p1 = {p1.tickMatchTimeSec} p2 = {p2.tickMatchTimeSec} ");
                 
@@ -185,6 +186,7 @@ namespace Code.Prediction
         private float GetGameStates(DateTime clientNow, out GameState p0, out GameState p1, out GameState p2, 
             out GameState p3)
         {
+            //todo если накопилось много тиков, то можно сдвинуть время матча вперёд
             float matchTime = GetMatchTime(clientNow);
             int? p2TickNumber = GetTickNumber(matchTime);
             

@@ -4,6 +4,7 @@ using Code.Scenes.BattleScene.Udp.Experimental;
 using System.Net;
 using System.Net.Sockets;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 

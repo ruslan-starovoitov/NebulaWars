@@ -3,6 +3,7 @@ using Code.Prediction;
 using Entitas;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
+using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 {
@@ -45,13 +46,12 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                 {
                     UpdateTransform(gameEntity, viewTransform);
                 }
-
             }
         }
 
         private void AddNewObject(ushort id, ViewTransform viewTransform)
         {
-            var newObject = gameContext.CreateEntity();
+            GameEntity newObject = gameContext.CreateEntity();
             newObject.AddId(id);
             newObject.AddViewType(viewTransform.viewTypeId);
             newObject.AddTransform(viewTransform.GetPosition(), viewTransform.angle);
@@ -59,11 +59,12 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 
         private void UpdateTransform(GameEntity entity, ViewTransform viewTransform)
         {
-            var vector = viewTransform.GetPosition();
+            Vector3 vector = viewTransform.GetPosition();
             entity.ReplaceTransform(vector, viewTransform.angle);
             ViewTypeId oldViewType = entity.viewType.id;
             if (oldViewType != viewTransform.viewTypeId)
             {
+                log.Debug($"Смена типа сущности. Было {oldViewType.ToString()} стало {viewTransform.viewTypeId}");
                 entity.ReplaceViewType(viewTransform.viewTypeId);
             }
         }

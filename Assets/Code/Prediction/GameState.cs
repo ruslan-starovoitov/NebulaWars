@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
 
 namespace Code.Prediction
@@ -13,12 +12,7 @@ namespace Code.Prediction
         public GameState()
         {
         }
-        
-        public GameState(int tickNumber)
-        {
-            this.tickNumber = tickNumber;
-        }
-        
+
         public GameState(int tickNumber, float tickMatchTimeSec)
         {
             this.tickMatchTimeSec = tickMatchTimeSec;
