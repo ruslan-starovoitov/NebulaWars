@@ -9,21 +9,21 @@ namespace Code.Prediction
 {
     public class PhysicsRollbackManager
     {
-        public void Rollback(GameState gameState, GameContext gameContext)
+        public void Rollback(GameState gameState, ServerGameContext gameContext)
         {
             throw new NotImplementedException();
         }
     }
     public class Predictor
     {
-        private readonly GameContext gameContext;
         private readonly PhysicsScene physicsScene;
+        private readonly ServerGameContext gameContext;
         private readonly InputMessagesHistory inputMessagesHistory;
         private readonly PhysicsRollbackManager physicsRollbackManager;
         private readonly LocalPredictionMoveHelper localPredictionMoveHelper;
 
         public Predictor(InputMessagesHistory inputMessagesHistory, PhysicsRollbackManager physicsRollbackManager,
-            PhysicsScene physicsScene, PhysicsForceManager physicsForceManager, GameContext gameContext)
+            PhysicsScene physicsScene, PhysicsForceManager physicsForceManager, ServerGameContext gameContext)
         {
             this.inputMessagesHistory = inputMessagesHistory;
             this.physicsRollbackManager = physicsRollbackManager;

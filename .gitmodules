@@ -4,3 +4,6 @@
 [submodule "Assets/Resources/Shared3dModels"]
 	path = Assets/Resources/Shared3dModels
 	url = https://github.com/shhar/Shared3dModels
+[submodule "Assets/Plugins/submodules/EntitasCore"]
+	path = Assets/Plugins/submodules/EntitasCore
+	url = https://github.com/shhar/EntitasCore.git

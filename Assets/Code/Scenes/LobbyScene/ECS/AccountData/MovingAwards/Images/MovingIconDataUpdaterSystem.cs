@@ -1,6 +1,7 @@
 using System;
 using Code.Scenes.LobbyScene.ECS.Extensions;
 using Entitas;
+using Plugins.submodules.EntitasCore.Entitas.Components;
 using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.LobbyScene.ECS.AccountData.MovingAwards.Images

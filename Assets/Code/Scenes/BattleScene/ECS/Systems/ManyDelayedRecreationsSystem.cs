@@ -5,7 +5,7 @@
 // {
 //     public class ManyDelayedRecreationsSystem : IExecuteSystem
 //     {
-//         private readonly IGroup<GameEntity> delayedRecreationsGroup;
+//         private readonly IGroup<ServerGameEntity> delayedRecreationsGroup;
 //
 //         public ManyDelayedRecreationsSystem(Contexts contexts)
 //         {

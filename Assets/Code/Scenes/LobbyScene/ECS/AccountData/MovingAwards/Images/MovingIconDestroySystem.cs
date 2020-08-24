@@ -2,6 +2,7 @@ using Code.Common;
 using Entitas;
 using System;
 using System.Linq;
+using Plugins.submodules.EntitasCore.Entitas.Components;
 using Plugins.submodules.SharedCode.Logger;
 using Object = UnityEngine.Object;
 

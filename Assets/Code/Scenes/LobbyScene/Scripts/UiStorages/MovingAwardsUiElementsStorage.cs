@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Code.Scenes.LobbyScene.ECS;
+using Plugins.submodules.EntitasCore.Entitas.Components;
 using UnityEngine;
 using UnityEngine.Assertions;
 

@@ -8,7 +8,7 @@
 //     public sealed class GlobalTransformSystem : IExecuteSystem, ICleanupSystem
 //     {
 //         private readonly GameContext gameContext;
-//         private readonly IGroup<GameEntity> positionedGroup;
+//         private readonly IGroup<ServerGameEntity> positionedGroup;
 //
 //         public GlobalTransformSystem(Contexts contexts)
 //         {
@@ -36,7 +36,7 @@
 //             }
 //         }
 //
-//         private void AddTransform(GameEntity entity)
+//         private void AddTransform(ServerGameEntity entity)
 //         {
 //             var position = (Vector2)entity.position.value;
 //             var angle = entity.hasDirection ? entity.direction.angle : 0f;

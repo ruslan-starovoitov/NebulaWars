@@ -3,7 +3,7 @@ using Entitas.CodeGeneration.Attributes;
 
 namespace Code.Scenes.BattleScene.ECS.Components.Input
 {
-    [Input, Unique]
+    [ServerInput, Unique]
     public class MovementComponent:IComponent
     {
         public float x;

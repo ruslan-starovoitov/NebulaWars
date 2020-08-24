@@ -1,6 +1,7 @@
 using System;
 using Entitas;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.EntitasCore.Entitas.Components;
 
 namespace Code.Scenes.LobbyScene.ECS.AccountData.MovingAwards
 {

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Code.Scenes.LootboxScene.PrefabScripts
 {
-    public class LootboxOpeningController : MonoBehaviour 
+    public class LootboxOpeningController : MonoBehaviour , ILootboxOpeningController
     {
         private bool isOpened;
         private Transform closedBox;

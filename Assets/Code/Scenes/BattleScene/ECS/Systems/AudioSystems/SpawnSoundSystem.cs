@@ -7,7 +7,7 @@
 //
 // namespace Code.Scenes.BattleScene.ECS.Systems.AudioSystems
 // {
-//     public class SpawnSoundSystem : ReactiveSystem<GameEntity>
+//     public class SpawnSoundSystem : ReactiveSystem<ServerGameEntity>
 //     {
 //         private readonly GameContext gameContext;
 //         private readonly SoundManager _soundManager = SoundManager.Instance();
@@ -17,18 +17,18 @@
 //             gameContext = contexts.game;
 //         }
 //
-//         protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
+//         protected override ICollector<ServerGameEntity> GetTrigger(IContext<ServerGameEntity> context)
 //         {
 //             var matcher = GameMatcher.AllOf(GameMatcher.View, GameMatcher.SpawnSound);
 //             return context.CreateCollector(matcher);
 //         }
 //
-//         protected override bool Filter(GameEntity entity)
+//         protected override bool Filter(ServerGameEntity entity)
 //         {
 //             return entity.hasView && entity.hasSpawnSound && entity.hasTransform && !entity.isHidden;
 //         }
 //
-//         protected override void Execute(List<GameEntity> entities)
+//         protected override void Execute(List<ServerGameEntity> entities)
 //         {
 //             var playerEntity = gameContext.GetEntityWithId(PlayerIdStorage.PlayerEntityId);
 //             if(playerEntity == null) return;

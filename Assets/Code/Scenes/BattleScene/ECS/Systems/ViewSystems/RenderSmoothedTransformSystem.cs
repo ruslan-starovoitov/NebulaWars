@@ -8,7 +8,7 @@
 // {
 //     public class RenderSmoothedTransformSystem : IExecuteSystem
 //     {
-//         private readonly IGroup<GameEntity> positionedGroup;
+//         private readonly IGroup<ServerGameEntity> positionedGroup;
 //         private float SmoothTime = ClientTimeManager.TimeDelay;
 //         private readonly ILog log = LogManager.CreateLogger(typeof(RenderSmoothedTransformSystem));
 //
@@ -23,12 +23,12 @@
 //         {
 //             try
 //             {
-//                 foreach (GameEntity gameEntity in positionedGroup)
+//                 foreach (ServerGameEntity ServerGameEntity in positionedGroup)
 //                 {
-//                     var transform = gameEntity.view.gameObject.transform;
+//                     var transform = ServerGameEntity.view.gameObject.transform;
 //                     transform.localPosition =
-//                         (Vector3) Vector2.SmoothDamp(transform.localPosition, gameEntity.position.value,
-//                             ref gameEntity.speed.linear, SmoothTime) -
+//                         (Vector3) Vector2.SmoothDamp(transform.localPosition, ServerGameEntity.position.value,
+//                             ref ServerGameEntity.speed.linear, SmoothTime) -
 //                         Vector3.forward * (0.00001f * gameEntity.id.value);
 //                     var newAngle = Mathf.SmoothDampAngle(transform.localRotation.eulerAngles.z,
 //                         gameEntity.direction.angle, ref gameEntity.speed.angular, SmoothTime);

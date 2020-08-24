@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Entitas;
+using Plugins.submodules.EntitasCore.Entitas.Components;
 using UnityEngine.UI;
 
 namespace Code.Scenes.LobbyScene.ECS.MatchSearch

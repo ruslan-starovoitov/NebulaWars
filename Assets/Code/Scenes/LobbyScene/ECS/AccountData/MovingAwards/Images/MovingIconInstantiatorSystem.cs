@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Entitas;
+using Plugins.submodules.EntitasCore.Entitas.Components;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;

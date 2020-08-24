@@ -6,6 +6,7 @@ using Code.Scenes.LobbyScene.ECS;
 using Code.Scenes.LootboxScene.PrefabScripts.Wpp.ECS.Systems;
 using Entitas;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.EntitasCore.Entitas.Components;
 using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.UI;

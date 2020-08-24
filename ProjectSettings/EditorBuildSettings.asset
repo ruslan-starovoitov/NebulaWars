@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/New3dBattleScene.unity
     guid: 47f1b67e384cf544fad02cdbc1e58dd3
+  - enabled: 1
+    path: Assets/Scenes/EmptyScene.unity
+    guid: b06ae4575e644824389d4cfa4c1a2139
   m_configObjects: {}

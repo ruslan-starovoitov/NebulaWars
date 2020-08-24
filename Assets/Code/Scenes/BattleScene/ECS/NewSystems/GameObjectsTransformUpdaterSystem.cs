@@ -9,7 +9,7 @@
 //     /// </summary>
 //     public class GameObjectsTransformUpdaterSystem : IExecuteSystem
 //     {
-//         private readonly IGroup<GameEntity> viewAndTransformGroup;
+//         private readonly IGroup<ServerGameEntity> viewAndTransformGroup;
 //         private readonly ILog log = LogManager.CreateLogger(typeof(GameObjectsTransformUpdaterSystem));
 //
 //         public GameObjectsTransformUpdaterSystem(Contexts contexts)

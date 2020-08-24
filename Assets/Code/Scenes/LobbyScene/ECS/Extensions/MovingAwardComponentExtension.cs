@@ -1,4 +1,5 @@
 using System;
+using Plugins.submodules.EntitasCore.Entitas.Components;
 using UnityEngine;
 
 namespace Code.Scenes.LobbyScene.ECS.Extensions

@@ -7,15 +7,15 @@
 // {
 //     public class DestroySystem : IExecuteSystem
 //     {
-//         private readonly IGroup<GameEntity> destroyedGroup;
-//         private readonly List<GameEntity> buffer;
+//         private readonly IGroup<ServerGameEntity> destroyedGroup;
+//         private readonly List<ServerGameEntity> buffer;
 //         private const int predictedCapacity = 64;
 //
 //         public DestroySystem(Contexts contexts)
 //         {
 //             var matcher = GameMatcher.AllOf(GameMatcher.Destroyed, GameMatcher.View).NoneOf(GameMatcher.DestroyTimer);
 //             destroyedGroup = contexts.game.GetGroup(matcher);
-//             buffer = new List<GameEntity>(predictedCapacity);
+//             buffer = new List<ServerGameEntity>(predictedCapacity);
 //         }
 //
 //         public void Execute()
@@ -26,7 +26,7 @@
 //                 foreach (Transform childTransform in gameObject.transform)
 //                 {
 //                     var childLink = childTransform.gameObject.GetEntityLink();
-//                     if (childLink != null && childLink.entity is GameEntity childEntity)
+//                     if (childLink != null && childLink.entity is ServerGameEntity childEntity)
 //                     {
 //                         childEntity.RemoveParent();
 //                         childTransform.SetParent(gameObject.transform.parent, true);

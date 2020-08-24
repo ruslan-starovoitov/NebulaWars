@@ -3,6 +3,7 @@ using System.Linq;
 using Code.Scenes.LobbyScene.ECS.Warships.Utils;
 using Entitas;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.EntitasCore.Entitas.Components;
 using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.LobbyScene.ECS.AccountData.AccountDataChangingHandlers

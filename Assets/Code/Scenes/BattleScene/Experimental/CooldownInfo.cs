@@ -1,4 +1,5 @@
-﻿using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.Cooldown;
+﻿using System;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.Cooldown;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,8 +18,9 @@ namespace Code.Scenes.BattleScene.Experimental
 
         public void Load(WeaponInfo info)
         {
-            bulletPreview.sprite = PreviewsManager.GetSprite(info.ViewType);
-            Load(info.Cooldown);
+            throw new NotImplementedException();
+            // bulletPreview.sprite = PreviewsManager.GetSprite(info.ViewType);
+            // Load(info.Cooldown);
         }
 
         public void Load(float maxCooldown)

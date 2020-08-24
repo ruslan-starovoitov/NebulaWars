@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Common;
 using Code.Common.Storages;
-using Code.Scenes.BattleScene.ECS.Systems.TearDownSystems;
-using Code.Scenes.BattleScene.ECS.Systems.ViewSystems;
-using Code.Scenes.LobbyScene.ECS;
+
 using Code.Scenes.LobbyScene.ECS.AccountData.AccountDataChangingHandlers;
 using Code.Scenes.LobbyScene.ECS.AccountData.MovingAwards;
 using Code.Scenes.LobbyScene.ECS.AccountData.MovingAwards.Images;
@@ -152,9 +150,9 @@ namespace Code.Scenes.LobbyScene.Scripts
                     
                     //Отрисовка кораблей
                     .Add(warshipSpawnerSystem)
-                    .Add(new RenderSpriteSystem(contexts))
+                    // .Add(new RenderSpriteSystem(contexts))
                     // .Add(new RenderTransformSystem(contexts))
-                    .Add(new SetAnimatorSystem(contexts))
+                    // .Add(new SetAnimatorSystem(contexts))
                     
                     //Заполненеи списка кораблей
                     .Add(new WarshipListFillerSystem(contexts, warshipsUiStorage, this))

@@ -9,7 +9,7 @@
 //     public class UpdateDestroysSystem : IExecuteSystem
 //     {
 //         private static HashSet<ushort> destroys;
-//         private readonly IGroup<GameEntity> positionedGroup;
+//         private readonly IGroup<ServerGameEntity> positionedGroup;
 //         private static readonly object LockObj = new object();
 //         private const float TimeDelay = ClientTimeManager.TimeDelay;
 //         private readonly ILog log = LogManager.CreateLogger(typeof(UpdateDestroysSystem));
