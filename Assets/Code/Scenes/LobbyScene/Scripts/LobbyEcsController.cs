@@ -153,7 +153,7 @@ namespace Code.Scenes.LobbyScene.Scripts
                     //Отрисовка кораблей
                     .Add(warshipSpawnerSystem)
                     .Add(new RenderSpriteSystem(contexts))
-                    .Add(new RenderTransformSystem(contexts))
+                    // .Add(new RenderTransformSystem(contexts))
                     .Add(new SetAnimatorSystem(contexts))
                     
                     //Заполненеи списка кораблей

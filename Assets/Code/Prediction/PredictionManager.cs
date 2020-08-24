@@ -1,30 +1,26 @@
 ﻿namespace Code.Prediction
 {
-    /// <summary>
-    /// При получении нового тика от игрового сервера проверяет, что аватар игрока был правильно предсказан
-    /// </summary>
     public class PredictionManager
     {
-        private readonly Prediction prediction;
+        private readonly Predictor predictor;
         private readonly GameStateCopier gameStateCopier;
-        private readonly GameStateHistory localStateHistory;
+        private readonly IGameStateHistory gameStateHistory;
         private readonly GameStateComparer gameStateComparer;
 
-        public PredictionManager(Prediction prediction, GameStateCopier gameStateCopier,
-            GameStateHistory localStateHistory, GameStateComparer gameStateComparer)
+        public PredictionManager(Predictor predictor, GameStateCopier gameStateCopier,
+            IGameStateHistory gameStateHistory, GameStateComparer gameStateComparer)
         {
-            this.prediction = prediction;
+            this.predictor = predictor;
             this.gameStateCopier = gameStateCopier;
-            this.localStateHistory = localStateHistory;
+            this.gameStateHistory = gameStateHistory;
             this.gameStateComparer = gameStateComparer;
         }
         
-        public GameState Reconcile(int currentTick, ServerGameStateData serverStateData, GameState currentState, 
+        public GameState Reconcile(int currentTick, GameState serverGameState, GameState currentState, 
             ushort playerId)
         {
-            GameState serverGameState =  serverStateData.GameState;
             int serverTickNumber =  serverGameState.tickNumber;
-            GameState predictedState = localStateHistory.Get(serverTickNumber);
+            GameState predictedState = gameStateHistory.Get(serverTickNumber);
 
             //если прогнозируемое состояние совпадает с последним состоянием сервера,
             //прогнозируемое состояние сервера нужно применить к прогнозируемому игроку
@@ -33,8 +29,8 @@
                 GameState tempState = new GameState();
                 tempState.Copy(serverGameState);
                 gameStateCopier.CopyPlayerEntities(currentState, tempState, playerId);
-                // заменить прогнозируемое состояние правильным состоянием сервера
-                return localStateHistory.Put(tempState); 
+                // заменить неплохо предсказанное состояние точным состоянием из сервера
+                return gameStateHistory.PutCorrectGameState(tempState); 
             }
             else
             {
@@ -42,13 +38,13 @@
                 //то пересимулировать положение игрока по историии ввода 
             
                 //заменить предсказанное состояние на настоящее
-                GameState lastGameState = localStateHistory.Put(serverGameState);
+                GameState lastGameState = gameStateHistory.PutCorrectGameState(serverGameState);
             
                 for (int i = serverTickNumber; i < currentTick; i++) 
                 {
                     //todo как это делать?
                     //пересоздать все неправильные состояния
-                    lastGameState = prediction.Predict(lastGameState);
+                    lastGameState = predictor.Predict(lastGameState);
                 }
             
                 return lastGameState;

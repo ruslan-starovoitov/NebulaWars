@@ -9,7 +9,7 @@ namespace Code.Prediction
             float x = viewTransformCompressed.X;
             float z = viewTransformCompressed.Z;
             float angle = viewTransformCompressed.Angle;
-            ViewTypeId type = viewTransformCompressed.typeId;
+            ViewTypeEnum type = viewTransformCompressed.viewType;
             return new ViewTransform(x, z, angle, type);
         }
     }

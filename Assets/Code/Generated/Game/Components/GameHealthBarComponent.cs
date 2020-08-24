@@ -11,21 +11,23 @@ public partial class GameEntity {
     public Code.Scenes.BattleScene.ECS.Components.HealthBarComponent healthBar { get { return (Code.Scenes.BattleScene.ECS.Components.HealthBarComponent)GetComponent(GameComponentsLookup.HealthBar); } }
     public bool hasHealthBar { get { return HasComponent(GameComponentsLookup.HealthBar); } }
 
-    public void AddHealthBar(UnityEngine.UI.Slider newSlider, TMPro.TextMeshProUGUI newUsername, TMPro.TextMeshProUGUI newHealthPoints) {
+    public void AddHealthBar(UnityEngine.UI.Slider newSlider, TMPro.TextMeshProUGUI newUsername, TMPro.TextMeshProUGUI newHealthPoints, GameEntity newParent) {
         var index = GameComponentsLookup.HealthBar;
         var component = (Code.Scenes.BattleScene.ECS.Components.HealthBarComponent)CreateComponent(index, typeof(Code.Scenes.BattleScene.ECS.Components.HealthBarComponent));
         component.slider = newSlider;
         component.username = newUsername;
         component.healthPoints = newHealthPoints;
+        component.parent = newParent;
         AddComponent(index, component);
     }
 
-    public void ReplaceHealthBar(UnityEngine.UI.Slider newSlider, TMPro.TextMeshProUGUI newUsername, TMPro.TextMeshProUGUI newHealthPoints) {
+    public void ReplaceHealthBar(UnityEngine.UI.Slider newSlider, TMPro.TextMeshProUGUI newUsername, TMPro.TextMeshProUGUI newHealthPoints, GameEntity newParent) {
         var index = GameComponentsLookup.HealthBar;
         var component = (Code.Scenes.BattleScene.ECS.Components.HealthBarComponent)CreateComponent(index, typeof(Code.Scenes.BattleScene.ECS.Components.HealthBarComponent));
         component.slider = newSlider;
         component.username = newUsername;
         component.healthPoints = newHealthPoints;
+        component.parent = newParent;
         ReplaceComponent(index, component);
     }
 

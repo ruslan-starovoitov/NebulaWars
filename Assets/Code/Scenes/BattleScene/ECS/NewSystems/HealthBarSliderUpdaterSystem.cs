@@ -39,8 +39,8 @@ namespace Code.Scenes.BattleScene.ECS.NewSystems
                     continue;
                 }
 
-                healthBarEntity.healthBar.slider.value = entity.health.value / entity.maxHealth.value;
-                healthBarEntity.healthBar.healthPoints.text = ((int)entity.health.value).ToString();
+                healthBarEntity.healthBar.slider.value = 1f* entity.health.value / entity.maxHealth.value;
+                healthBarEntity.healthBar.healthPoints.text = entity.health.value.ToString();
             }
         }
     }

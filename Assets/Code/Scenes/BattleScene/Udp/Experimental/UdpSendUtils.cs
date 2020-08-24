@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Code.Common;
 using Code.Common.Storages;
 using Code.Scenes.BattleScene.Udp.Connection;
@@ -51,6 +52,12 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
                 History = history
             };
             return pack;
+        }
+
+        public List<InputMessageModel> Get(int tickNumber)
+        {
+            Dictionary<int, InputMessageModel> allHistory = dict.Read();
+            return allHistory.Values.Where(model => model.TickNumber == tickNumber).ToList();
         }
     }
     /// <summary>

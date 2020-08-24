@@ -21,20 +21,20 @@ namespace Code.Scenes.BattleScene.ECS.Systems.EnvironmentSystems
 
         public void Execute()
         {
-            var playerEntity = gameContext.GetEntityWithId(PlayerIdStorage.PlayerEntityId);
+            GameEntity playerEntity = gameContext.GetEntityWithId(PlayerIdStorage.PlayerEntityId);
             if (playerEntity == null)
             {
                 log.Debug("playerEntity is null");
                 return;
             }
             
-            if (!playerEntity.hasTransform)
+            if (!playerEntity.hasViewTransform)
             {
-                log.Debug("playerEntity dont have transform");
+                log.Debug("playerEntity dont have hasViewTransform");
                 return;
             }
 
-            Vector3 playerPosition = playerEntity.view.gameObject.transform.position;
+            Vector3 playerPosition = playerEntity.viewTransform.value.position;
             Transform currentCameraPosition = mainCamera.transform;
             Vector3 nextCameraPosition = playerPosition + cameraShift;
             currentCameraPosition.position = nextCameraPosition;

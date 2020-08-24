@@ -10,7 +10,7 @@ namespace Code.Scenes.BattleScene.Experimental
         private static readonly ILog Log = LogManager.CreateLogger(typeof(PreviewsManager));
         private static readonly Dictionary<ViewKey, Sprite> Sprites = new Dictionary<ViewKey, Sprite>();
 
-        public static Sprite GetSprite(ViewTypeId typeId, int width = 48, int height = 48)
+        public static Sprite GetSprite(ViewTypeEnum typeId, int width = 48, int height = 48)
         {
             var dictKey = new ViewKey(typeId, width, height);
             if (Sprites.TryGetValue(dictKey, out var sprite))

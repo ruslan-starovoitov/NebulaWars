@@ -2,14 +2,14 @@ namespace Code.Scenes.BattleScene.Experimental
 {
     public struct ViewKey
     {
-        public ViewKey(ViewTypeId viewTypeId, int width, int height)
+        public ViewKey(ViewTypeEnum viewTypeId, int width, int height)
         {
             Width = width;
             Height = height;
             ViewTypeId = viewTypeId;
         }
 
-        public ViewTypeId ViewTypeId { get; private set; }
+        public ViewTypeEnum ViewTypeId { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
 

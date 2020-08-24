@@ -29,7 +29,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems
             int? tickNumber = tickNumberStorage.GetCurrentTickNumber();
             if (tickNumber == null)
             {
-                log.Error("Слишком рано для вызова системы.");
+                log.Error("Этот выхов не должен произойти. ");
                 return;
             }
             
@@ -37,7 +37,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems
             float x = 0f, y = 0f, angle = float.NaN;
             bool useAbility = false;
 
-            foreach (var inputEntity in inputGroup)
+            foreach (InputEntity inputEntity in inputGroup)
             {
                 if (inputEntity.hasMovement)
                 {
@@ -59,12 +59,13 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems
                 X = x,
                 Y = y,
                 UseAbility = useAbility,
-                TickTimeMs = tickNumber.Value
+                TickTimeMs = tickNumber.Value,
+                TickNumber = tickNumber.Value
             };
             
             inputMessagesHistory.AddInput(inputMessageModel);
 
-            var pack = inputMessagesHistory.GetInputModelsPack();
+            InputMessagesPack pack = inputMessagesHistory.GetInputModelsPack();
             udpSendUtils.SendInputPack(pack);
         }
     }

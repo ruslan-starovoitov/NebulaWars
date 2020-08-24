@@ -11,7 +11,6 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 {
     /// <summary>
     /// Отображает позиции всех обьектов с интерполяцией.
-    /// todo игрока и его пули обновлять не нужно
     /// </summary>
     public class UpdateTransformSystem : IExecuteSystem
     {
@@ -23,7 +22,8 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
         public UpdateTransformSystem(Contexts contexts, GameStateBuffer gameStateBuffer)
         {
             gameContext = contexts.game;
-            withTransformGroup = contexts.game.GetGroup(GameMatcher.Transform);
+            withTransformGroup = contexts.game
+                .GetGroup(GameMatcher.AllOf(GameMatcher.ViewTransform).NoneOf(GameMatcher.HealthBar));
             this.gameStateBuffer = gameStateBuffer;
         }
 
@@ -35,9 +35,10 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                              $"{nameof(bufferLength)} = {bufferLength}";
                 throw new Exception(mes);
             }
-
-            IEnumerable<ushort> test = withTransformGroup.GetEntities().Select(item => item.id.value);
-            HashSet<ushort> ids = new HashSet<ushort>(test);
+            
+            HashSet<ushort> ids = new HashSet<ushort>(withTransformGroup
+                .GetEntities()
+                .Select(item => item.id.value));
             GameState gameState = gameStateBuffer.GetActualGameState();
             foreach (var pair in gameState.transforms)
             {
@@ -51,6 +52,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                 else
                 {
                     UpdateTransform(gameEntity, viewTransform);
+             
                     ids.Remove(gameEntity.id.value);
                 }
             }
@@ -67,19 +69,21 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
         {
             GameEntity newObject = gameContext.CreateEntity();
             newObject.AddId(id);
-            newObject.AddViewType(viewTransform.viewTypeId);
-            newObject.AddTransform(viewTransform.GetPosition(), viewTransform.angle);
+            newObject.AddViewType(viewTransform.viewTypeEnum);
+            newObject.AddTransform2D(viewTransform.GetPosition(), viewTransform.angle);
         }
 
         private void UpdateTransform(GameEntity entity, ViewTransform viewTransform)
         {
             Vector3 vector = viewTransform.GetPosition();
-            entity.ReplaceTransform(vector, viewTransform.angle);
-            ViewTypeId oldViewType = entity.viewType.id;
-            if (oldViewType != viewTransform.viewTypeId)
+            entity.viewTransform.value.position = vector;
+            entity.viewTransform.value.rotation = Quaternion.AngleAxis(viewTransform.angle, Vector3.up);
+            ViewTypeEnum oldViewType = entity.viewType.id;
+            if (oldViewType != viewTransform.viewTypeEnum)
             {
-                log.Debug($"Смена типа сущности. Было {oldViewType.ToString()} стало {viewTransform.viewTypeId}");
-                entity.ReplaceViewType(viewTransform.viewTypeId);
+                string mes = $"Смена типа сущности. Было {oldViewType.ToString()} стало {viewTransform.viewTypeEnum}";
+                log.Debug(mes);
+                entity.ReplaceViewType(viewTransform.viewTypeEnum);
             }
         }
     }

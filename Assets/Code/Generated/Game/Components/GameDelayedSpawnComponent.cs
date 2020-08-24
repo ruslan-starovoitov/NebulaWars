@@ -11,7 +11,7 @@ public partial class GameEntity {
     public Code.Scenes.BattleScene.ECS.Components.Game.TimerComponents.DelayedSpawnComponent delayedSpawn { get { return (Code.Scenes.BattleScene.ECS.Components.Game.TimerComponents.DelayedSpawnComponent)GetComponent(GameComponentsLookup.DelayedSpawn); } }
     public bool hasDelayedSpawn { get { return HasComponent(GameComponentsLookup.DelayedSpawn); } }
 
-    public void AddDelayedSpawn(ViewTypeId newTypeId, float newPositionX, float newPositionY, float newDirection, float newTime) {
+    public void AddDelayedSpawn(ViewTypeEnum newTypeId, float newPositionX, float newPositionY, float newDirection, float newTime) {
         var index = GameComponentsLookup.DelayedSpawn;
         var component = (Code.Scenes.BattleScene.ECS.Components.Game.TimerComponents.DelayedSpawnComponent)CreateComponent(index, typeof(Code.Scenes.BattleScene.ECS.Components.Game.TimerComponents.DelayedSpawnComponent));
         component.typeId = newTypeId;
@@ -22,7 +22,7 @@ public partial class GameEntity {
         AddComponent(index, component);
     }
 
-    public void ReplaceDelayedSpawn(ViewTypeId newTypeId, float newPositionX, float newPositionY, float newDirection, float newTime) {
+    public void ReplaceDelayedSpawn(ViewTypeEnum newTypeId, float newPositionX, float newPositionY, float newDirection, float newTime) {
         var index = GameComponentsLookup.DelayedSpawn;
         var component = (Code.Scenes.BattleScene.ECS.Components.Game.TimerComponents.DelayedSpawnComponent)CreateComponent(index, typeof(Code.Scenes.BattleScene.ECS.Components.Game.TimerComponents.DelayedSpawnComponent));
         component.typeId = newTypeId;

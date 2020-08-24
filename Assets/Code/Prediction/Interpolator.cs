@@ -36,14 +36,14 @@ namespace Code.Prediction
                     //интерполяция между черытьмя точками
                     Vector3 position = CatmullRomSpline.GetCatmullRomPosition(t, v0.GetPosition(), v1.GetPosition(), v2.GetPosition(), v3.GetPosition());
                     float angle = Mathf.LerpAngle(v1.angle, v2.angle, t);
-                    interpolated = new ViewTransform(position, angle, v2.viewTypeId);
+                    interpolated = new ViewTransform(position, angle, v2.viewTypeEnum);
                 }
                 else if(v1Exists && v2Exists)
                 {
                     //интерполяция между двумя точками
                     Vector3 position = v1.GetPosition() * (1 - t) + v2.GetPosition() * t;
                     float angle = Mathf.LerpAngle(v1.angle, v2.angle, t);
-                    interpolated = new ViewTransform(position, angle, v2.viewTypeId);
+                    interpolated = new ViewTransform(position, angle, v2.viewTypeEnum);
                 }
                 else
                 {

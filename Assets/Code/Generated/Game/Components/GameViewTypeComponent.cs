@@ -11,14 +11,14 @@ public partial class GameEntity {
     public Code.Scenes.BattleScene.ECS.Components.Game.ViewComponents.ViewTypeComponent viewType { get { return (Code.Scenes.BattleScene.ECS.Components.Game.ViewComponents.ViewTypeComponent)GetComponent(GameComponentsLookup.ViewType); } }
     public bool hasViewType { get { return HasComponent(GameComponentsLookup.ViewType); } }
 
-    public void AddViewType(ViewTypeId newId) {
+    public void AddViewType(ViewTypeEnum newId) {
         var index = GameComponentsLookup.ViewType;
         var component = (Code.Scenes.BattleScene.ECS.Components.Game.ViewComponents.ViewTypeComponent)CreateComponent(index, typeof(Code.Scenes.BattleScene.ECS.Components.Game.ViewComponents.ViewTypeComponent));
         component.id = newId;
         AddComponent(index, component);
     }
 
-    public void ReplaceViewType(ViewTypeId newId) {
+    public void ReplaceViewType(ViewTypeEnum newId) {
         var index = GameComponentsLookup.ViewType;
         var component = (Code.Scenes.BattleScene.ECS.Components.Game.ViewComponents.ViewTypeComponent)CreateComponent(index, typeof(Code.Scenes.BattleScene.ECS.Components.Game.ViewComponents.ViewTypeComponent));
         component.id = newId;

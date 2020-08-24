@@ -11,19 +11,19 @@ namespace Code.Scenes.BattleScene.ECS.Components
     {
         [PrimaryEntityIndex] public ushort value;
     }
-    
+
     [Game]
     public class HealthComponent : IComponent
     {
         public int value;
     }
-    
+
     [Game]
     public class MaxHealthComponent : IComponent
     {
         public int value;
     }
-    
+
     /// <summary>
     /// Находится на сущности с view полоски жизни
     /// </summary>
@@ -33,6 +33,7 @@ namespace Code.Scenes.BattleScene.ECS.Components
         public Slider slider;
         public TextMeshProUGUI username;
         public TextMeshProUGUI healthPoints;
+        public GameEntity parent;
     }
 
     [Game]
@@ -45,4 +46,11 @@ namespace Code.Scenes.BattleScene.ECS.Components
     {
         public GameEntity healthBarEntity;
     }
+
+    [Game]
+    public class LocalPrediction : IComponent
+    {
+        
+    }
+
 }

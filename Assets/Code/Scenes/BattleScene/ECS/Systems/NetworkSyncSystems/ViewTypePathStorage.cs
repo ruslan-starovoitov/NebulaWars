@@ -4,15 +4,15 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 {
     public class ViewTypePathStorage
     {
-        private readonly Dictionary<ViewTypeId, string> dict = new Dictionary<ViewTypeId, string>()
+        private readonly Dictionary<ViewTypeEnum, string> dict = new Dictionary<ViewTypeEnum, string>()
         {
-            {ViewTypeId.StarSparrow, "Shared/3dWarships/StarSparrowCollider"},
-            {ViewTypeId.DefaultShoot, "Shared/3dWarships/BlueLaserSmallOBJ"}
+            {ViewTypeEnum.StarSparrow, "Shared/3dWarships/StarSparrowCollider"},
+            {ViewTypeEnum.DefaultShoot, "Shared/3dWarships/BlueLaserSmallOBJ"}
         };
         
-        public string GetPath(ViewTypeId viewTypeId)
+        public string GetPath(ViewTypeEnum ViewTypeEnum)
         {
-            return dict[viewTypeId];
+            return dict[ViewTypeEnum];
         }
     }
 }

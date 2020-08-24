@@ -86,7 +86,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems
                 .PlayerModels.FirstOrDefault(player => player.AccountId == playerId)
                 .Nickname;
 
-        private static string GetName(ViewTypeId typeId)
+        private static string GetName(ViewTypeEnum typeId)
         {
             return Regex.Replace(typeId.ToString("G"), @"((?<=\p{Ll})\p{Lu})|((?!\A)\p{Lu}(?>\p{Ll}))", " $0");
         }

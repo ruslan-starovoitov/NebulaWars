@@ -7,7 +7,7 @@ namespace Code.Scenes.BattleScene.ScriptableObjects
     {
         public ViewObject[] viewObjects;
 
-        public ViewObject GetViewObject(ViewTypeId typeId)
+        public ViewObject GetViewObject(ViewTypeEnum typeId)
         {
             int id = (int) typeId;
             if (id >= 0 && id < viewObjects.Length)
@@ -16,7 +16,7 @@ namespace Code.Scenes.BattleScene.ScriptableObjects
             }
             else
             {
-                int index = (int) ViewTypeId.Invisible;
+                int index = (int) ViewTypeEnum.Invisible;
                 return viewObjects[index];
             }
         }

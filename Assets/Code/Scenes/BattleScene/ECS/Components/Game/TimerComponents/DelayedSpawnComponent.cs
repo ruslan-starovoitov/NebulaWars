@@ -3,7 +3,7 @@
     [Game]
     public class DelayedSpawnComponent : TimerComponent
     {
-        public ViewTypeId typeId;
+        public ViewTypeEnum typeId;
         public float positionX;
         public float positionY;
         public float direction;

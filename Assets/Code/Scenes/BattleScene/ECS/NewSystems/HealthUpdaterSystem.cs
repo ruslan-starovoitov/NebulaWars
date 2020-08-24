@@ -13,20 +13,16 @@ namespace Code.Scenes.BattleScene.ECS.NewSystems
     {
         private bool needUpdate;
         private readonly GameContext gameContext;
-        // private IGroup<GameEntity> withHealthGroup;
         private readonly ILog log = LogManager.CreateLogger(typeof(HealthUpdaterSystem));
         private readonly List<HealthPointsMessagePack> messagePacks = new List<HealthPointsMessagePack>();
         
         public HealthUpdaterSystem(Contexts contexts)
         {
-            // var withHealthGroup = contexts.game.GetGroup(GameMatcher.Health);
-            // withHealthGroup.get
             gameContext = contexts.game;
         }
 
         public void SetNewHealthPoints(HealthPointsMessagePack message)
         {
-            // log.Debug("Кол-во объектов с хп "+message.entityIdToValue.Count);
             messagePacks.Add(message);
             needUpdate = true;
         }

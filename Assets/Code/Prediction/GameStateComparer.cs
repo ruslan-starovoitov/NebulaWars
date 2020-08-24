@@ -3,6 +3,9 @@ using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.PositionMe
 
 namespace Code.Prediction
 {
+    /// <summary>
+    /// При получении нового тика от игрового сервера проверяет, что аватар игрока был правильно предсказан
+    /// </summary>
     public class GameStateComparer
     {
         /// <summary>

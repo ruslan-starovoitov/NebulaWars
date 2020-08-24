@@ -9,11 +9,9 @@ using UnityEngine;
 
 namespace Code.Prediction
 {
-    /// <summary>
-    /// todo слишком сложно
-    /// </summary>
-    public class GameStateBuffer:ITransformStorage, ITickNumberStorage
+    public class GameStateBuffer:ITransformStorage, ITickNumberStorage, IGameStateHistory
     {
+        //todo слишком сложно
         private DateTime? clientMatchStartTime;
         private readonly object lockObj = new object();
         private readonly TimeSpan standardDelay = TimeSpan.FromSeconds(0.1f);
@@ -174,8 +172,19 @@ namespace Code.Prediction
                 //Установка времени старта матча 
                 clientMatchStartTime = clientNow - TimeSpan.FromSeconds(currentGameState.tickMatchTimeSec);
             }
+
+            float matchTime = (float) (clientNow - clientMatchStartTime.Value).TotalSeconds;
+            float serverClosestTime = buffer[buffer.Keys.Max()].tickMatchTimeSec;
+
+            if (serverClosestTime - matchTime > 1)
+            {
+                log.Error("Отставание от сервера на секунду.");
+                var stub = MoveToLastSavedInterval(clientNow, out _, out _, out _, out _);
+                return stub;
+            }
+
             
-            return (float) (clientNow - clientMatchStartTime.Value).TotalSeconds;
+            return matchTime;
         }
 
         private float GetGameStates(DateTime clientNow, out GameState p0, out GameState p1, out GameState p2, 
@@ -184,6 +193,9 @@ namespace Code.Prediction
             //todo если накопилось много тиков, то можно сдвинуть время матча вперёд
             float matchTime = GetMatchTime(clientNow);
             int? p2TickNumber = GetTickNumber(matchTime);
+
+
+           
             
             //Нет тика с нужным временем
             if (p2TickNumber == null)
@@ -301,6 +313,51 @@ namespace Code.Prediction
             }
 
             return null;
+        }
+
+        public int GetLastSavedTickNumber()
+        {
+            lock (lockObj)
+            {
+                if (buffer.Count == 0)
+                {
+                    return -1;
+                }
+
+                return buffer.Keys.Max();   
+            }
+        }
+
+        public GameState GetLastGameState()
+        {
+            lock (lockObj)
+            {
+                return buffer[buffer.Keys.Max()];
+            }
+        }
+        
+        public GameState Get(int serverTickNumber)
+        {
+            lock (lockObj)
+            {
+                return buffer[serverTickNumber];
+            }
+        }
+
+        public void PutPredictedGameState(GameState predictedGameState)
+        {
+            lock (lockObj)
+            {
+                buffer.Add(predictedGameState.tickNumber, predictedGameState);
+            }
+        }
+
+        public GameState PutCorrectGameState(GameState correctGameState)
+        {
+            lock (lockObj)
+            {
+                return buffer[correctGameState.tickNumber] = correctGameState;
+            }
         }
     }
 }

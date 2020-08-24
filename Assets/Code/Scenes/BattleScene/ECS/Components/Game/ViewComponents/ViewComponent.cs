@@ -8,4 +8,10 @@ namespace Code.Scenes.BattleScene.ECS.Components.Game.ViewComponents
     {
         public GameObject gameObject;
     }
+
+    [Game]
+    public class ViewTransformComponent : IComponent
+    {
+        public Transform value;
+    }
 }
