@@ -8,7 +8,7 @@ namespace Code.Scenes.BattleScene.ECS
     {
         private readonly Dictionary<ViewTypeEnum, float> dict = new Dictionary<ViewTypeEnum, float>()
         {
-            {ViewTypeEnum.StarSparrow, 10},
+            {ViewTypeEnum.StarSparrow1, 10},
             {ViewTypeEnum.AsteroidLavaBlue, 10},
             {ViewTypeEnum.AsteroidLavaRed, 10},
             {ViewTypeEnum.MineBlue, 10},

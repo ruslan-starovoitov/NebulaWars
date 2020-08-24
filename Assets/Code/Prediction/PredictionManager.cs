@@ -44,7 +44,7 @@
                 {
                     //todo как это делать?
                     //пересоздать все неправильные состояния
-                    lastGameState = predictor.Predict(lastGameState);
+                    lastGameState = predictor.Predict(lastGameState, playerId);
                 }
             
                 return lastGameState;

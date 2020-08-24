@@ -14,6 +14,7 @@ using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
 using NetworkLibrary.NetworkLibrary.Http;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.Physics;
+using Plugins.submodules.SharedCode.Systems.InputHandling;
 using Plugins.submodules.SharedCode.Systems.Spawn;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -119,7 +120,9 @@ namespace Code.Scenes.BattleScene.ECS
             PrefabsStorage prefabsStorage = new PrefabsStorage();
 
             PhysicsRollbackManager physicsRollback = new PhysicsRollbackManager();
-            Predictor predictor = new Predictor(inputMessagesHistory, physicsRollback) ;
+            PhysicsForceManager physicsForceManager = new PhysicsForceManager();
+            Predictor predictor = new Predictor(inputMessagesHistory, physicsRollback, physicsScene,
+                physicsForceManager, contexts.game) ;
             GameStateCopier gameStateCopier = new GameStateCopier();
             GameStateComparer gameStateComparer = new GameStateComparer();
             predictionManager = new PredictionManager(predictor, gameStateCopier, gameStateBuffer, gameStateComparer);

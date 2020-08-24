@@ -6,7 +6,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
     {
         private readonly Dictionary<ViewTypeEnum, string> dict = new Dictionary<ViewTypeEnum, string>()
         {
-            {ViewTypeEnum.StarSparrow, "Shared/3dWarships/StarSparrowCollider"},
+            {ViewTypeEnum.StarSparrow1, "Shared/3dWarships/StarSparrowCollider"},
             {ViewTypeEnum.DefaultShoot, "Shared/3dWarships/BlueLaserSmallOBJ"}
         };
         
