@@ -10,12 +10,12 @@
 //
 //         public AddSpeedSystem(Contexts contexts) : base(contexts.game)
 //         {
-//             gameContext = contexts.game;
+//             gameContext = contexts.serverGame;
 //         }
 //
 //         protected override ICollector<ServerGameEntity> GetTrigger(IContext<ServerGameEntity> context)
 //         {
-//             var matcher = GameMatcher.AllOf(GameMatcher.View).AnyOf(GameMatcher.Transform, GameMatcher.Hidden);
+//             var matcher = GameMatcher.AllOf(ServerGameMatcher.View).AnyOf(ServerGameMatcher.Transform, GameMatcher.Hidden);
 //             return context.CreateCollector(matcher);
 //         }
 //

@@ -5,12 +5,12 @@
 // {
 //     public class RenderTransformSystem : IExecuteSystem
 //     {
-//         private readonly IGroup<GameEntity> positionedGroup;
+//         private readonly IGroup<ServerGameEntity> positionedGroup;
 //
 //         public RenderTransformSystem(Contexts contexts)
 //         {
-//             var matcher = GameMatcher.AllOf(GameMatcher.Transform2D, GameMatcher.View);
-//             positionedGroup = contexts.game.GetGroup(matcher);
+//             var matcher = GameMatcher.AllOf(ServerGameMatcher.Transform2D, GameMatcher.View);
+//             positionedGroup = contexts.serverGame.GetGroup(matcher);
 //         }
 //
 //         public void Execute()

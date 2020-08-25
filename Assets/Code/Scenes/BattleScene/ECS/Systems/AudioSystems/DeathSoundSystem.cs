@@ -14,12 +14,12 @@
 //
 //         public DeathSoundSystem(Contexts contexts) : base(contexts.game)
 //         {
-//             gameContext = contexts.game;
+//             gameContext = contexts.serverGame;
 //         }
 //
 //         protected override ICollector<ServerGameEntity> GetTrigger(IContext<ServerGameEntity> context)
 //         {
-//             return context.CreateCollector(GameMatcher.Destroyed.Added());
+//             return context.CreateCollector(ServerGameMatcher.Destroyed.Added());
 //         }
 //
 //         protected override bool Filter(ServerGameEntity entity)

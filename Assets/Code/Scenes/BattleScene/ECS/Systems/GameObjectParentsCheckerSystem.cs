@@ -7,14 +7,14 @@
 //     public class GameObjectParentsCheckerSystem : IExecuteSystem
 //     {
 //         private readonly GameContext gameContext;
-//         private readonly IGroup<GameEntity> withParents;
+//         private readonly IGroup<ServerGameEntity> withParents;
 //         private readonly ILog log = LogManager.CreateLogger(typeof(GameObjectParentsCheckerSystem));
 //         
 //         public GameObjectParentsCheckerSystem(Contexts contexts)
 //         {
-//             gameContext = contexts.game;
+//             gameContext = contexts.serverGame;
 //             withParents = gameContext.GetGroup(GameMatcher
-//                 .AllOf(GameMatcher.View, GameMatcher.Parent).NoneOf(GameMatcher.Destroyed));
+//                 .AllOf(ServerGameMatcher.View, GameMatcher.Parent).NoneOf(ServerGameMatcher.Destroyed));
 //         }
 //
 //         public void Execute()

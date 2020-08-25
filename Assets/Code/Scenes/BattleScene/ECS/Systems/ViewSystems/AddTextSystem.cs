@@ -16,7 +16,7 @@
 //
 //         protected override ICollector<ServerGameEntity> GetTrigger(IContext<ServerGameEntity> context)
 //         {
-//             var matcher = GameMatcher.AllOf(GameMatcher.View);
+//             var matcher = GameMatcher.AllOf(ServerGameMatcher.View);
 //             return context.CreateCollector(matcher);
 //         }
 //

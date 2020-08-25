@@ -16,7 +16,7 @@
 //
 //         public UpdateDirectionToCenterSystem(Contexts contexts, Image arrowToCenter)
 //         {
-//             gameContext = contexts.game;
+//             gameContext = contexts.serverGame;
 //             toCenterImage = arrowToCenter;
 //         }
 //

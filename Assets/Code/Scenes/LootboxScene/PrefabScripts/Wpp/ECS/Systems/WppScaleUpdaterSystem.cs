@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Entitas;
+using EntitasCore.Entitas;
 using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.UI;

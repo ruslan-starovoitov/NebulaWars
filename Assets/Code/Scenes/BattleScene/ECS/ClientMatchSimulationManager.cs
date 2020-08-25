@@ -31,7 +31,7 @@ namespace Code.Scenes.BattleScene.ECS
 
             clientMatchSimulation = new ClientMatchSimulation(battleUiController, udpSendUtils, matchModel);
             
-            var playersStorage = clientMatchSimulation.GetIPlayersStorage();
+            var playersStorage = clientMatchSimulation. GetIPlayersStorage();
             var transformStorage = clientMatchSimulation.GetITransformStorage();
             var healthPointsStorage = clientMatchSimulation.GetIHealthPointsStorage();
             var maxHealthPointsMessagePackStorage = clientMatchSimulation.GetIMaxHealthPointsMessagePackStorage();

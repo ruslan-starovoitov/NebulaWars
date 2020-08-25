@@ -11,7 +11,7 @@
 //
 //         public UpdateHidingSystem(Contexts contexts)
 //         {
-//             gameContext = contexts.game;
+//             gameContext = contexts.serverGame;
 //             lock (LockObj)
 //             {
 //                 _hides.Clear();

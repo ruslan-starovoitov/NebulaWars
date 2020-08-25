@@ -12,8 +12,8 @@
 //
 //         public GlobalTransformSystem(Contexts contexts)
 //         {
-//             gameContext = contexts.game;
-//             positionedGroup = gameContext.GetGroup(GameMatcher.Position);
+//             gameContext = contexts.serverGame;
+//             positionedGroup = gameContext.GetGroup(ServerGameMatcher.Position);
 //         }
 //
 //         public void Execute()

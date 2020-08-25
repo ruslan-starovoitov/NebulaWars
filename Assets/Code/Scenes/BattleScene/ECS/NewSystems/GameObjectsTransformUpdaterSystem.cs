@@ -15,7 +15,7 @@
 //         public GameObjectsTransformUpdaterSystem(Contexts contexts)
 //         {
 //             viewAndTransformGroup = contexts.game
-//                 .GetGroup(GameMatcher.AllOf(GameMatcher.Transform, GameMatcher.View));
+//                 .GetGroup(ServerGameMatcher.AllOf(ServerGameMatcher.Transform, GameMatcher.View));
 //         }
 //         
 //         public void Execute()

@@ -13,7 +13,7 @@
 //
 //         public UpdateParentsSystem(Contexts contexts)
 //         {
-//             gameContext = contexts.game;
+//             gameContext = contexts.serverGame;
 //         }
 //
 //         public static void SetNewParents(Dictionary<ushort, ushort> newParents)

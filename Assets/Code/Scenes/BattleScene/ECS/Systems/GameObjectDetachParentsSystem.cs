@@ -15,7 +15,7 @@
 //
 //         protected override ICollector<ServerGameEntity> GetTrigger(IContext<ServerGameEntity> context)
 //         {
-//             return context.CreateCollector(GameMatcher.Parent.Removed());
+//             return context.CreateCollector(ServerGameMatcher.Parent.Removed());
 //         }
 //
 //         protected override bool Filter(ServerGameEntity entity)

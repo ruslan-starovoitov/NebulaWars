@@ -10,19 +10,19 @@
 //         where TTimerComponent : TimerComponent
 //     {
 //         private readonly int componentIndex;
-//         private readonly IGroup<GameEntity> withTimerGroup;
-//         private readonly List<GameEntity> buffer;
+//         private readonly IGroup<ServerGameEntity> withTimerGroup;
+//         private readonly List<ServerGameEntity> buffer;
 //         protected virtual int PredictedCapacity { get; } = 16;
 //
 //         public BaseTimerSubtractionSystem(Contexts contexts)
 //         {
 //             componentIndex = Array.IndexOf(GameComponentsLookup.componentTypes, typeof(TTimerComponent));
 //
-//             var matcher = (Matcher<GameEntity>)Matcher<GameEntity>.AllOf(componentIndex);
+//             var matcher = (Matcher<ServerGameEntity>)Matcher<ServerGameEntity>.AllOf(componentIndex);
 //             matcher.componentNames = GameComponentsLookup.componentNames;
 //
-//             withTimerGroup = contexts.game.GetGroup(matcher);
-//             buffer = new List<GameEntity>(PredictedCapacity);
+//             withTimerGroup = contexts.serverGame.GetGroup(matcher);
+//             buffer = new List<ServerGameEntity>(PredictedCapacity);
 //         }
 //
 //         public void Execute()

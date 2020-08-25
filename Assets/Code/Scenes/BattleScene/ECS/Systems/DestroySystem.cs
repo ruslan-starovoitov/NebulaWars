@@ -13,8 +13,8 @@
 //
 //         public DestroySystem(Contexts contexts)
 //         {
-//             var matcher = GameMatcher.AllOf(GameMatcher.Destroyed, GameMatcher.View).NoneOf(GameMatcher.DestroyTimer);
-//             destroyedGroup = contexts.game.GetGroup(matcher);
+//             var matcher = GameMatcher.AllOf(ServerGameMatcher.Destroyed, GameMatcher.View).NoneOf(ServerGameMatcher.DestroyTimer);
+//             destroyedGroup = contexts.serverGame.GetGroup(matcher);
 //             buffer = new List<ServerGameEntity>(predictedCapacity);
 //         }
 //

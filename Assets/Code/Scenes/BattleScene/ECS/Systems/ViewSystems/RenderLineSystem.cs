@@ -12,7 +12,7 @@
 //
 //         protected override ICollector<ServerGameEntity> GetTrigger(IContext<ServerGameEntity> context)
 //         {
-//             var matcher = GameMatcher.AllOf(GameMatcher.StraightLine, GameMatcher.Rectangle);
+//             var matcher = GameMatcher.AllOf(ServerGameMatcher.StraightLine, GameMatcher.Rectangle);
 //             return context.CreateCollector(matcher);
 //         }
 //

@@ -16,7 +16,7 @@
 //
 //         protected override ICollector<ServerGameEntity> GetTrigger(IContext<ServerGameEntity> context)
 //         {
-//             var matcher = GameMatcher.AnyOf(GameMatcher.Sprite, GameMatcher.CircleLine, GameMatcher.StraightLine);
+//             var matcher = GameMatcher.AnyOf(ServerGameMatcher.Sprite, GameMatcher.CircleLine, GameMatcher.StraightLine);
 //             return context.CreateCollector(matcher);
 //         }
 //

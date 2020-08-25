@@ -9,7 +9,7 @@
 //
 //         public ManyDelayedRecreationsSystem(Contexts contexts)
 //         {
-//             delayedRecreationsGroup = contexts.game.GetGroup(GameMatcher.ManyDelayedRecreations);
+//             delayedRecreationsGroup = contexts.serverGame.GetGroup(ServerGameMatcher.ManyDelayedRecreations);
 //         }
 //
 //         public void Execute()

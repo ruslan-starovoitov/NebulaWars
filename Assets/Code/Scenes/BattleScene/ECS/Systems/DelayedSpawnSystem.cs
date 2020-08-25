@@ -14,7 +14,7 @@
 //
 //         public DelayedSpawnSystem(Contexts contexts) : base(contexts)
 //         {
-//             gameContext = contexts.game;
+//             gameContext = contexts.serverGame;
 //         }
 //
 //         protected override void OnTimeExpired(GameEntity entity)

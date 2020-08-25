@@ -11,7 +11,7 @@
 //
 //         public ZoneMoveSystem(Contexts contexts, GameObject zone)
 //         {
-//             gameContext = contexts.game;
+//             gameContext = contexts.serverGame;
 //             zoneObject = zone;
 //         }
 //

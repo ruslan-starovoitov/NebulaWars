@@ -11,7 +11,7 @@
 //
 //         protected override ICollector<ServerGameEntity> GetTrigger(IContext<ServerGameEntity> context)
 //         {
-//             var matcher = GameMatcher.AllOf(GameMatcher.View, GameMatcher.Player).NoneOf(GameMatcher.NicknameDistance);
+//             var matcher = GameMatcher.AllOf(ServerGameMatcher.View, GameMatcher.Player).NoneOf(ServerGameMatcher.NicknameDistance);
 //             return context.CreateCollector(matcher);
 //         }
 //

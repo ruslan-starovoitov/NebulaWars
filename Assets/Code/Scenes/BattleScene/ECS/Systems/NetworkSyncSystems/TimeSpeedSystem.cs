@@ -20,7 +20,7 @@
 //
 //         public TimeSpeedSystem(Contexts contexts, IApproximator<float> timeApproximator)
 //         {
-//             gameContext = contexts.game;
+//             gameContext = contexts.serverGame;
 //             _lastMessageId = 0;
 //             WasChanged = false;
 //             approximator = timeApproximator;

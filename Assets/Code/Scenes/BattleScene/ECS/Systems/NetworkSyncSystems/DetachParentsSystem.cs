@@ -14,7 +14,7 @@
 //
 //         public DetachParentsSystem(Contexts contexts)
 //         {
-//             gameContext = contexts.game;
+//             gameContext = contexts.serverGame;
 //             detaches = new HashSet<ushort>();
 //         }
 //

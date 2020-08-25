@@ -15,8 +15,8 @@
 //         public RenderSmoothedTransformSystem(Contexts contexts)
 //         {
 //             var matcher = GameMatcher
-//                 .AllOf(GameMatcher.Position, GameMatcher.Direction, GameMatcher.View, GameMatcher.Speed);
-//             positionedGroup = contexts.game.GetGroup(matcher);
+//                 .AllOf(ServerGameMatcher.Position, GameMatcher.Direction, GameMatcher.View, GameMatcher.Speed);
+//             positionedGroup = contexts.serverGame.GetGroup(matcher);
 //         }
 //
 //         public void Execute()

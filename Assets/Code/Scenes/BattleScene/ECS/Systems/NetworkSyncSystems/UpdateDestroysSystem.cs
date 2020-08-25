@@ -17,8 +17,8 @@
 //         public UpdateDestroysSystem(Contexts contexts)
 //         {
 //             destroys = new HashSet<ushort>();
-//             var matcher = GameMatcher.AllOf(GameMatcher.Transform, GameMatcher.View);
-//             positionedGroup = contexts.game.GetGroup(matcher);
+//             var matcher = GameMatcher.AllOf(ServerGameMatcher.Transform, GameMatcher.View);
+//             positionedGroup = contexts.serverGame.GetGroup(matcher);
 //         }
 //
 //         public static void SetNewDestroys(ushort[] newDestroys)

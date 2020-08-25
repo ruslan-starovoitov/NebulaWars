@@ -14,12 +14,12 @@
 //
 //         public SpawnSoundSystem(Contexts contexts) : base(contexts.game)
 //         {
-//             gameContext = contexts.game;
+//             gameContext = contexts.serverGame;
 //         }
 //
 //         protected override ICollector<ServerGameEntity> GetTrigger(IContext<ServerGameEntity> context)
 //         {
-//             var matcher = GameMatcher.AllOf(GameMatcher.View, GameMatcher.SpawnSound);
+//             var matcher = GameMatcher.AllOf(ServerGameMatcher.View, GameMatcher.SpawnSound);
 //             return context.CreateCollector(matcher);
 //         }
 //

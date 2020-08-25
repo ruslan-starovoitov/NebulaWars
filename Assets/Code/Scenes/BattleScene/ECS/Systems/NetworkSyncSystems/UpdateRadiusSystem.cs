@@ -16,13 +16,13 @@
 //
 //         private readonly GameContext gameContext;
 //         private readonly IApproximator<float> approximator;
-//         //readonly IGroup<GameEntity> gameEntitiesGroup;
+//         //readonly IGroup<ServerGameEntity> gameEntitiesGroup;
 //
 //         public UpdateRadiusSystem(Contexts contexts, IApproximator<float> radiusApproximator)
 //         {
-//             gameContext = contexts.game;
+//             gameContext = contexts.serverGame;
 //             approximator = radiusApproximator;
-//             //gameEntitiesGroup = gameContext.GetGroup(GameMatcher.Circle);
+//             //gameEntitiesGroup = gameContext.GetGroup(ServerGameMatcher.Circle);
 //         }
 //
 //         public static void SetNewRadiuses(Dictionary<ushort, float> newRadiuses)
