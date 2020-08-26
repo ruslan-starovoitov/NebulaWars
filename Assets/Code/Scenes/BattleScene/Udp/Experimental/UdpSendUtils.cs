@@ -59,6 +59,11 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
             Dictionary<int, InputMessageModel> allHistory = dict.Read();
             return allHistory.Values.Where(model => model.TickNumber == tickNumber).ToList();
         }
+
+        public InputMessageModel GetLast()
+        {
+            return dict.GetLast();
+        }
     }
     /// <summary>
     /// Принимает запросы на отправку сообщений от систем и перенаправляет их UdpClient-у
@@ -74,12 +79,12 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
             this.udpClientWrapper = udpClientWrapper;
         }
         
-        public void SendPingMessage()
+        public void SendPingMessage(int pingMessageId)
         {
             var myId = PlayerIdStorage.TmpPlayerIdForMatch;
-            var message = new PlayerPingMessage(myId, matchId);
-            byte[] data = MessageFactory.GetSerializedMessage(MessageFactory.GetMessage(message,false, 
-                out uint messageId));
+            var message = new PlayerPingMessage(myId, matchId, pingMessageId);
+            byte[] data = MessageFactory
+                .GetSerializedMessage(MessageFactory.GetMessage(message,false, out uint messageId));
             udpClientWrapper.Send(data);
         }
         

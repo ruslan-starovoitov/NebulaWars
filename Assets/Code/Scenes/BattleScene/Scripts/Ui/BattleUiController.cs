@@ -42,6 +42,7 @@ namespace Code.Scenes.BattleScene.Scripts.Ui
         [SerializeField] private PostProcessVolume postProcessVolume;
         [SerializeField] private GameObject menuImage;
         [SerializeField] private Material nicknameFontMaterial;
+        [SerializeField] private Text pingText;
 #pragma warning restore 649
         #endregion
 
@@ -49,10 +50,7 @@ namespace Code.Scenes.BattleScene.Scripts.Ui
 
         private void Awake()
         {
-            // lobbyLoaderController = GetComponent<LobbyLoaderController>();
-            // zoneGroup.SetActive(true);
             overlayCanvas.SetActive(true);
-            // gameViews.SetActive(true);
             if (QualitySettings.GetQualityLevel() < 2)
             {
                 UseSingleBackground();
@@ -62,7 +60,6 @@ namespace Code.Scenes.BattleScene.Scripts.Ui
         private void UseSingleBackground()
         {
             singleBackground.gameObject.SetActive(true);
-
             foreach (var (img, _) in backgrounds)
             {
                 img.gameObject.SetActive(false);
@@ -105,5 +102,10 @@ namespace Code.Scenes.BattleScene.Scripts.Ui
         public Image GetLoadingImage() => loadingImage;
         public Vignette GetVignette() => postProcessVolume.profile.GetSetting<Vignette>();
         public Material GetNicknameFontMaterial() => nicknameFontMaterial;
+
+        public Text GetPingText()
+        {
+            return pingText;
+        }
     }
 }

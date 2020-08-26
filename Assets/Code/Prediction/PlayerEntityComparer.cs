@@ -6,7 +6,7 @@ namespace Code.Prediction
     /// <summary>
     /// При получении нового тика от игрового сервера проверяет, что аватар игрока был правильно предсказан
     /// </summary>
-    public class GameStateComparer
+    public class PlayerEntityComparer
     {
         /// <summary>
         /// Сравнивает предсказанное игровое состояние и настоящее состояние с сервера для сущности игрока

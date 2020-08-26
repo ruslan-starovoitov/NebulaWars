@@ -1,6 +1,5 @@
 ﻿using System;
 using Code.BattleScene.ECS.Systems;
-using Code.Common.Storages;
 using Code.Prediction;
 using Code.Scenes.BattleScene.ECS.NewSystems;
 using Code.Scenes.BattleScene.ECS.Systems.EnvironmentSystems;
@@ -19,6 +18,7 @@ using Plugins.submodules.SharedCode.Systems.InputHandling;
 using Plugins.submodules.SharedCode.Systems.Spawn;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Code.Scenes.BattleScene.ECS
 {
@@ -28,14 +28,12 @@ namespace Code.Scenes.BattleScene.ECS
         private PingSystem pingSystem;
         private int lastSavedTickNumber;
         private Entitas.Systems systems;
-        private GameStateBuffer gameStateBuffer;
-        private PredictionManager predictionManager;
-        private IHealthPointsStorage healthPointsStorage;
-        
-        private IMaxHealthPointsMessagePackStorage maxHealthPointsMessagePackStorage;
-        private readonly BattleUiController battleUiController;
-        private readonly ILog log = LogManager.CreateLogger(typeof(ClientMatchSimulation));
         private IPlayersStorage playersStorage;
+        private GameStateBuffer gameStateBuffer;
+        private IHealthPointsStorage healthPointsStorage;
+        private readonly BattleUiController battleUiController;
+        private IMaxHealthPointsMessagePackStorage maxHealthPointsMessagePackStorage;
+        private readonly ILog log = LogManager.CreateLogger(typeof(ClientMatchSimulation));
 
         public ClientMatchSimulation(BattleUiController battleUiController, UdpSendUtils udpSendUtils,
             BattleRoyaleClientMatchModel matchModel)
@@ -67,26 +65,6 @@ namespace Code.Scenes.BattleScene.ECS
                 return;
             }
 
-
-            // int bufferLastSavedTickNumber = gameStateBuffer.GetLastSavedTickNumber();
-            //
-            // //Пришла новая информация
-            // if (lastSavedTickNumber < bufferLastSavedTickNumber)
-            // {
-            //     //Обновить локальный счётчик
-            //     lastSavedTickNumber = bufferLastSavedTickNumber;
-            //     GameState serverGameState = gameStateBuffer.GetLastGameState();
-            //     int currentTickNumber = gameStateBuffer.GetCurrentTickNumber().Value;
-            //     GameState currentClientGameState = gameStateBuffer.GetCurrentTargetGameState(currentTickNumber);
-            //     ushort playerEntityId = PlayerIdStorage.PlayerEntityId;
-            //     GameState correctGameState = predictionManager.Reconcile(currentTickNumber, serverGameState,
-            //         currentClientGameState, playerEntityId);
-            // }
-
-            
-            
-          
-            
             systems.Execute();
             systems.Cleanup();
         }
@@ -119,26 +97,31 @@ namespace Code.Scenes.BattleScene.ECS
             Vector3 cameraShift = new Vector3(0, 60, -30);
             ushort playerTmpId = matchModel.PlayerTemporaryId;
             int matchId = matchModel.MatchId;
-            pingSystem = new PingSystem(udpSendUtils);
+            Text pingText = battleUiController.GetPingText();
+            pingSystem = new PingSystem(udpSendUtils, pingText);
             InputMessagesHistory inputMessagesHistory = new InputMessagesHistory(playerTmpId, matchId);
             PrefabsStorage prefabsStorage = new PrefabsStorage();
 
-            PhysicsRollbackManager physicsRollback = new PhysicsRollbackManager();
+            PhysicsRollbackManager physicsRollbackManager = new PhysicsRollbackManager();
             PhysicsForceManager physicsForceManager = new PhysicsForceManager();
-            Predictor predictor = new Predictor(inputMessagesHistory, physicsRollback, physicsScene,
+            PlayerPredictor playerPredictor = new PlayerPredictor(inputMessagesHistory, physicsRollbackManager, physicsScene,
                 physicsForceManager, contexts.serverGame) ;
-            GameStateCopier gameStateCopier = new GameStateCopier();
-            GameStateComparer gameStateComparer = new GameStateComparer();
-            predictionManager = new PredictionManager(predictor, gameStateCopier, gameStateBuffer, gameStateComparer);
+            PlayerEntityComparer playerEntityComparer = new PlayerEntityComparer();
+            var predictionManager = new PredictionManager(playerPredictor, gameStateBuffer, playerEntityComparer);
 
             Joystick movementJoystick = battleUiController.GetMovementJoystick();
             Joystick attackJoystick = battleUiController.GetAttackJoystick();
+            
+            
             systems = new Entitas.Systems()
                     
+                    .Add(new PredictionСheckSystem(gameStateBuffer, predictionManager))
                     .Add(new UpdateTransformSystem(contexts, gameStateBuffer))
                     .Add(updatePlayersSystem)
                     .Add(new PrefabSpawnerSystem(contexts, prefabsStorage, physicsSpawner))
-                    
+
+                    .Add(new InputSystem(movementJoystick, attackJoystick, inputMessagesHistory, gameStateBuffer))
+                    .Add(new PlayerPredictionSystem(contexts, inputMessagesHistory, physicsRollbackManager, physicsScene, physicsForceManager ))
                     
                     .Add(new CameraMoveSystem(contexts, battleUiController.GetMainCamera(), cameraShift))
                     .Add(new LoadingImageSwitcherSystem(contexts, battleUiController.GetLoadingImage()))
@@ -158,7 +141,7 @@ namespace Code.Scenes.BattleScene.ECS
                     .Add(new DestroyViewSystem(contexts))
                     
                     
-                    .Add(new InputSystem(movementJoystick, attackJoystick, inputMessagesHistory, gameStateBuffer))
+                    
                     .Add(new PlayerInputSenderSystem(udpSendUtils, inputMessagesHistory))
                     .Add(new RudpMessagesSenderSystem(udpSendUtils))
                     .Add(new GameContextClearSystem(contexts))
@@ -216,6 +199,11 @@ namespace Code.Scenes.BattleScene.ECS
             }
             
             return maxHealthPointsMessagePackStorage;
+        }
+
+        public IPingPresenter GetPingPresenter()
+        {
+            return pingSystem;
         }
     }
 }

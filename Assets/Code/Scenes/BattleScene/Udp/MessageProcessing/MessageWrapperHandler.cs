@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Code.Scenes.BattleScene.ECS;
+using Code.Scenes.BattleScene.ECS.NewSystems;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
 using Code.Scenes.BattleScene.Scripts;
 using Code.Scenes.BattleScene.Udp.Connection;
@@ -26,30 +27,21 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing
         public MessageWrapperHandler(UdpSendUtils udpSendUtils, int matchId, 
             ITransformStorage transformStorage, IPlayersStorage playersStorage,
             IHealthPointsStorage healthPointsStorage, 
-            IMaxHealthPointsMessagePackStorage maxHealthPointsMessagePackStorage)
+            IMaxHealthPointsMessagePackStorage maxHealthPointsMessagePackStorage,
+            IPingPresenter pingPresenter)
         {
             receivedMessagesRudp = new HashSet<uint>();
             deliveryConfirmationSender = new DeliveryConfirmationSender(udpSendUtils);
-            var lastEnum = Enum.GetValues(typeof(MessageType)).Cast<MessageType>().Max();
+            MessageType lastEnum = Enum.GetValues(typeof(MessageType)).Cast<MessageType>().Max();
             handlers = new IMessageHandler[(int)lastEnum + 1];
             handlers[(int)MessageType.PlayerInfo] = new PlayerInfoMessageHandler(playersStorage);
             handlers[(int)MessageType.Positions] = new PositionsMessageHandler(transformStorage);
-            // handlers[(int)MessageType.Radiuses] = new RadiusesMessageHandler();
-            // handlers[(int)MessageType.Parents] = new ParentsMessageHandler();
-            // handlers[(int)MessageType.Detaches] = new DetachesMessageHandler();
-            // handlers[(int)MessageType.Destroys] = new DestroysMessageHandler();
-            // handlers[(int)MessageType.Hides] = new HidesMessageHandler();
             handlers[(int)MessageType.HealthPointsMessagePack] = new HealthPointsPackHandler(healthPointsStorage);
             handlers[(int)MessageType.DeliveryConfirmation] = new RudpConfirmationReceiver();
             handlers[(int)MessageType.MaxHealthPoints] = new MaxHealthPointsHandler();
-            // handlers[(int)MessageType.ShieldPoints] = new ShieldPointsHandler();
-            // handlers[(int)MessageType.MaxShieldPoints] = new MaxShieldPointsHandler();
-            // handlers[(int)MessageType.Kill] = new KillsHandler();
             handlers[(int)MessageType.ShowPlayerAchievements] = new ShowPlayerAchievementsHandler(matchId);
-            // handlers[(int)MessageType.CooldownsInfos] = new CooldownsInfosHandler();
-            // handlers[(int)MessageType.Cooldowns] = new CooldownsHandler();
-            // handlers[(int)MessageType.FrameRate] = new FrameRateHandler();
             handlers[(int)MessageType.MaxHealthPointsMessagePack] = new MaxHealthPointsMessagePackHandler(maxHealthPointsMessagePackStorage);
+            handlers[(int)MessageType.PingAnswerMessage] = new PingAnswerMessageHandler(pingPresenter);
         }
         
         public void Handle(MessageWrapper messageWrapper)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Code.Common.Storages;
 using Code.Prediction;
 using Entitas;
 using Plugins.submodules.SharedCode.Logger;
@@ -76,6 +77,12 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 
         private void UpdateTransform(ServerGameEntity entity, ViewTransform viewTransform)
         {
+            ushort playerId = PlayerIdStorage.PlayerEntityId;
+            if (entity.id.value == playerId)
+            {
+                return;
+            }
+            
             Vector3 vector = viewTransform.GetPosition();
             entity.transform.value.position = vector;
             entity.transform.value.rotation = Quaternion.AngleAxis(viewTransform.angle, Vector3.up);

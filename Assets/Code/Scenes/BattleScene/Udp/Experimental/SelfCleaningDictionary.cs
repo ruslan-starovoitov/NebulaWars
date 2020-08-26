@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Plugins.submodules.SharedCode.NetworkLibrary.Udp.PlayerToServer;
 
 namespace Code.Scenes.BattleScene.Udp.Experimental
 {
@@ -42,6 +43,11 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
         public Dictionary<int, T> Read()
         {
             return history;
+        }
+
+        public T GetLast()
+        {
+            return history[history.Keys.Max()];
         }
     }
 }

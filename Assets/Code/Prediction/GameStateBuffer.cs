@@ -328,11 +328,23 @@ namespace Code.Prediction
             }
         }
 
-        public GameState GetLastGameState()
+        public GameState GetLastShownGameState()
         {
+            DateTime now = DateTime.UtcNow;
+            float matchTime = GetMatchTime(now);
             lock (lockObj)
             {
-                return buffer[buffer.Keys.Max()];
+                for (int index = 1; index < buffer.Values.Count; index++)
+                {
+                    var p1 = buffer.Values[index-1];
+                    var p2 = buffer.Values[index];
+                    if (p1.tickMatchTimeSec < matchTime && matchTime <= p2.tickMatchTimeSec)
+                    {
+                        return p2;
+                    }
+                }
+                
+                throw new NotImplementedException();
             }
         }
         
@@ -357,6 +369,14 @@ namespace Code.Prediction
             lock (lockObj)
             {
                 return buffer[correctGameState.tickNumber] = correctGameState;
+            }
+        }
+
+        public GameState GetNewestGameState()
+        {
+            lock (lockObj)
+            {
+                return buffer[buffer.Keys.Max()];
             }
         }
     }

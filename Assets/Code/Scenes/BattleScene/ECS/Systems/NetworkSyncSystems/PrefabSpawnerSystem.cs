@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Code.Common.Storages;
 using Entitas;
 using Entitas.Unity;
 using Plugins.submodules.SharedCode.Logger;
@@ -38,13 +39,25 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
         {
             foreach (var entity in entities)
             {
-                var viewType = entity.viewType.value;
+                ViewTypeEnum viewType = entity.viewType.value;
                 GameObject prefab = prefabsStorage.GetPrefab(viewType);
-                GameObject go = physicsSpawner.Spawn(prefab, entity.spawnTransform.position, 
-                    entity.spawnTransform.rotation);
+
+                Vector3 position = entity.spawnTransform.position;
+                Quaternion rotation = entity.spawnTransform.rotation;
+                GameObject go = physicsSpawner.Spawn(prefab, position, rotation);
                 entity.AddView(go);
                 entity.AddTransform(go.transform);
                 go.Link(entity);
+                    
+                //todo перенести
+                if (entity.id.value == PlayerIdStorage.PlayerEntityId)
+                {
+                    ShootingPointsHelper shootingPointsHelper = new ShootingPointsHelper();
+                    shootingPointsHelper.AddShootingPoints(go, entity);
+
+                    Rigidbody rigidbody = go.GetComponent<Rigidbody>();
+                    entity.AddRigidbody(rigidbody);
+                }
             }
         }
     }

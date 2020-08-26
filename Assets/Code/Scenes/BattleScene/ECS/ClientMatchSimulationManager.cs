@@ -1,4 +1,5 @@
 ﻿using Code.Common.Storages;
+using Code.Scenes.BattleScene.ECS.NewSystems;
 using Code.Scenes.BattleScene.Scripts;
 using Code.Scenes.BattleScene.Scripts.Ui;
 using Code.Scenes.BattleScene.Udp;
@@ -35,9 +36,10 @@ namespace Code.Scenes.BattleScene.ECS
             var transformStorage = clientMatchSimulation.GetITransformStorage();
             var healthPointsStorage = clientMatchSimulation.GetIHealthPointsStorage();
             var maxHealthPointsMessagePackStorage = clientMatchSimulation.GetIMaxHealthPointsMessagePackStorage();
-
+            var pingPresenter = clientMatchSimulation.GetPingPresenter();
             
-            var messageWrapperHandler = new MessageWrapperHandler(udpSendUtils, matchModel.MatchId, transformStorage, playersStorage, healthPointsStorage, maxHealthPointsMessagePackStorage);
+            var messageWrapperHandler = new MessageWrapperHandler(udpSendUtils, matchModel.MatchId, transformStorage,
+                playersStorage, healthPointsStorage, maxHealthPointsMessagePackStorage, pingPresenter);
            
             IByteArrayHandler byteArrayHandler = new ByteArrayHandler(messageWrapperHandler);
             
