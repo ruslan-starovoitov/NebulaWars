@@ -30,12 +30,12 @@ namespace Code.Scenes.BattleScene.ECS
         private Entitas.Systems systems;
         private GameStateBuffer gameStateBuffer;
         private PredictionManager predictionManager;
-        private HealthUpdaterSystem healthUpdaterSystem;
-        // private UpdatePlayersSystem updatePlayersSystem;
-        private MaxHealthUpdaterSystem maxHealthUpdaterSystem;
+        private IHealthPointsStorage healthPointsStorage;
+        
+        private IMaxHealthPointsMessagePackStorage maxHealthPointsMessagePackStorage;
         private readonly BattleUiController battleUiController;
         private readonly ILog log = LogManager.CreateLogger(typeof(ClientMatchSimulation));
-        private UpdatePlayersSystem updatePlayersSystem;
+        private IPlayersStorage playersStorage;
 
         public ClientMatchSimulation(BattleUiController battleUiController, UdpSendUtils udpSendUtils,
             BattleRoyaleClientMatchModel matchModel)
@@ -106,9 +106,16 @@ namespace Code.Scenes.BattleScene.ECS
             gameStateBuffer = new GameStateBuffer();
             contexts = Contexts.sharedInstance;
             int aliveCount = matchModel.PlayerModels.Length;
-            updatePlayersSystem = new UpdatePlayersSystem(contexts, matchModel);
-            healthUpdaterSystem = new HealthUpdaterSystem(contexts);
-            maxHealthUpdaterSystem = new MaxHealthUpdaterSystem(contexts);
+            
+            
+            var updatePlayersSystem = new UpdatePlayersSystem(contexts, matchModel);
+            playersStorage = updatePlayersSystem;
+            
+            
+            var healthUpdaterSystem = new HealthUpdaterSystem(contexts);
+            healthPointsStorage = healthUpdaterSystem;  
+            var maxHealthUpdaterSystem = new MaxHealthUpdaterSystem(contexts);
+            maxHealthPointsMessagePackStorage = maxHealthUpdaterSystem; 
             Vector3 cameraShift = new Vector3(0, 60, -30);
             ushort playerTmpId = matchModel.PlayerTemporaryId;
             int matchId = matchModel.MatchId;
@@ -124,15 +131,17 @@ namespace Code.Scenes.BattleScene.ECS
             GameStateComparer gameStateComparer = new GameStateComparer();
             predictionManager = new PredictionManager(predictor, gameStateCopier, gameStateBuffer, gameStateComparer);
 
+            Joystick movementJoystick = battleUiController.GetMovementJoystick();
+            Joystick attackJoystick = battleUiController.GetAttackJoystick();
             systems = new Entitas.Systems()
+                    
                     .Add(new UpdateTransformSystem(contexts, gameStateBuffer))
-                    // .Add(updatePlayersSystem)
+                    .Add(updatePlayersSystem)
                     .Add(new PrefabSpawnerSystem(contexts, prefabsStorage, physicsSpawner))
                     
                     
                     .Add(new CameraMoveSystem(contexts, battleUiController.GetMainCamera(), cameraShift))
                     .Add(new LoadingImageSwitcherSystem(contexts, battleUiController.GetLoadingImage()))
-                    
                     
                     
                     .Add(healthUpdaterSystem)
@@ -149,8 +158,8 @@ namespace Code.Scenes.BattleScene.ECS
                     .Add(new DestroyViewSystem(contexts))
                     
                     
-                    .Add(new JoysticksInputSystem(contexts, battleUiController.GetMovementJoystick(), battleUiController.GetAttackJoystick()))
-                    .Add(new PlayerInputSenderSystem(contexts, udpSendUtils, inputMessagesHistory, gameStateBuffer))
+                    .Add(new InputSystem(movementJoystick, attackJoystick, inputMessagesHistory, gameStateBuffer))
+                    .Add(new PlayerInputSenderSystem(udpSendUtils, inputMessagesHistory))
                     .Add(new RudpMessagesSenderSystem(udpSendUtils))
                     .Add(new GameContextClearSystem(contexts))
                 ;
@@ -181,32 +190,32 @@ namespace Code.Scenes.BattleScene.ECS
         
         public IPlayersStorage GetIPlayersStorage()
         {
-            if (updatePlayersSystem == null)
+            if (playersStorage == null)
             {
                 throw new NullReferenceException();
             }
 
-            return updatePlayersSystem;
+            return playersStorage;
         }
         
         public IHealthPointsStorage GetIHealthPointsStorage()
         {
-            if (healthUpdaterSystem == null)
+            if (healthPointsStorage == null)
             {
                 throw new NullReferenceException();
             }
             
-            return healthUpdaterSystem;
+            return healthPointsStorage;
         }
         
         public IMaxHealthPointsMessagePackStorage GetIMaxHealthPointsMessagePackStorage()
         {
-            if (maxHealthUpdaterSystem == null)
+            if (maxHealthPointsMessagePackStorage == null)
             {
                 throw new NullReferenceException();
             }
             
-            return maxHealthUpdaterSystem;
+            return maxHealthPointsMessagePackStorage;
         }
     }
 }

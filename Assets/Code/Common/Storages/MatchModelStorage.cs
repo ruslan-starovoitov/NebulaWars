@@ -1,5 +1,6 @@
 ﻿using System;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Common.Storages
 {
@@ -8,10 +9,11 @@ namespace Code.Common.Storages
         private static readonly Lazy<MatchModelStorage> lazy = new Lazy<MatchModelStorage>(() => new MatchModelStorage());
         public static MatchModelStorage Instance => lazy.Value;
         private BattleRoyaleClientMatchModel matchData;
+        private readonly ILog log = LogManager.CreateLogger(typeof(MatchModelStorage));
 
-        public void SetMatchData(BattleRoyaleClientMatchModel matchDataArg)
+        public void SetMatchData(BattleRoyaleClientMatchModel matchModel)
         {
-            matchData = matchDataArg;
+            matchData = matchModel;
         }
 
         public BattleRoyaleClientMatchModel GetMatchModel()

@@ -1,5 +1,4 @@
-﻿using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
-using Code.Scenes.BattleScene.Udp.Experimental;
+﻿using Code.Scenes.BattleScene.Udp.Experimental;
 using Entitas;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.PlayerToServer;
@@ -9,63 +8,18 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems
     public class PlayerInputSenderSystem : IExecuteSystem
     {
         private readonly UdpSendUtils udpSendUtils;
-        private readonly IGroup<ServerInputEntity> inputGroup;
-        private readonly ITickNumberStorage tickNumberStorage;
         private readonly InputMessagesHistory inputMessagesHistory;
         private readonly ILog log = LogManager.CreateLogger(typeof(PlayerInputSenderSystem));
 
-        public PlayerInputSenderSystem(Contexts contexts, UdpSendUtils udpSendUtils, 
-            InputMessagesHistory inputMessagesHistory, ITickNumberStorage tickNumberStorage)
+        public PlayerInputSenderSystem(UdpSendUtils udpSendUtils, 
+            InputMessagesHistory inputMessagesHistory)
         {
             this.udpSendUtils = udpSendUtils;
             this.inputMessagesHistory = inputMessagesHistory;
-            this.tickNumberStorage = tickNumberStorage;
-            var matcher = ServerInputMatcher.AnyOf(ServerInputMatcher.Movement,
-                ServerInputMatcher.Attack, ServerInputMatcher.TryingToUseAbility);
-            inputGroup = contexts.serverInput.GetGroup(matcher);
         }
 
         public void Execute()
         {
-            int? tickNumber = tickNumberStorage.GetCurrentTickNumber();
-            if (tickNumber == null)
-            {
-                log.Error("Этот вызов не должен произойти. ");
-                return;
-            }
-            
-            
-            float x = 0f, y = 0f, angle = float.NaN;
-            bool useAbility = false;
-
-            foreach (var inputEntity in inputGroup)
-            {
-                if (inputEntity.hasMovement)
-                {
-                    x = inputEntity.movement.value.x;
-                    y = inputEntity.movement.value.y;
-                }
-
-                if (inputEntity.hasAttack)
-                {
-                    angle = inputEntity.attack.direction;
-                }
-
-                useAbility |= inputEntity.isTryingToUseAbility;
-            }
-            
-            InputMessageModel inputMessageModel = new InputMessageModel()
-            {
-                Angle = angle,
-                X = x,
-                Y = y,
-                UseAbility = useAbility,
-                TickTimeMs = tickNumber.Value,
-                TickNumber = tickNumber.Value
-            };
-            
-            inputMessagesHistory.AddInput(inputMessageModel);
-
             InputMessagesPack pack = inputMessagesHistory.GetInputModelsPack();
             udpSendUtils.SendInputPack(pack);
         }

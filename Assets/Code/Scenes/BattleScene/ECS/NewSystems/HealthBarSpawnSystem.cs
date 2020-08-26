@@ -15,17 +15,17 @@ namespace Code.Scenes.BattleScene.ECS.NewSystems
     public class HealthBarSpawnSystem:IExecuteSystem, ICleanupSystem
     {
         private readonly ServerGameContext gameContext;
-        private readonly HealthBarHeightStorage test;
-        private readonly IGroup<ServerGameEntity> needHealthBar;
         private readonly HealthBarStorage healthBarStorage;
+        private readonly IGroup<ServerGameEntity> needHealthBar;
+        private readonly HealthBarHeightStorage healthBarHeightStorage;
         private readonly ILog log = LogManager.CreateLogger(typeof(HealthBarSpawnSystem));
 
         public HealthBarSpawnSystem(Contexts contexts, HealthBarStorage healthBarStorage)
         {
             gameContext = contexts.serverGame;
             this.healthBarStorage = healthBarStorage;
+            healthBarHeightStorage = new HealthBarHeightStorage();
             needHealthBar = contexts.serverGame.GetGroup(ServerGameMatcher.AllOf(ServerGameMatcher.NeedHealthBar));
-            test = new HealthBarHeightStorage();
         }
         
         public void Execute()
@@ -41,11 +41,11 @@ namespace Code.Scenes.BattleScene.ECS.NewSystems
                 }
 
                 //Создать полоску
-                var healthBarEntity = gameContext.CreateEntity();
+                ServerGameEntity healthBarEntity = gameContext.CreateEntity();
                 GameObject prefab = healthBarStorage.GetPrefab();
                 GameObject go = Object.Instantiate(prefab);
                 go.Link(entity);
-                go.transform.position = new Vector3(0,test.GetHeight(entity.viewType.value));
+                go.transform.position = new Vector3(0,healthBarHeightStorage.GetHeight(entity.viewType.value));
                 Slider slider = go.transform.Find("Slider").GetComponent<Slider>();
                 if (slider == null)
                 {

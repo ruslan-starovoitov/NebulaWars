@@ -17,12 +17,7 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
         
         protected override void Handle(in PlayerInfoMessage message, uint messageId, bool needResponse)
         {
-            // log.Debug($"Информация о игроках messageId "+messageId);
-            ushort playerEntityId = message.EntityIds[PlayerIdStorage.AccountId];
-            // log.Debug($"playerTmpId "+playerTmpId);
-            // log.Debug($"PlayerIdStorage.AccountId "+PlayerIdStorage.AccountId);
-            PlayerIdStorage.PlayerEntityId = playerEntityId;
-            playersStorage.SetNewPlayers(message.EntityIds);
+            playersStorage.SetNewPlayers(message.entityIds);
         }
     }
 }

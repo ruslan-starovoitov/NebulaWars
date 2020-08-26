@@ -70,7 +70,6 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
             ServerGameEntity gameEntity = gameContext.CreateEntity();
             gameEntity.AddId(id);
             gameEntity.AddViewType(viewTransform.viewTypeEnum);
-
             Quaternion quaternion = Quaternion.AngleAxis(viewTransform.angle, Vector3.up);
             gameEntity.AddSpawnTransform(viewTransform.GetPosition(), quaternion);
         }

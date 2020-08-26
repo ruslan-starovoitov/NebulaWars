@@ -1,4 +1,5 @@
-﻿using Entitas;
+﻿using System.Globalization;
+using Entitas;
 using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.BattleScene.ECS.NewSystems
@@ -20,13 +21,13 @@ namespace Code.Scenes.BattleScene.ECS.NewSystems
         {
             foreach (var entity in healthBarParentsGroup)
             {
-                if (!entity.hasHealth)
+                if (!entity.hasHealthPoints)
                 {
                     log.Error($"если есть HealthBarParent то обязательно должен быть Health");
                     continue;
                 }
                 
-                if (!entity.hasMaxHealth)
+                if (!entity.hasMaxHealthPoints)
                 {
                     log.Error($"если есть HealthBarParent то обязательно должен быть MaxHealth");
                     continue;
@@ -39,8 +40,8 @@ namespace Code.Scenes.BattleScene.ECS.NewSystems
                     continue;
                 }
 
-                healthBarEntity.healthBar.slider.value = 1f* entity.health.value / entity.maxHealth.value;
-                healthBarEntity.healthBar.healthPoints.text = entity.health.value.ToString();
+                healthBarEntity.healthBar.slider.value = 1f* entity.healthPoints.value / entity.maxHealthPoints.value;
+                healthBarEntity.healthBar.healthPoints.text = entity.healthPoints.value.ToString(CultureInfo.InvariantCulture);
             }
         }
     }

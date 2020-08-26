@@ -15,21 +15,21 @@ namespace Code.Scenes.BattleScene.ECS.NewSystems
 
         protected override ICollector<ServerGameEntity> GetTrigger(IContext<ServerGameEntity> context)
         {
-            return context.CreateCollector(ServerGameMatcher.Health.Added(),
-                ServerGameMatcher.MaxHealth.Added());
+            return context.CreateCollector(ServerGameMatcher.HealthPoints.Added(),
+                ServerGameMatcher.MaxHealthPoints.Added());
         }
 
         protected override bool Filter(ServerGameEntity entity)
         {
-            return entity.hasHealth && entity.hasMaxHealth && entity.hasHealthBarParent;
+            return entity.hasHealthPoints && entity.hasMaxHealthPoints && entity.hasHealthBarParent;
         }
 
         protected override void Execute(List<ServerGameEntity> entities)
         {
             foreach (var entity in entities)
             {
-                int health = entity.health.value;
-                int maxHealth = entity.maxHealth.value;
+                string health = entity.healthPoints.value.ToString();
+                string maxHealth = entity.maxHealthPoints.value.ToString();
                 string value = $"{health}/{maxHealth}";
                 entity.healthBarParent.healthBarEntity.healthBar.healthPoints.text = value;
                 // log.Debug("Изменение хп "+value);
