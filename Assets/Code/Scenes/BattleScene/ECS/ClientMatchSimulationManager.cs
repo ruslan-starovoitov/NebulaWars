@@ -1,5 +1,6 @@
 ﻿using Code.Common.Storages;
 using Code.Scenes.BattleScene.ECS.NewSystems;
+using Code.Scenes.BattleScene.Experimental.Prediction;
 using Code.Scenes.BattleScene.Scripts;
 using Code.Scenes.BattleScene.Scripts.Ui;
 using Code.Scenes.BattleScene.Udp;
@@ -30,16 +31,16 @@ namespace Code.Scenes.BattleScene.ECS
             BattleRoyaleClientMatchModel matchModel = matchModelStorage.GetMatchModel();
             UdpSendUtils udpSendUtils = udpManager.CreateConnection(matchModel);
 
-            clientMatchSimulation = new ClientMatchSimulation(battleUiController, udpSendUtils, matchModel);
+            PingStatisticsStorage pingStatisticsStorage = new PingStatisticsStorage(udpSendUtils);
+            clientMatchSimulation = new ClientMatchSimulation(battleUiController, udpSendUtils, matchModel, pingStatisticsStorage);
             
-            var playersStorage = clientMatchSimulation. GetIPlayersStorage();
-            var transformStorage = clientMatchSimulation.GetITransformStorage();
-            var healthPointsStorage = clientMatchSimulation.GetIHealthPointsStorage();
-            var maxHealthPointsMessagePackStorage = clientMatchSimulation.GetIMaxHealthPointsMessagePackStorage();
-            var pingPresenter = clientMatchSimulation.GetPingPresenter();
+            var playersStorage = clientMatchSimulation. GetPlayersStorage();
+            var transformStorage = clientMatchSimulation.GetTransformStorage();
+            var healthPointsStorage = clientMatchSimulation.GetHealthPointsStorage();
+            var maxHealthPointsMessagePackStorage = clientMatchSimulation.GetMaxHealthPointsMessagePackStorage();
             
             var messageWrapperHandler = new MessageWrapperHandler(udpSendUtils, matchModel.MatchId, transformStorage,
-                playersStorage, healthPointsStorage, maxHealthPointsMessagePackStorage, pingPresenter);
+                playersStorage, healthPointsStorage, maxHealthPointsMessagePackStorage, pingStatisticsStorage);
            
             IByteArrayHandler byteArrayHandler = new ByteArrayHandler(messageWrapperHandler);
             

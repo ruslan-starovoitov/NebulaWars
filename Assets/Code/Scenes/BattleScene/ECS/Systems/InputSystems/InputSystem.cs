@@ -2,6 +2,7 @@
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using Entitas;
+using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.PlayerToServer;
 using UnityEngine;
@@ -12,17 +13,20 @@ namespace Code.Scenes.BattleScene.ECS.Systems.InputSystems
     {
         private readonly Joystick attackJoystick;
         private readonly Joystick movementJoystick;
+        private readonly IMatchTimeStorage matchTimeStorage;
         private readonly ITickNumberStorage tickNumberStorage;
-        private readonly InputMessagesHistory inputMessagesHistory;
+        private readonly ClientInputMessagesHistory clientInputMessagesHistory;
         private readonly ILog log = LogManager.CreateLogger(typeof(InputSystem));
 
         public InputSystem(Joystick forMovement, Joystick forAttack,
-            InputMessagesHistory inputMessagesHistory, ITickNumberStorage tickNumberStorage)
+            ClientInputMessagesHistory clientInputMessagesHistory, ITickNumberStorage tickNumberStorage,
+            IMatchTimeStorage matchTimeStorage)
         {
             movementJoystick = forMovement;
             attackJoystick = forAttack;
-            this.inputMessagesHistory = inputMessagesHistory;
+            this.clientInputMessagesHistory = clientInputMessagesHistory;
             this.tickNumberStorage = tickNumberStorage;
+            this.matchTimeStorage = matchTimeStorage;
         }
 
         public void Execute()
@@ -34,11 +38,15 @@ namespace Code.Scenes.BattleScene.ECS.Systems.InputSystems
             float y = movementJoystick.Vertical;
             
 #if UNITY_EDITOR_WIN
-            x = Input.GetAxis("Horizontal");
-            y = Input.GetAxis("Vertical");
+            float tolerance = 0.001f;
+            if (x < tolerance && y < tolerance)
+            {
+                x = Input.GetAxis("Horizontal");
+                y = Input.GetAxis("Vertical");    
+            }
 #endif
             
-            if (Math.Abs(attackJoystick.Horizontal) > 0.001f && Math.Abs(attackJoystick.Vertical) > 0.001f)
+            if (Math.Abs(attackJoystick.Horizontal) > tolerance && Math.Abs(attackJoystick.Vertical) > tolerance)
             {
                 attackAngle = Mathf.Atan2(attackJoystick.Horizontal,  attackJoystick.Vertical) * Mathf.Rad2Deg;
                 if (attackAngle < 0)
@@ -61,11 +69,11 @@ namespace Code.Scenes.BattleScene.ECS.Systems.InputSystems
                 X = x,
                 Y = y,
                 UseAbility = useAbility,
-                TickTimeMs = tickNumber.Value,
+                TickTimeSec = matchTimeStorage.GetMatchTimeSec(),
                 TickNumber = tickNumber.Value
             };
             
-            inputMessagesHistory.AddInput(inputMessageModel);
+            clientInputMessagesHistory.AddInput(inputMessageModel);
         }
     }
 }

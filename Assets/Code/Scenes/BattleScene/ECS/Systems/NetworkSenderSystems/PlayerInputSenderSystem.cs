@@ -2,25 +2,32 @@
 using Entitas;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.PlayerToServer;
+using UnityEditor.Experimental.GraphView;
 
 namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems
 {
     public class PlayerInputSenderSystem : IExecuteSystem
     {
         private readonly UdpSendUtils udpSendUtils;
-        private readonly InputMessagesHistory inputMessagesHistory;
+        private readonly ClientInputMessagesHistory clientInputMessagesHistory;
         private readonly ILog log = LogManager.CreateLogger(typeof(PlayerInputSenderSystem));
 
         public PlayerInputSenderSystem(UdpSendUtils udpSendUtils, 
-            InputMessagesHistory inputMessagesHistory)
+            ClientInputMessagesHistory clientInputMessagesHistory)
         {
             this.udpSendUtils = udpSendUtils;
-            this.inputMessagesHistory = inputMessagesHistory;
+            this.clientInputMessagesHistory = clientInputMessagesHistory;
         }
 
         public void Execute()
         {
-            InputMessagesPack pack = inputMessagesHistory.GetInputModelsPack();
+            InputMessagesPack pack = clientInputMessagesHistory.GetInputModelsPack();
+            if (pack.History.Count == 0)
+            {
+                log.Debug("Не происходит отправка ввода.");
+                return;
+            }
+            
             udpSendUtils.SendInputPack(pack);
         }
     }

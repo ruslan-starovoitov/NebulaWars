@@ -6,6 +6,7 @@ using System.Linq;
 using Code.Scenes.BattleScene.ECS;
 using Code.Scenes.BattleScene.ECS.NewSystems;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
+using Code.Scenes.BattleScene.Experimental.Prediction;
 using Code.Scenes.BattleScene.Scripts;
 using Code.Scenes.BattleScene.Udp.Connection;
 using Plugins.submodules.SharedCode;
@@ -28,7 +29,7 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing
             ITransformStorage transformStorage, IPlayersStorage playersStorage,
             IHealthPointsStorage healthPointsStorage, 
             IMaxHealthPointsMessagePackStorage maxHealthPointsMessagePackStorage,
-            IPingPresenter pingPresenter)
+            IPingStatisticsStorage pingStatisticsStorage)
         {
             receivedMessagesRudp = new HashSet<uint>();
             deliveryConfirmationSender = new DeliveryConfirmationSender(udpSendUtils);
@@ -38,10 +39,9 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing
             handlers[(int)MessageType.Positions] = new PositionsMessageHandler(transformStorage);
             handlers[(int)MessageType.HealthPointsMessagePack] = new HealthPointsPackHandler(healthPointsStorage);
             handlers[(int)MessageType.DeliveryConfirmation] = new RudpConfirmationReceiver();
-            handlers[(int)MessageType.MaxHealthPoints] = new MaxHealthPointsHandler();
             handlers[(int)MessageType.ShowPlayerAchievements] = new ShowPlayerAchievementsHandler(matchId);
             handlers[(int)MessageType.MaxHealthPointsMessagePack] = new MaxHealthPointsMessagePackHandler(maxHealthPointsMessagePackStorage);
-            handlers[(int)MessageType.PingAnswerMessage] = new PingAnswerMessageHandler(pingPresenter);
+            handlers[(int)MessageType.PingAnswerMessage] = new PingAnswerMessageHandler(pingStatisticsStorage);
         }
         
         public void Handle(MessageWrapper messageWrapper)

@@ -115,7 +115,10 @@ namespace Code.Common.NetworkStatistics
 
                 if (datagramId < lastId)
                 {
-                    log.Info($"Сообщения пришли в неправильном порядке {nameof(lastId)} {lastId} {nameof(datagramId)} {datagramId}");
+                    string message = $"Сообщения пришли в неправильном порядке " +
+                                     $"{nameof(lastId)} {lastId} " +
+                                     $"{nameof(datagramId)} {datagramId}";
+                    log.Info(message);
                 }
             }
             

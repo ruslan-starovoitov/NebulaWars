@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Globalization;
+using Code.Scenes.BattleScene.Experimental.Prediction;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using Entitas;
 using Plugins.submodules.SharedCode.Logger;
@@ -10,57 +12,31 @@ namespace Code.Scenes.BattleScene.ECS.NewSystems
     /// <summary>
     /// Раз в n миллисекунд отправляет сообщение на игровой сервер для того, чтобы обновить ip адрес.
     /// </summary>
-    public class PingSystem:IExecuteSystem, IPingPresenter
+    public class PingSystem:IExecuteSystem
     {
         private int index;
         private DateTime nextPingTime;
         private readonly Text pingText;
-        private readonly UdpSendUtils udpSendUtils;
+        private readonly IPingStatisticsStorage pingStatisticsStorage;
         private readonly ILog log = LogManager.CreateLogger(typeof(PingSystem));
-        private readonly ConcurrentQueue<string> showPing = new ConcurrentQueue<string>(); 
-        private readonly ConcurrentDictionary<int, DateTime> pingSendingTime = new ConcurrentDictionary<int, DateTime>();
         
-        public PingSystem(UdpSendUtils udpSendUtils, Text pingText)
+        public PingSystem(Text pingText, IPingStatisticsStorage pingStatisticsStorage)
         {
-            this.udpSendUtils = udpSendUtils;
             this.pingText = pingText;
+            this.pingStatisticsStorage = pingStatisticsStorage;
         }
         
         public void Execute()
         {
-            TrySendPing();
-            TryShowPingTime();
+            pingStatisticsStorage.TrySendPing();
+            ShowPingTime();
         }
 
-        private void TrySendPing()
+        private void ShowPingTime()
         {
-            DateTime now = DateTime.UtcNow;
-            if (nextPingTime < now)
-            {
-                pingSendingTime.TryAdd(index, now);
-                udpSendUtils.SendPingMessage(index);
-                nextPingTime = now + TimeSpan.FromSeconds(0.5f);
-                index++;
-            }
-        }
-
-        private void TryShowPingTime()
-        {
-            while (showPing.TryDequeue(out string result))
-            {
-                pingText.text = result;
-            }
-        }
-
-        public void SetPing(int pingMessageId)
-        {
-            if (pingSendingTime.TryRemove(pingMessageId, out var time))
-            {
-                TimeSpan ping = DateTime.UtcNow - time;
-                int pingMs = (int) ping.TotalMilliseconds;
-                string str = $"{pingMs} ms";
-                showPing.Enqueue(str);
-            }
+            double lastPingSec = pingStatisticsStorage.GetLastPingMs();
+            int lastPingMs = (int) lastPingSec;
+            pingText.text = $"ping: {lastPingMs} ms";
         }
     }
 }

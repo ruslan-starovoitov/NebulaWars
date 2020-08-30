@@ -1,26 +1,33 @@
 ﻿using Code.Common.Storages;
 using Code.Prediction;
+using Code.Scenes.BattleScene.Experimental.Prediction;
 using Entitas;
+using Plugins.submodules.EntitasCore.Prediction;
+using Plugins.submodules.SharedCode.LagCompensation;
 using Plugins.submodules.SharedCode.Logger;
+using Plugins.submodules.SharedCode.Prediction;
 
 namespace Code.Scenes.BattleScene.ECS
 {
+    /// <summary>
+    /// Применяет новую информацию с сервера.
+    /// </summary>
     public class PredictionСheckSystem:IExecuteSystem
     {
         private int lastSavedTickNumber;
-        private readonly GameStateBuffer gameStateBuffer;
+        private readonly ServerGameStateBuffer serverGameStateBuffer;
         private readonly PredictionManager predictionManager;
         private readonly ILog log = LogManager.CreateLogger(typeof(PredictionСheckSystem));
         
-        public PredictionСheckSystem(GameStateBuffer gameStateBuffer, PredictionManager predictionManager)
+        public PredictionСheckSystem(ServerGameStateBuffer serverGameStateBuffer, PredictionManager predictionManager)
         {
-            this.gameStateBuffer = gameStateBuffer;
+            this.serverGameStateBuffer = serverGameStateBuffer;
             this.predictionManager = predictionManager;
         }
         
         public void Execute()
         {
-            int newestTickNumber = gameStateBuffer.GetLastSavedTickNumber();
+            int newestTickNumber = serverGameStateBuffer.GetLastSavedTickNumber();
             
             //Пришла новая информация
             if (lastSavedTickNumber < newestTickNumber)
@@ -28,12 +35,15 @@ namespace Code.Scenes.BattleScene.ECS
                 //Обновить локальный счётчик
                 lastSavedTickNumber = newestTickNumber;
                 
-                GameState newestGameState = gameStateBuffer.GetNewestGameState();
-                GameState currentClientGameState = gameStateBuffer.GetLastShownGameState();
+                FullSnapshot newestFullSnapshot = serverGameStateBuffer.GetNewestGameState();
                 ushort playerEntityId = PlayerIdStorage.PlayerEntityId;
                 
                 //проверить, что игрок правильно предсказан или пересоздать текущее состояник
-                predictionManager.Reconcile(newestGameState, currentClientGameState.tickNumber, playerEntityId);
+                predictionManager.Reconcile(newestFullSnapshot, playerEntityId);
+            }
+            else
+            {
+                //новый тик от сервера не пришёл
             }
         }
     }

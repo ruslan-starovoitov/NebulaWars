@@ -52,8 +52,8 @@ namespace Code.Scenes.BattleScene.Scripts
         [SerializeField] private GameObject exitButton;
 
         private bool isAnimationStarted;
-        private ClientMatchSimulation clientMatchSimulation;
         private BattleUiController battleUiController;
+        private ClientMatchSimulation clientMatchSimulation;
         private LobbyLoaderController lobbyLoaderController;
         private readonly ILog log = LogManager.CreateLogger(typeof(MatchRewardUiController));
         

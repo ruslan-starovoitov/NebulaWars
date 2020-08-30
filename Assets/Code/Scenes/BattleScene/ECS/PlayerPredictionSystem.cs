@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using Code.Common.Storages;
 using Code.Prediction;
+using Code.Scenes.BattleScene.Experimental.Prediction;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using Entitas;
+using Plugins.submodules.EntitasCore.Prediction;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.PlayerToServer;
 using Plugins.submodules.SharedCode.Systems.InputHandling;
@@ -13,28 +15,24 @@ namespace Code.Scenes.BattleScene.ECS
     public class PlayerPredictionSystem : IExecuteSystem
     {
         private readonly PlayerPredictor playerPredictor;
-        private readonly InputMessagesHistory inputMessagesHistory;
+        private readonly ClientInputMessagesHistory clientInputMessagesHistory;
         private readonly ILog log = LogManager.CreateLogger(typeof(PlayerPredictionSystem));
 
-        public PlayerPredictionSystem(Contexts contexts, InputMessagesHistory inputMessagesHistory,
-            PhysicsRollbackManager physicsRollbackManager, PhysicsScene physicsScene,
-            PhysicsForceManager physicsForceManager)
+        public PlayerPredictionSystem(Contexts contexts, ClientInputMessagesHistory clientInputMessagesHistory,
+            PhysicsRollbackManager physicsRollbackManager, PhysicsScene physicsScene)
         {
-            this.inputMessagesHistory = inputMessagesHistory;
-            playerPredictor = new PlayerPredictor(inputMessagesHistory, physicsRollbackManager,
-                physicsScene, physicsForceManager, contexts.serverGame);
+            this.clientInputMessagesHistory = clientInputMessagesHistory;
+            playerPredictor = new PlayerPredictor(clientInputMessagesHistory, physicsRollbackManager,
+                physicsScene,contexts.serverGame);
         }
         
         public void Execute()
         {
             ushort playerEntityId = PlayerIdStorage.PlayerEntityId;
             float deltaTime = Time.deltaTime;
-            List<InputMessageModel> inputMessageModels = new List<InputMessageModel>()
-            {
-                inputMessagesHistory.GetLast()
-            };
+            InputMessageModel inputMessageModel = clientInputMessagesHistory.GetLast();
             //тик
-            playerPredictor.Predict(playerEntityId, inputMessageModels, deltaTime);
+            playerPredictor.Predict(playerEntityId, inputMessageModel, deltaTime);
         }
     }
 }

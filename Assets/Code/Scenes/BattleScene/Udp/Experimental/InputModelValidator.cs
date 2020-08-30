@@ -9,7 +9,7 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
         private readonly ILog log = LogManager.CreateLogger(typeof(InputModelValidator));
         public void Validate(InputMessageModel model)
         {
-            if (Math.Abs(model.TickTimeMs) < 0.001)
+            if (Math.Abs(model.TickTimeSec) < 0.001)
             {
                 log.Error("Пустое время тика");
             }

@@ -45,6 +45,7 @@ namespace Code.Common.Storages
         /// <param name="temporaryId">Временный id игрока на один бой</param>
         public static void SetTmpPlayerId(ushort temporaryId)
         {
+            log.Debug($"TmpPlayerId = {temporaryId}");
             TmpPlayerIdForMatch = temporaryId;
         }
 
