@@ -7,6 +7,7 @@
         {
             lastInputId = lastInputIdArg;
         }
+        
         public uint GetLastInputId()
         {
             return lastInputId;

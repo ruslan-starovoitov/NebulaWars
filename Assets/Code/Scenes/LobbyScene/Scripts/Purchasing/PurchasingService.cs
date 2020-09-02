@@ -58,7 +58,7 @@ namespace Code.Scenes.LobbyScene.Scripts.Purchasing
             extensionsProvider = extensions;
             if (!PlayerIdStorage.TryGetServiceId(out string playerServiceId))
             {
-                log.Fatal("Не удалось достать playerServiceId");
+                log.Error("Не удалось достать playerServiceId");
                 return;
             }
             IGooglePlayStoreExtensions playStoreExtensions =
@@ -162,7 +162,7 @@ namespace Code.Scenes.LobbyScene.Scripts.Purchasing
 #endif
             if (!purchaseIsValid)
             {
-                log.Fatal($"Покупка не прошла локальную проверку");
+                log.Error($"Покупка не прошла локальную проверку");
                 UiSoundsManager.Instance().PlayError();
             }
             

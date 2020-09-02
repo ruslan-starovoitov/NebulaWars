@@ -38,7 +38,7 @@ namespace Code.Scenes.LobbyScene.Scripts
             bool success = purchasingService.TryConfirmPendingPurchase(sku);
             if (!success)
             {
-                log.Fatal($"Сервис платёжной системы не завершил покупку.");
+                log.Error($"Сервис платёжной системы не завершил покупку.");
                 UiSoundsManager.Instance().PlayError();
             }
         }

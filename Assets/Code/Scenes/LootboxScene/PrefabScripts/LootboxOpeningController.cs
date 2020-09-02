@@ -42,7 +42,7 @@ namespace Code.Scenes.LootboxScene.PrefabScripts
         {
             if (isOpened) 
             {
-                log.Fatal("Лутбокс уже открыт.");
+                log.Error("Лутбокс уже открыт.");
                 return;
             }
         

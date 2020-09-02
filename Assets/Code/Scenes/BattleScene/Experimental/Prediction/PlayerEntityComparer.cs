@@ -11,32 +11,33 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
     {
         private readonly TransformComparer transformComparer = new TransformComparer();
         private readonly ILog log = LogManager.CreateLogger(typeof(PlayerEntityComparer));
+        
         /// <summary>
         /// Сравнивает предсказанное игровое состояние и настоящее состояние с сервера для сущности игрока
         /// </summary>
-        /// <param name="snapshot1"></param>
-        /// <param name="snapshot2"></param>
-        /// <param name="avatarId"></param>
-        /// <returns></returns>
         public bool IsSame(Snapshot snapshot1, Snapshot snapshot2, ushort avatarId)
         {
             if (snapshot1 == null)
             {
+                log.Debug("snapshot1 пуст");
                 return false;
             }
             
             if (snapshot2 == null)
             {
+                log.Debug("snapshot2 пуст");
                 return false;
             }
             
             if(!snapshot1.transforms.TryGetValue(avatarId, out var viewTransform1))
             {
+                log.Debug($"snapshot1 не содержит сущности игрока avatarId = {avatarId}");
                 return false;
             }
             
             if(!snapshot2.transforms.TryGetValue(avatarId, out var viewTransform2))
             {
+                log.Debug($"snapshot2 не содержит сущности игрока avatarId = {avatarId}");
                 return false;
             }
             

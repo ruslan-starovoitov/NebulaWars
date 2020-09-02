@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.BattleScene.Experimental.Prediction
@@ -32,7 +33,6 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
             DateTime now = DateTime.UtcNow;
             float clientMatchTime = (float) (now - matchStartTime.Value).TotalSeconds;
             float showMatchTime = clientMatchTime - interpolationDelaySec - snapshotBufferFillingDelay;
-            log.Debug($"clientMatchTime = {clientMatchTime} showMatchTime = {showMatchTime}");
             return showMatchTime;
         }
         
@@ -54,7 +54,14 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
                 //ещё нет тика с таким временем
                 networkProblemWarningView.ShowWarning();
                 //увеличить задержку для заполнения буффера
-                snapshotBufferFillingDelay += delay+0.010f;
+                snapshotBufferFillingDelay += delay+0.1f;
+                if (snapshotBufferFillingDelay > 1)
+                {
+                    string mes = $"Задержка для заполнения буффера больше секунды. " +
+                                 $"snapshotBufferFillingDelay = {snapshotBufferFillingDelay} " +
+                                 $"Нужно выполнить полное переподключение. ";
+                    log.Error(mes);
+                }
                 
                 log.Debug($"4 Новое значение задержки для накопления снимков = {snapshotBufferFillingDelay}");
                 log.Debug("5 Пересчёт времени");

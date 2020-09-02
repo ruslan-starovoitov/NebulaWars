@@ -11,7 +11,7 @@ namespace Code.Scenes.LobbyScene.ECS.AccountData.AccountDataChangingHandlers
             log.Info(nameof(CheckAccountData));
             if (accountInfoArg == null)
             {
-                log.Fatal("accountInfoArg is null");
+                log.Error("accountInfoArg is null");
             }
             else
             {
@@ -21,8 +21,9 @@ namespace Code.Scenes.LobbyScene.ECS.AccountData.AccountDataChangingHandlers
                 }
                 else
                 {
-                    log.Fatal(nameof(CheckAccountData)+" Username is null ");
+                    log.Error(nameof(CheckAccountData)+" Username is null ");
                 }
+                
                 if (accountInfoArg.Warships != null)
                 {
                     if (accountInfoArg.Warships.Count > 0)
@@ -32,19 +33,19 @@ namespace Code.Scenes.LobbyScene.ECS.AccountData.AccountDataChangingHandlers
                             log.Info(warshipCopy.WarshipName);
                             if (warshipCopy.PowerLevel == 0)
                             {
-                                log.Fatal("Нулевой уровень");
+                                log.Error("Нулевой уровень");
                                 throw new Exception("Нулевой уровень");
                             }
                         }    
                     }
                     else
                     {
-                        log.Fatal("Warships count = 0");
+                        log.Error("Warships count = 0");
                     }
                 }
                 else
                 {
-                    log.Fatal("Warships is null");
+                    log.Error("Warships is null");
                 }
             }
         }

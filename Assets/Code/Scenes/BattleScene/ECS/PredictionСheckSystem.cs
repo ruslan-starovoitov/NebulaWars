@@ -36,7 +36,11 @@ namespace Code.Scenes.BattleScene.ECS
                 
                     var newest = snapshotCatalog.GetNewestSnapshot();
                     ushort playerEntityId = PlayerIdStorage.PlayerEntityId;
-                
+
+                    if (playerEntityId == 0)
+                    {
+                        throw new Exception("PlayerEntityId не установлен");
+                    }
                     //проверить, что игрок правильно предсказан или пересоздать текущее состояние
                     predictionManager.Reconcile(newest, playerEntityId);
                 }

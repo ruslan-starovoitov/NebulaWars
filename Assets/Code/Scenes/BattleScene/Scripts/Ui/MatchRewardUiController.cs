@@ -13,6 +13,7 @@ using Code.Scenes.BattleScene.Scripts.Ui;
 using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
 using Libraries.NetworkLibrary.Experimental;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 using UnityEngine.UI;
@@ -168,7 +169,7 @@ namespace Code.Scenes.BattleScene.Scripts
             }
             catch (Exception e)
             {
-                log.Fatal("Ui throw an exception ."+e.Message);   
+                log.Error("Ui throw an exception ."+e.FullMessage());   
             }
         }
        

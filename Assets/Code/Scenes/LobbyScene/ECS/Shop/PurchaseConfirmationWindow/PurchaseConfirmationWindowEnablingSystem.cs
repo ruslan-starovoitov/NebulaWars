@@ -104,7 +104,7 @@ namespace Code.Scenes.LobbyScene.ECS.Shop.PurchaseConfirmationWindow
                     break;
                 case ResourceTypeEnum.HardCurrency:
                     string message = "Жесткая валюта не должна покупать за внтриигровую валюту.";
-                    log.Fatal(message);
+                    log.Error(message);
                     throw new Exception(message);
                 case ResourceTypeEnum.SoftCurrency:
                     softCurrencyPurchaseConfirmationWindowController.Spawn(purchaseModel, shopUiStorage.purchaseConfirmationWindowContent.transform);

@@ -64,7 +64,7 @@ namespace Code.Scenes.BattleScene.ECS
             if (!snapshotManager.IsReady())
             {
                 int bufferLength = snapshotManager.GetBufferLength();
-                log.Debug($"Буффер не заполнен. bufferLength={bufferLength}");
+                log.Debug($"Буффер не заполнен. bufferLength = {bufferLength}");
                 return;
             }
 

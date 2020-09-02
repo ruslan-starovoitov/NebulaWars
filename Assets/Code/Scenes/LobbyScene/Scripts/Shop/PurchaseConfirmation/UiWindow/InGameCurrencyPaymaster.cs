@@ -122,7 +122,7 @@ namespace Code.Scenes.LobbyScene.Scripts.Shop.PurchaseConfirmation.UiWindow
                     return false;
                 }
                 case CostTypeEnum.RealCurrency:
-                    log.Fatal("Покупка за реальную валюту не должна тут обрабатываться");
+                    log.Error("Покупка за реальную валюту не должна тут обрабатываться");
                     sectionTypeEnum = null;
                     return true;
                 case CostTypeEnum.Free:

@@ -22,18 +22,24 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
 
         public void Reconcile(SnapshotWithLastInputId snapshotWithLastInputId, ushort playerId)
         {
-            PredictedSnapshot predictedSnapshot = predictedGameStateStorage
-                .GetByInputId(snapshotWithLastInputId.lastProcessedInputId);
+            uint lastProcessedInputId = snapshotWithLastInputId.lastProcessedInputId;
+            if (lastProcessedInputId == 0)
+            {
+                log.Debug("С сервера пришёл тик с пустым lastProcessedInputId");
+                return;
+            }
+            
+            PredictedSnapshot predictedSnapshot = predictedGameStateStorage.GetByInputId(lastProcessedInputId);
             if (predictedSnapshot == null)
             {
-                log.Error($"Не найдено предсказанное состояние. " +
-                          $"lastProcessedInputId = {snapshotWithLastInputId.lastProcessedInputId}");
+                string mes = $"Не найдено предсказанное состояние. lastProcessedInputId = {lastProcessedInputId}";
+                log.Error(mes);
                 return;
             }
              
             bool isPredictionCorrect = playerEntityComparer
                 .IsSame(predictedSnapshot, snapshotWithLastInputId, playerId);
-
+            
             if (isPredictionCorrect)
             {
                 log.Debug("Правильное предсказание");
@@ -41,6 +47,16 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
             else
             {
                 log.Debug("Не правильное предсказание");
+                //todo создать правильный снимок
+                PredictedSnapshot correctSnapshot = new PredictedSnapshot(predictedSnapshot.dateTime, 
+                    predictedSnapshot.lastInputId);
+                correctSnapshot.Modify(correctSnapshot);
+                
+                //todo нужно заменить неправильный снимок
+                predictedGameStateStorage.PutCorrect(correctSnapshot);
+                
+                
+                //todo вызвать перегенерцию положения игрока
             }
         }
     }

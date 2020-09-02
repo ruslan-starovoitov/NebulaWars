@@ -68,7 +68,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
             foreach (var pair in snapshot.transforms)
             {
                 ushort entityId = pair.Key;
-                var viewTransform = pair.Value;
+                ViewTransformCompressed viewTransform = pair.Value;
                 ServerGameEntity gameEntity = gameContext.GetEntityWithId(entityId);
                 if (gameEntity == null)
                 {
@@ -77,7 +77,6 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                 else
                 {
                     UpdateTransform(gameEntity, viewTransform);
-             
                     ids.Remove(gameEntity.id.value);
                 }
             }

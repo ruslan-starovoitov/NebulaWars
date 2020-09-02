@@ -40,7 +40,7 @@ namespace Code.Scenes.LobbyScene.Scripts.AccountModel
             yield return new WaitUntil(()=>task.IsCompleted);
             if (task.IsFaulted||task.IsCanceled)
             {
-                log.Fatal("Не удалось скачать модель аккаунта");
+                log.Error("Не удалось скачать модель аккаунта");
                 yield break;
             }
             
