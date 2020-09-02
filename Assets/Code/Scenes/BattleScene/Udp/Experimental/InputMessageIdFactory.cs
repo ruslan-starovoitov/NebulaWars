@@ -2,8 +2,8 @@
 {
     public class InputMessageIdFactory
     {
-        private int lastNumber;
-        public int Create()
+        private uint lastNumber;
+        public uint Create()
         {
             lastNumber++;
             return lastNumber;

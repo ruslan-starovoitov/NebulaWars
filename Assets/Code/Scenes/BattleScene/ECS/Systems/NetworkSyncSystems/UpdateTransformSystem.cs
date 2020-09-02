@@ -4,46 +4,68 @@ using System.Linq;
 using Code.Common.Storages;
 using Code.Scenes.BattleScene.Experimental.Prediction;
 using Entitas;
-using Plugins.submodules.SharedCode.LagCompensation;
+using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
 using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 {
+    public class MatchTimeIsTooShort:Exception
+    {
+        
+    }
+    
+    public class MatchTimeIsTooLong:Exception
+    {
+        
+    }
     /// <summary>
     /// Отображает позиции всех обьектов с интерполяцией.
     /// </summary>
-    public class UpdateTransformSystem : IExecuteSystem, IMatchTimeStorage
+    public class UpdateTransformSystem : IExecuteSystem
     {
-        private float matchTime;
         private readonly ServerGameContext gameContext;
-        private readonly ServerGameStateBuffer serverGameStateBuffer;
+        private readonly ISnapshotManager snapshotManager;
+        private readonly IMatchTimeStorage matchTimeStorage;
         private readonly IGroup<ServerGameEntity> withTransformGroup;
         private readonly ILog log = LogManager.CreateLogger(typeof(UpdateTransformSystem));
 
-        public UpdateTransformSystem(Contexts contexts, ServerGameStateBuffer serverGameStateBuffer)
+        public UpdateTransformSystem(Contexts contexts, ISnapshotManager snapshotManager,
+            IMatchTimeStorage matchTimeStorage)
         {
+            this.snapshotManager = snapshotManager;
+            this.matchTimeStorage = matchTimeStorage;
             gameContext = contexts.serverGame;
-            withTransformGroup = contexts.serverGame
-                .GetGroup(ServerGameMatcher.AllOf(ServerGameMatcher.Transform).NoneOf(ServerGameMatcher.HealthBar));
-            this.serverGameStateBuffer = serverGameStateBuffer;
+            var matcher = ServerGameMatcher.AllOf(ServerGameMatcher.Transform).NoneOf(ServerGameMatcher.HealthBar);
+            withTransformGroup = contexts.serverGame.GetGroup(matcher);
         }
 
         public void Execute()
         {
-            if (!serverGameStateBuffer.IsReady(out int bufferLength))
-            {
-                string mes = $"Тик не должен вызыватсья, если gameStateBuffer не готов. " +
-                             $"{nameof(bufferLength)} = {bufferLength}";
-                throw new Exception(mes);
-            }
-            
             HashSet<ushort> ids = new HashSet<ushort>(withTransformGroup
                 .GetEntities()
                 .Select(item => item.id.value));
-            var serializedGameState = serverGameStateBuffer.GetActualGameState(out matchTime);
-            foreach (var pair in serializedGameState.transforms)
+            
+            float matchTime = matchTimeStorage.GetMatchTime();
+
+            Snapshot snapshot;
+            try
+            {
+                snapshot = snapshotManager.CreateInterpolatedSnapshot(matchTime);
+            }
+            catch (Exception e)
+            {
+                log.Error(e.FullMessage());
+                return;
+            }
+
+            if (snapshot == null)
+            {
+                throw new NullReferenceException($"snapshot is null");
+            }
+            
+            foreach (var pair in snapshot.transforms)
             {
                 ushort entityId = pair.Key;
                 var viewTransform = pair.Value;
@@ -95,11 +117,6 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                 log.Debug(mes);
                 entity.ReplaceViewType(viewTransform.viewTypeEnum);
             }
-        }
-
-        public float GetMatchTimeSec()
-        {
-            return matchTime;
         }
     }
 }

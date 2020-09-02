@@ -1,11 +1,10 @@
 ﻿using System;
 using Code.Scenes.BattleScene.Inperpolation;
-using Plugins.submodules.SharedCode.LagCompensation;
+using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
-using Plugins.submodules.SharedCode.Prediction;
 using UnityEngine;
 
-namespace Plugins.submodules.EntitasCore.Prediction
+namespace Code.Scenes.BattleScene.Experimental
 {
     public static class Interpolator
     {
@@ -15,14 +14,14 @@ namespace Plugins.submodules.EntitasCore.Prediction
         /// <param name="p2"></param>
         /// <param name="p3"></param>
         /// <returns></returns>
-        public static FullSnapshot Interpolate(float t, FullSnapshot p0, FullSnapshot p1, FullSnapshot p2, FullSnapshot p3)
+        public static Snapshot Interpolate(float t, Snapshot p0, Snapshot p1, Snapshot p2, Snapshot p3)
         {
             if (t < 0 || 1 < t)
             {
                 throw new ArgumentOutOfRangeException($"t was {t}");
             }
             
-            FullSnapshot result = new FullSnapshot();
+            Snapshot result = new Snapshot();
             foreach (ushort entityId in p2.transforms.Keys)
             {
                 bool v0Exists = p0.transforms.TryGetValue(entityId, out var v0);

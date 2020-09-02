@@ -24,17 +24,18 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
             dict = new SelfCleaningDictionary<InputMessageModel>(10);
         }
         
-        public void AddInput(InputMessageModel model)
+        public uint AddInput(InputMessageModel model)
         {
             inputModelValidator.Validate(model);
             
-            int inputId = inputMessageIdFactory.Create();
+            uint inputId = inputMessageIdFactory.Create();
             dict.Add(inputId, model);
+            return inputId;
         }
 
         public InputMessagesPack GetInputModelsPack()
         {
-            Dictionary<int, InputMessageModel> history = dict.Read();
+            Dictionary<uint, InputMessageModel> history = dict.Read();
             if (history.Count > 10)
             {
                 throw new Exception("Коллекция работает неправильно");
@@ -51,7 +52,7 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
 
         public List<InputMessageModel> Get(int tickNumber)
         {
-            Dictionary<int, InputMessageModel> allHistory = dict.Read();
+            Dictionary<uint, InputMessageModel> allHistory = dict.Read();
             return allHistory.Values.Where(model => model.TickNumber == tickNumber).ToList();
         }
 

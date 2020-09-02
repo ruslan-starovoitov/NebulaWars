@@ -72,7 +72,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                     }
                     else
                     {
-                        log.Debug("Нет сущности с таким id");
+                        log.Debug($"Нет сущности с таким id entityId = {entityId}");
                     }
                 }
             }

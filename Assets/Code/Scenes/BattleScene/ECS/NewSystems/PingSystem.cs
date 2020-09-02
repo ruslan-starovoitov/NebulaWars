@@ -34,7 +34,7 @@ namespace Code.Scenes.BattleScene.ECS.NewSystems
 
         private void ShowPingTime()
         {
-            double lastPingSec = pingStatisticsStorage.GetLastPingMs();
+            double lastPingSec = pingStatisticsStorage.GetLastPingSec();
             int lastPingMs = (int) lastPingSec;
             pingText.text = $"ping: {lastPingMs} ms";
         }

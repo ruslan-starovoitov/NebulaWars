@@ -1,11 +1,9 @@
-﻿using Code.Common.Storages;
-using Code.Prediction;
+﻿using System;
+using Code.Common.Storages;
 using Code.Scenes.BattleScene.Experimental.Prediction;
 using Entitas;
-using Plugins.submodules.EntitasCore.Prediction;
-using Plugins.submodules.SharedCode.LagCompensation;
+using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.Logger;
-using Plugins.submodules.SharedCode.Prediction;
 
 namespace Code.Scenes.BattleScene.ECS
 {
@@ -15,35 +13,41 @@ namespace Code.Scenes.BattleScene.ECS
     public class PredictionСheckSystem:IExecuteSystem
     {
         private int lastSavedTickNumber;
-        private readonly ServerGameStateBuffer serverGameStateBuffer;
         private readonly PredictionManager predictionManager;
+        private readonly ISnapshotCatalog snapshotCatalog;
         private readonly ILog log = LogManager.CreateLogger(typeof(PredictionСheckSystem));
         
-        public PredictionСheckSystem(ServerGameStateBuffer serverGameStateBuffer, PredictionManager predictionManager)
+        public PredictionСheckSystem(ISnapshotCatalog snapshotCatalog, PredictionManager predictionManager)
         {
-            this.serverGameStateBuffer = serverGameStateBuffer;
+            this.snapshotCatalog = snapshotCatalog;
             this.predictionManager = predictionManager;
         }
         
         public void Execute()
         {
-            int newestTickNumber = serverGameStateBuffer.GetLastSavedTickNumber();
-            
-            //Пришла новая информация
-            if (lastSavedTickNumber < newestTickNumber)
+            try
             {
-                //Обновить локальный счётчик
-                lastSavedTickNumber = newestTickNumber;
+                int newestTickNumber = snapshotCatalog.GetNewestTickNumber();
+                //Пришла новая информация
+                if (lastSavedTickNumber < newestTickNumber)
+                {
+                    //Обновить локальный счётчик
+                    lastSavedTickNumber = newestTickNumber;
                 
-                FullSnapshot newestFullSnapshot = serverGameStateBuffer.GetNewestGameState();
-                ushort playerEntityId = PlayerIdStorage.PlayerEntityId;
+                    var newest = snapshotCatalog.GetNewestSnapshot();
+                    ushort playerEntityId = PlayerIdStorage.PlayerEntityId;
                 
-                //проверить, что игрок правильно предсказан или пересоздать текущее состояник
-                predictionManager.Reconcile(newestFullSnapshot, playerEntityId);
+                    //проверить, что игрок правильно предсказан или пересоздать текущее состояние
+                    predictionManager.Reconcile(newest, playerEntityId);
+                }
+                else
+                {
+                    //новый тик от сервера не пришёл
+                }
             }
-            else
+            catch (Exception e)
             {
-                //новый тик от сервера не пришёл
+                log.Error(e.FullMessage());
             }
         }
     }

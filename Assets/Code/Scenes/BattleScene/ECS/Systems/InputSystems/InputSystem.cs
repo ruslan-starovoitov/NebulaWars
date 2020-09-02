@@ -1,8 +1,7 @@
 ﻿using System;
-using Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems;
+using Code.Scenes.BattleScene.Experimental.Prediction;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using Entitas;
-using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.PlayerToServer;
 using UnityEngine;
@@ -13,20 +12,22 @@ namespace Code.Scenes.BattleScene.ECS.Systems.InputSystems
     {
         private readonly Joystick attackJoystick;
         private readonly Joystick movementJoystick;
+        private readonly ISnapshotManager snapshotManager;
         private readonly IMatchTimeStorage matchTimeStorage;
-        private readonly ITickNumberStorage tickNumberStorage;
+        private readonly LastInputIdStorage lastInputIdStorage;
         private readonly ClientInputMessagesHistory clientInputMessagesHistory;
         private readonly ILog log = LogManager.CreateLogger(typeof(InputSystem));
 
         public InputSystem(Joystick forMovement, Joystick forAttack,
-            ClientInputMessagesHistory clientInputMessagesHistory, ITickNumberStorage tickNumberStorage,
-            IMatchTimeStorage matchTimeStorage)
+            ClientInputMessagesHistory clientInputMessagesHistory, ISnapshotManager snapshotManager,
+            IMatchTimeStorage matchTimeStorage, LastInputIdStorage lastInputIdStorage)
         {
             movementJoystick = forMovement;
             attackJoystick = forAttack;
             this.clientInputMessagesHistory = clientInputMessagesHistory;
-            this.tickNumberStorage = tickNumberStorage;
+            this.snapshotManager = snapshotManager;
             this.matchTimeStorage = matchTimeStorage;
+            this.lastInputIdStorage = lastInputIdStorage;
         }
 
         public void Execute()
@@ -39,7 +40,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.InputSystems
             
 #if UNITY_EDITOR_WIN
             float tolerance = 0.001f;
-            if (x < tolerance && y < tolerance)
+            if (Mathf.Abs(x) < tolerance && Mathf.Abs(y) < tolerance)
             {
                 x = Input.GetAxis("Horizontal");
                 y = Input.GetAxis("Vertical");    
@@ -54,12 +55,12 @@ namespace Code.Scenes.BattleScene.ECS.Systems.InputSystems
                     attackAngle += 360;
                 }
             }
-            
-            int? tickNumber = tickNumberStorage.GetCurrentTickNumber();
+
+            float matchTime = matchTimeStorage.GetMatchTime();
+            int? tickNumber = snapshotManager.GetCurrentTickNumber(matchTime);
             if (tickNumber == null)
             {
-                log.Error("Этот вызов не должен произойти. ");
-                return;
+                throw new Exception($"Этот вызов не должен произойти. matchTime = {matchTime} ");
             }
 
             
@@ -69,11 +70,12 @@ namespace Code.Scenes.BattleScene.ECS.Systems.InputSystems
                 X = x,
                 Y = y,
                 UseAbility = useAbility,
-                TickTimeSec = matchTimeStorage.GetMatchTimeSec(),
+                TickTimeSec = matchTime,
                 TickNumber = tickNumber.Value
             };
             
-            clientInputMessagesHistory.AddInput(inputMessageModel);
+            uint lastInputId = clientInputMessagesHistory.AddInput(inputMessageModel);
+            lastInputIdStorage.SetLastInputId(lastInputId);
         }
     }
 }

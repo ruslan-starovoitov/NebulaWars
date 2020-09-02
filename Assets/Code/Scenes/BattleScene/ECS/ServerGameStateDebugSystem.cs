@@ -4,7 +4,6 @@ using Entitas;
 using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.LagCompensation;
 using Plugins.submodules.SharedCode.Logger;
-using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
 using Plugins.submodules.SharedCode.Systems.Spawn;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,21 +11,22 @@ using UnityEngine.SceneManagement;
 namespace Code.Scenes.BattleScene.ECS
 {
     /// <summary>
-    /// В отдельной физической сцене показывает позиции всех объектов согласно последнему пришедшему состоянию.
+    /// В отдельной физической сцене показывает позиции всех
+    /// объектов согласно последнему пришедшему состоянию.
     /// </summary>
     public class ServerGameStateDebugSystem : IExecuteSystem, IInitializeSystem
     {
         private int lastShowedTickNumber;
         private PhysicsScene physicsScene;
         private readonly PrefabsStorage prefabsStorage;
-        private readonly ServerGameStateBuffer serverGameStateBuffer;
+        private readonly ISnapshotCatalog snapshotCatalog;
         private readonly VectorValidator vectorValidator = new VectorValidator();
         private readonly ILog log = LogManager.CreateLogger(typeof(ServerGameStateDebugSystem));
         private readonly Dictionary<ushort, GameObject> dictionary = new Dictionary<ushort, GameObject>();
         
-        public ServerGameStateDebugSystem(ServerGameStateBuffer serverGameStateBuffer, PrefabsStorage prefabsStorage)
+        public ServerGameStateDebugSystem(ISnapshotCatalog snapshotCatalog, PrefabsStorage prefabsStorage)
         {
-            this.serverGameStateBuffer = serverGameStateBuffer;
+            this.snapshotCatalog = snapshotCatalog;
             this.prefabsStorage = prefabsStorage;
         }
         
@@ -39,14 +39,14 @@ namespace Code.Scenes.BattleScene.ECS
         
         public void Execute()
         {
-            int lastSavedTickNumber = serverGameStateBuffer.GetLastSavedTickNumber();
-            if (serverGameStateBuffer.GetLastSavedTickNumber() == lastShowedTickNumber)
+            int newestTickNumber = snapshotCatalog.GetNewestTickNumber();
+            if (newestTickNumber == lastShowedTickNumber)
             {
                 return;
             }
             
-            lastShowedTickNumber = lastSavedTickNumber;
-            var newestGameState = serverGameStateBuffer.GetNewestGameState();
+            lastShowedTickNumber = newestTickNumber;
+            SnapshotWithLastInputId newestGameState = snapshotCatalog.GetNewestSnapshot();
             
             HashSet<ushort> needDelete = new HashSet<ushort>(dictionary.Keys);
             foreach (var pair in newestGameState.transforms)
@@ -81,7 +81,7 @@ namespace Code.Scenes.BattleScene.ECS
             }
 
             //Удалить лишние объекты
-            foreach (var entityId in needDelete)
+            foreach (ushort entityId in needDelete)
             {
                 Object.Destroy(dictionary[entityId]);
             }

@@ -1,13 +1,11 @@
 ﻿using System;
-using Plugins.submodules.EntitasCore.Prediction;
-using Plugins.submodules.SharedCode.LagCompensation;
-using Plugins.submodules.SharedCode.Prediction;
+using Plugins.submodules.SharedCode;
 
-namespace Code.Prediction
+namespace Code.Scenes.BattleScene.Experimental.Prediction
 {
     public class PhysicsRollbackManager
     {
-        public void Rollback(FullSnapshot FullSnapshot, ServerGameContext gameContext)
+        public void Rollback(Snapshot clientSnapshot, ServerGameContext gameContext)
         {
             throw new NotImplementedException();
         }

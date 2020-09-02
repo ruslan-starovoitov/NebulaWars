@@ -11,15 +11,15 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
     public class SelfCleaningDictionary<T>
     {
         private readonly int maxSizeOfCollection;
-        private readonly Dictionary<int, T> history;
+        private readonly Dictionary<uint, T> history;
 
         public SelfCleaningDictionary(int maxSizeOfCollection)
         {
             this.maxSizeOfCollection = maxSizeOfCollection;
-            history = new Dictionary<int, T>(maxSizeOfCollection);
+            history = new Dictionary<uint, T>(maxSizeOfCollection);
         }
 
-        public void Add(int id, T model)
+        public void Add(uint id, T model)
         {
             history.Add(id, model);
             DeleteOldModels();
@@ -40,7 +40,7 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
             }
         }
 
-        public Dictionary<int, T> Read()
+        public Dictionary<uint, T> Read()
         {
             return history;
         }

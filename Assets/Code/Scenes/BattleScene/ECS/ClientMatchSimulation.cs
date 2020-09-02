@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using Code.BattleScene.ECS.Systems;
-using Code.Prediction;
 using Code.Scenes.BattleScene.ECS.NewSystems;
 using Code.Scenes.BattleScene.ECS.Systems.EnvironmentSystems;
 using Code.Scenes.BattleScene.ECS.Systems.InputSystems;
@@ -14,10 +11,8 @@ using Code.Scenes.BattleScene.Udp.Experimental;
 using Code.Scenes.BattleScene.Udp.MessageProcessing;
 using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
 using NetworkLibrary.NetworkLibrary.Http;
-using Plugins.submodules.EntitasCore.Prediction;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.Physics;
-using Plugins.submodules.SharedCode.Prediction;
 using Plugins.submodules.SharedCode.Systems.InputHandling;
 using Plugins.submodules.SharedCode.Systems.Spawn;
 using UnityEngine;
@@ -33,8 +28,9 @@ namespace Code.Scenes.BattleScene.ECS
         private int lastSavedTickNumber;
         private Entitas.Systems systems;
         private IPlayersStorage playersStorage;
+        private ISnapshotManager snapshotManager;
+        private ITransformStorage transformStorage;
         private IHealthPointsStorage healthPointsStorage;
-        private ServerGameStateBuffer serverGameStateBuffer;
         private readonly BattleUiController battleUiController;
         private readonly PingStatisticsStorage pingStatisticsStorage;
         private IMaxHealthPointsMessagePackStorage maxHealthPointsMessagePackStorage;
@@ -65,9 +61,10 @@ namespace Code.Scenes.BattleScene.ECS
 
             pingSystem.Execute();
             
-            if (!serverGameStateBuffer.IsReady(out int bufferLength))
+            if (!snapshotManager.IsReady())
             {
-                log.Info($"gameStateBuffer не готов. {nameof(bufferLength)} = {bufferLength}");
+                int bufferLength = snapshotManager.GetBufferLength();
+                log.Debug($"Буффер не заполнен. bufferLength={bufferLength}");
                 return;
             }
 
@@ -88,7 +85,7 @@ namespace Code.Scenes.BattleScene.ECS
             PhysicsDestroyer physicsDestroyer = new PhysicsDestroyer();
             
             
-            serverGameStateBuffer = new ServerGameStateBuffer();
+            
             contexts = Contexts.sharedInstance;
             int aliveCount = matchModel.PlayerModels.Length;
             
@@ -108,11 +105,13 @@ namespace Code.Scenes.BattleScene.ECS
             pingSystem = new PingSystem(pingText, statisticsStorage);
             ClientInputMessagesHistory clientInputMessagesHistory = new ClientInputMessagesHistory(playerTmpId, matchId);
             PrefabsStorage prefabsStorage = new PrefabsStorage();
+            
+            PhysicsVelocityManager physicsVelocityManager = new PhysicsVelocityManager(); 
 
             PhysicsRollbackManager physicsRollbackManager = new PhysicsRollbackManager();
-            
+            PhysicsRotationManager physicsRotationManager = new PhysicsRotationManager();
             PlayerPredictor playerPredictor = new PlayerPredictor(clientInputMessagesHistory, physicsRollbackManager, physicsScene,
-                 contexts.serverGame) ;
+                 contexts.serverGame, physicsVelocityManager, physicsRotationManager) ;
             PlayerEntityComparer playerEntityComparer = new PlayerEntityComparer();
             PredictedGameStateStorage predictedGameStateStorage = new PredictedGameStateStorage();
             var predictionManager = new PredictionManager(playerPredictor, predictedGameStateStorage, 
@@ -121,17 +120,45 @@ namespace Code.Scenes.BattleScene.ECS
             Joystick movementJoystick = battleUiController.GetMovementJoystick();
             Joystick attackJoystick = battleUiController.GetAttackJoystick();
 
-            var updateTransformSystem = new UpdateTransformSystem(contexts, serverGameStateBuffer);
-            IMatchTimeStorage matchTimeStorage = updateTransformSystem;
+            
+            
+            
+            LastInputIdStorage lastInputIdStorage = new LastInputIdStorage();
+            
+            
+            
+            SnapshotCatalog snapshotCatalog = new SnapshotCatalog();
+            var snapshotInterpolator = new SnapshotInterpolator(snapshotCatalog);
+
+            var consoleStub = new ConsoleNetworkProblemWarningView();
+            NetworkTimeManager timeManager = new NetworkTimeManager(pingStatisticsStorage, snapshotCatalog,
+                consoleStub);
+            INetworkTimeManager networkTimeManager = timeManager;
+            ITimeUpdater timeUpdater = timeManager;
+            
+            snapshotManager  = new SnapshotManager(snapshotCatalog, snapshotInterpolator);
+            
+            
+            transformStorage = new TransformMessageHandler(snapshotCatalog, timeUpdater);
+            
+            
+            MatchTimeSystem matchTimeSystem = new MatchTimeSystem(networkTimeManager);
+            IMatchTimeStorage matchTimeStorage = matchTimeSystem;
+            
+            var updateTransformSystem = new UpdateTransformSystem(contexts, snapshotManager, matchTimeStorage);
+            
             systems = new Entitas.Systems()
-                    .Add(new ServerGameStateDebugSystem(serverGameStateBuffer, prefabsStorage))
-                    // .Add(new PredictionСheckSystem(serverGameStateBuffer, predictionManager))
+                    .Add(matchTimeSystem)
+                    .Add(new ServerGameStateDebugSystem(snapshotCatalog, prefabsStorage))
+                    .Add(new PredictionСheckSystem(snapshotCatalog, predictionManager))
                     .Add(updateTransformSystem)
                     .Add(updatePlayersSystem)
                     .Add(new PrefabSpawnerSystem(contexts, prefabsStorage, physicsSpawner))
 
-                    .Add(new InputSystem(movementJoystick, attackJoystick, clientInputMessagesHistory, serverGameStateBuffer, matchTimeStorage))
-                    .Add(new PlayerPredictionSystem(contexts, clientInputMessagesHistory, physicsRollbackManager, physicsScene))
+                    .Add(new InputSystem(movementJoystick, attackJoystick, clientInputMessagesHistory,
+                        snapshotManager, matchTimeStorage, lastInputIdStorage))
+                    
+                    .Add(new PlayerPredictionSystem(contexts, clientInputMessagesHistory, playerPredictor))
                     
                     .Add(new CameraMoveSystem(contexts, battleUiController.GetMainCamera(), cameraShift))
                     .Add(new LoadingImageSwitcherSystem(contexts, battleUiController.GetLoadingImage()))
@@ -152,10 +179,11 @@ namespace Code.Scenes.BattleScene.ECS
                     
                     
                     
-                    .Add(new PlayerInputSenderSystem(udpSendUtils, clientInputMessagesHistory))
+                    .Add(new InputSenderSystem(udpSendUtils, clientInputMessagesHistory))
                     .Add(new RudpMessagesSenderSystem(udpSendUtils))
                     .Add(new GameContextClearSystem(contexts))
-                    .Add(new GameStateJournalist(contexts, predictedGameStateStorage, matchTimeStorage))
+                    .Add(new PredictedSnapshotHistoryUpdater(contexts, predictedGameStateStorage, matchTimeStorage,
+                        lastInputIdStorage))
                 ;
             return systems;
         }
@@ -174,12 +202,12 @@ namespace Code.Scenes.BattleScene.ECS
 
         public ITransformStorage GetTransformStorage()
         {
-            if (serverGameStateBuffer == null)
+            if (transformStorage == null)
             {
                 throw new NullReferenceException();
             }
             
-            return serverGameStateBuffer;
+            return transformStorage;
         } 
         
         public IPlayersStorage GetPlayersStorage()

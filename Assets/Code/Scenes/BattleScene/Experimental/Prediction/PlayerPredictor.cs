@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using Code.Prediction;
 using Code.Scenes.BattleScene.Udp.Experimental;
+using Plugins.submodules.EntitasCore.NetworkLibrary.Udp.PlayerToServer;
 using Plugins.submodules.SharedCode.LagCompensation;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.PlayerToServer;
 using Plugins.submodules.SharedCode.Prediction;
 using Plugins.submodules.SharedCode.Systems.InputHandling;
 using UnityEngine;
+using Vector3 = System.Numerics.Vector3;
 
 namespace Code.Scenes.BattleScene.Experimental.Prediction
 {
@@ -15,30 +17,33 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
     {
         private readonly PhysicsScene physicsScene;
         private readonly ServerGameContext gameContext;
+        private readonly PhysicsVelocityManager physicsVelocityManager;
+        private readonly PhysicsRotationManager physicsRotationManager;
         private readonly PhysicsRollbackManager physicsRollbackManager;
         private readonly ClientInputMessagesHistory inputMessagesHistory;
-        private readonly LocalPredictionMoveHelper localPredictionMoveHelper;
         private readonly ILog log = LogManager.CreateLogger(typeof(PlayerPredictor));
 
-        public PlayerPredictor(ClientInputMessagesHistory inputMessagesHistory, PhysicsRollbackManager physicsRollbackManager,
-            PhysicsScene physicsScene,  ServerGameContext gameContext)
+        public PlayerPredictor(ClientInputMessagesHistory inputMessagesHistory, 
+            PhysicsRollbackManager physicsRollbackManager, PhysicsScene physicsScene,  ServerGameContext gameContext,
+            PhysicsVelocityManager physicsVelocityManager, PhysicsRotationManager physicsRotationManager)
         {
             this.inputMessagesHistory = inputMessagesHistory;
             this.physicsRollbackManager = physicsRollbackManager;
             this.physicsScene = physicsScene;
             this.gameContext = gameContext;
-            localPredictionMoveHelper = new LocalPredictionMoveHelper();
+            this.physicsVelocityManager = physicsVelocityManager;
+            this.physicsRotationManager = physicsRotationManager;
         }
         
-        public FullSnapshot Predict(FullSnapshot FullSnapshot, ushort playerEntityId)
-        {
-            // //откатить физическую сцену к состоянию
-            // physicsRollbackManager.Rollback(gameState, gameContext);
-            //
-            // var inputMessageModels = inputMessagesHistory.Get(gameState.tickNumber);
-            // Predict(playerEntityId, inputMessageModels, 100);
-            throw new NotImplementedException();
-        }
+        // public ClientSnapshot Predict(ClientSnapshot clientSnapshot, ushort playerEntityId)
+        // {
+        //     // //откатить физическую сцену к состоянию
+        //     // physicsRollbackManager.Rollback(gameState, gameContext);
+        //     //
+        //     // var inputMessageModels = inputMessagesHistory.Get(gameState.tickNumber);
+        //     // Predict(playerEntityId, inputMessageModels, 100);
+        //     throw new NotImplementedException();
+        // }
 
         public void Predict(ushort playerEntityId, InputMessageModel inputMessageModel, float deltaTimeSec)
         {
@@ -52,16 +57,14 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
             //линейное движение игрока
             ServerGameEntity playerEntity = gameContext.GetEntityWithId(playerEntityId);
             Rigidbody warshipRigidbody = playerEntity.rigidbody.value;
-            localPredictionMoveHelper.Move(warshipRigidbody, inputMessageModel);
+            UnityEngine.Vector3 inputVector = inputMessageModel.GetVector3();
+            float maxSpeed = 10f;
+            physicsVelocityManager.ApplyVelocity(warshipRigidbody, inputVector, maxSpeed);
             
             //вращательное движение игрока
             if (!float.IsNaN(inputMessageModel.Angle))
             {
-                float angularVelocity = 0.5f;
-                Quaternion currentRotation = playerEntity.rigidbody.value.rotation;
-                Quaternion desiredRotation = Quaternion.Euler(0,inputMessageModel.Angle,0);
-                Quaternion actualRotQ = Quaternion.RotateTowards(currentRotation, desiredRotation, angularVelocity); 
-                playerEntity.rigidbody.value.MoveRotation(actualRotQ);    
+                physicsRotationManager.ApplyRotation(playerEntity.rigidbody.value, inputMessageModel.Angle, 3);
             }
 
             //todo спавн пуль игрока

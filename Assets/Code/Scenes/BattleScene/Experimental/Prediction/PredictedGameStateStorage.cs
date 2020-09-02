@@ -1,104 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using Plugins.submodules.SharedCode.LagCompensation;
 using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.BattleScene.Experimental.Prediction
 {
+    /// <summary>
+    /// Хранит игровые состояния в которых позиция клиента предсказана.
+    /// </summary>
     public class PredictedGameStateStorage
     {
         private readonly ILog log = LogManager.CreateLogger(typeof(PredictedGameStateStorage));
-        private readonly SortedDictionary<float, FullSnapshot> history = new SortedDictionary<float, FullSnapshot>();
-        
-        public void PutPredicted(FullSnapshot FullSnapshot)
+        private readonly SortedDictionary<DateTime, PredictedSnapshot> history =
+            new SortedDictionary<DateTime, PredictedSnapshot>();
+
+        public void PutPredicted(PredictedSnapshot predictedSnapshot)
         {
-            float time = FullSnapshot.tickMatchTimeSec;
+            var time = predictedSnapshot.dateTime;
             if (!history.ContainsKey(time))
             {
-                history.Add(time, FullSnapshot);
+                history.Add(time, predictedSnapshot);
             }
             else
             {
                 log.Error($"Игровое состояние с таким временем уже есть. time = {time}");
             }
         }
-
-        public void PutCorrect(FullSnapshot FullSnapshot)
+        
+        public PredictedSnapshot GetByInputId(uint lastProcessedInputId)
         {
-            float time = FullSnapshot.tickMatchTimeSec;
-            if (history.ContainsKey(time))
+            if (history.Values.Count == 0)
             {
-                history[FullSnapshot.tickMatchTimeSec] = FullSnapshot;
+                log.Error($"Нет предсказанных состояний lastProcessedInputId {lastProcessedInputId}");
+                return null;
+            }
+            
+            List<PredictedSnapshot> list = history.Values.ToList();
+            for (int index = list.Count - 1; index >= 0; index--)
+            {
+                PredictedSnapshot snapshot = list[index];
+                if (snapshot.lastInputId == lastProcessedInputId)
+                {
+                    return snapshot;
+                }
+                
+                if (snapshot.lastInputId < lastProcessedInputId)
+                {
+                    return list[index + 1];
+                }
+            }
+            
+            throw new Exception("Не удалось найти состояние по вводу. " +
+                                $"lastProcessedInputId = {lastProcessedInputId} " +
+                                $"кол-во предсказанных состояний = {list.Count} " +
+                                $"maxInputId = {list.LastOrDefault()?.lastInputId} " +
+                                $"minInputId = {list.FirstOrDefault()?.lastInputId} ");
+        }
+
+        public void PutCorrect(PredictedSnapshot predictedSnapshot)
+        {
+            if (history.ContainsKey(predictedSnapshot.dateTime))
+            {
+                history[predictedSnapshot.dateTime] = predictedSnapshot;
             }
             else
             {
                 log.Error("Нет состояния с таким временем");
-            }
-        }
-
-        [CanBeNull]
-        public FullSnapshot GetClosestByTime(float matchTime)
-        {
-            if (history.Count <= 1)
-            {
-                return null;
-            }
-            
-            FullSnapshot earlier = null; 
-            FullSnapshot later = null; 
-            foreach (KeyValuePair<float, FullSnapshot> pair in history)
-            {
-                float tickMatchTime = pair.Key;
-                if (matchTime < tickMatchTime)
-                {
-                    later = pair.Value;
-                    break;
-                }
-                else
-                {
-                    earlier = pair.Value;
-                }
-            }
-
-            if (later == null)
-            {
-                string message = $"Не найдено игровое состояние позже нужного. " +
-                                 $"matchTime = {matchTime}" +
-                                 $"min = {history.Keys.Min()} " +
-                                 $"max = {history.Keys.Max()} "
-                    ;
-                log.Error(message);
-                return null;
-            }
-            
-            if (earlier == null)
-            {
-                string mes = "Этого не должно произойти так как была проверка count != 0. " + history.Count;
-                throw new Exception(mes);
-            }
-
-            //Какое из состояний ближе к нужному
-            float earlierDelta = matchTime - earlier.tickMatchTimeSec;
-            float laterDelta = later.tickMatchTimeSec - matchTime;
-            if (earlierDelta < laterDelta)
-            {
-                if (earlierDelta > 0.1f)
-                {
-                    throw new Exception("Слишком большой зазор");
-                }
-                
-                return earlier;
-            }
-            else
-            {
-                if (laterDelta > 0.1f)
-                {
-                    throw new Exception("Слишком большой зазор");
-                }
-                
-                return later;
             }
         }
     }

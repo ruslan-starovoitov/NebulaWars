@@ -6,11 +6,12 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
 {
     public class PingStatisticsStorage:IPingStatisticsStorage
     {
-        private double lastPingValueSec;
         private DateTime nextPingTime;
         private int lastPingMessageId;
+        private double lastPingValueSec;
         private readonly UdpSendUtils udpSendUtils;
-        private readonly ConcurrentDictionary<int, DateTime> pingMessageSendingHistory = new ConcurrentDictionary<int, DateTime>();
+        private readonly ConcurrentDictionary<int, DateTime> pingMessageSendingHistory 
+            = new ConcurrentDictionary<int, DateTime>();
         
         public PingStatisticsStorage(UdpSendUtils udpSendUtils)
         {
@@ -29,7 +30,7 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
             }
         }
         
-        public float GetLastPingMs()
+        public float GetLastPingSec()
         {
             return (float)lastPingValueSec;
         }

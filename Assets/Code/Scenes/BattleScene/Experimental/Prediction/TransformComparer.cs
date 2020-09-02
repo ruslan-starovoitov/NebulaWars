@@ -10,9 +10,10 @@ namespace Plugins.submodules.SharedCode.Prediction
         
         public bool IsSame(ViewTransformCompressed viewTransform1, ViewTransformCompressed viewTransform2)
         {
-            bool sameAngle = Math.Abs(viewTransform1.Angle - viewTransform2.Angle) < 1;
+            // bool sameAngle = Math.Abs(viewTransform1.Angle - viewTransform2.Angle) < 1;
+            bool sameAngle = true;
             bool sameX = Math.Abs(viewTransform1.X - viewTransform2.X) < 1;
-            bool sameZ = Math.Abs(viewTransform1.Z - viewTransform2.X) < 1;
+            bool sameZ = Math.Abs(viewTransform1.Z - viewTransform2.Z) < 1;
             bool sameViewType = viewTransform1.viewTypeEnum == viewTransform2.viewTypeEnum;
 
             if (!sameAngle)

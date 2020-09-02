@@ -3,7 +3,7 @@
     public interface IPingStatisticsStorage
     {
         void TrySendPing();
-        float GetLastPingMs();
+        float GetLastPingSec();
         void PingAnswer(int messagePingMessageId);
     }
 }

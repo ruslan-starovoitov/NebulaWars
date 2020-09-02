@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Code.Common.Storages;
-using Code.Prediction;
 using Code.Scenes.BattleScene.Experimental.Prediction;
 using Code.Scenes.BattleScene.Udp.Experimental;
 using Entitas;
-using Plugins.submodules.EntitasCore.Prediction;
+using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.PlayerToServer;
-using Plugins.submodules.SharedCode.Systems.InputHandling;
 using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS
@@ -19,20 +17,26 @@ namespace Code.Scenes.BattleScene.ECS
         private readonly ILog log = LogManager.CreateLogger(typeof(PlayerPredictionSystem));
 
         public PlayerPredictionSystem(Contexts contexts, ClientInputMessagesHistory clientInputMessagesHistory,
-            PhysicsRollbackManager physicsRollbackManager, PhysicsScene physicsScene)
+            PlayerPredictor playerPredictor)
         {
             this.clientInputMessagesHistory = clientInputMessagesHistory;
-            playerPredictor = new PlayerPredictor(clientInputMessagesHistory, physicsRollbackManager,
-                physicsScene,contexts.serverGame);
+            this.playerPredictor = playerPredictor;
         }
         
         public void Execute()
         {
-            ushort playerEntityId = PlayerIdStorage.PlayerEntityId;
-            float deltaTime = Time.deltaTime;
-            InputMessageModel inputMessageModel = clientInputMessagesHistory.GetLast();
-            //тик
-            playerPredictor.Predict(playerEntityId, inputMessageModel, deltaTime);
+            try
+            {
+                ushort playerEntityId = PlayerIdStorage.PlayerEntityId;
+                float deltaTime = Time.deltaTime;
+                InputMessageModel inputMessageModel = clientInputMessagesHistory.GetLast();
+                //тик
+                playerPredictor.Predict(playerEntityId, inputMessageModel, deltaTime);
+            }
+            catch (Exception e)
+            {
+                log.Error(e.FullMessage());
+            }
         }
     }
 }

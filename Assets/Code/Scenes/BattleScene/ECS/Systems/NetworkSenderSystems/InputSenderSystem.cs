@@ -6,13 +6,13 @@ using UnityEditor.Experimental.GraphView;
 
 namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems
 {
-    public class PlayerInputSenderSystem : IExecuteSystem
+    public class InputSenderSystem : IExecuteSystem
     {
         private readonly UdpSendUtils udpSendUtils;
         private readonly ClientInputMessagesHistory clientInputMessagesHistory;
-        private readonly ILog log = LogManager.CreateLogger(typeof(PlayerInputSenderSystem));
+        private readonly ILog log = LogManager.CreateLogger(typeof(InputSenderSystem));
 
-        public PlayerInputSenderSystem(UdpSendUtils udpSendUtils, 
+        public InputSenderSystem(UdpSendUtils udpSendUtils, 
             ClientInputMessagesHistory clientInputMessagesHistory)
         {
             this.udpSendUtils = udpSendUtils;

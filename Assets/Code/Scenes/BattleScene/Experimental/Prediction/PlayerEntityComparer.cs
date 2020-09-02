@@ -1,11 +1,8 @@
-﻿using System;
-using Plugins.submodules.EntitasCore.Prediction;
-using Plugins.submodules.SharedCode.LagCompensation;
+﻿using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.Logger;
-using Plugins.submodules.SharedCode.NetworkLibrary.Udp.ServerToPlayer.PositionMessages;
 using Plugins.submodules.SharedCode.Prediction;
 
-namespace Code.Prediction
+namespace Code.Scenes.BattleScene.Experimental.Prediction
 {
     /// <summary>
     /// При получении нового тика от игрового сервера проверяет, что аватар игрока был правильно предсказан
@@ -17,28 +14,28 @@ namespace Code.Prediction
         /// <summary>
         /// Сравнивает предсказанное игровое состояние и настоящее состояние с сервера для сущности игрока
         /// </summary>
-        /// <param name="FullSnapshot1"></param>
-        /// <param name="FullSnapshot2"></param>
+        /// <param name="snapshot1"></param>
+        /// <param name="snapshot2"></param>
         /// <param name="avatarId"></param>
         /// <returns></returns>
-        public bool IsSame(FullSnapshot FullSnapshot1, FullSnapshot FullSnapshot2, ushort avatarId)
+        public bool IsSame(Snapshot snapshot1, Snapshot snapshot2, ushort avatarId)
         {
-            if (FullSnapshot1 == null)
+            if (snapshot1 == null)
             {
                 return false;
             }
             
-            if (FullSnapshot2 == null)
+            if (snapshot2 == null)
             {
                 return false;
             }
             
-            if(!FullSnapshot1.transforms.TryGetValue(avatarId, out var viewTransform1))
+            if(!snapshot1.transforms.TryGetValue(avatarId, out var viewTransform1))
             {
                 return false;
             }
             
-            if(!FullSnapshot2.transforms.TryGetValue(avatarId, out var viewTransform2))
+            if(!snapshot2.transforms.TryGetValue(avatarId, out var viewTransform2))
             {
                 return false;
             }
