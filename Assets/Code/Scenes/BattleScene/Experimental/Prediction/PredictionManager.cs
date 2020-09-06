@@ -7,6 +7,8 @@ using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.LagCompensation;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.PlayerToServer;
+using Plugins.submodules.SharedCode.Systems.InputHandling;
+using UnityEngine;
 
 namespace Code.Scenes.BattleScene.Experimental.Prediction
 {
@@ -85,9 +87,20 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
                 // log.Info("=============================================");
                 // log.Info("=============================================");
                 //
-                // log.Info("Кол-во снимков, которые будут пересчитаны " + inputs.Count);
+                log.Debug("Кол-во снимков, которые будут пересчитаны " + inputs.Count);
                 //todo тут можно сократить кол-во вызовов перегенерации физики за счёт суммирования векторов
                 //и нахождения среднего
+                
+                
+                // List<KeyValuePair<uint, InputMessageModel>> inputsForReconcile = new List<KeyValuePair<uint, InputMessageModel>>();
+                //
+                // //Из скольки векторов будет находится средний
+                // //todo достать из истории тиков сервера
+                // int clientFrequencyCoefficient = 6;
+                // Vector3Utils vector3Utils = new Vector3Utils();
+                // List<Vector3> velocityVectors = new List<Vector3>();
+                // vector3Utils.GetVelocityVector()
+
 
                 DateTime startTime = DateTime.UtcNow;
                 //вызвать перегенерцию положения игрока для каждого ввода
@@ -97,9 +110,9 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
                     InputMessageModel inputMessageModel = pair.Value;
 
                     var correctPredictedSnapshot = predictedGameStateStorage.GetByInputId(inputMessageId - 1)
-                                                   ?? throw new NullReferenceException();
+                                                ?? throw new NullReferenceException();
                     var wrongPredictedSnapshot = predictedGameStateStorage.GetByInputId(inputMessageId) 
-                                                 ?? throw new NullReferenceException();
+                                                ?? throw new NullReferenceException();
 
                     if (correctPredictedSnapshot.lastInputId != inputMessageId - 1)
                     {
@@ -130,7 +143,7 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
                 DateTime finishTime = DateTime.UtcNow;
 
                 int reconcileTime = (finishTime - startTime).Milliseconds;
-                // log.Debug($"reconcileTime = {reconcileTime}");
+                log.Debug($"reconcileTime = {reconcileTime}");
             }
             else
             {

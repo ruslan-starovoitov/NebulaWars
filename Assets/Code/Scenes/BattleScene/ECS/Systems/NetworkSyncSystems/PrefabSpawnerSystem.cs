@@ -14,6 +14,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
     /// </summary>
     public class PrefabSpawnerSystem:ReactiveSystem<ServerGameEntity>
     {
+        private readonly int playersLayerNumber = LayerMask.NameToLayer("Players");
         private readonly PrefabsStorage prefabsStorage;
         private readonly PhysicsSpawner physicsSpawner;
         private readonly ILog log = LogManager.CreateLogger(typeof(PrefabSpawnerSystem));
@@ -45,6 +46,11 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                 Vector3 position = entity.spawnTransform.position;
                 Quaternion rotation = entity.spawnTransform.rotation;
                 GameObject go = physicsSpawner.Spawn(prefab, position, rotation);
+                if (viewType == ViewTypeEnum.StarSparrow1)
+                {
+                    go.layer = playersLayerNumber;
+                }
+                
                 entity.AddView(go);
                 entity.AddTransform(go.transform);
                 go.Link(entity);
