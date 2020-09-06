@@ -3,6 +3,7 @@ using Code.Common.Storages;
 using Code.Scenes.BattleScene.Experimental.Prediction;
 using Entitas;
 using Plugins.submodules.SharedCode;
+using Plugins.submodules.SharedCode.LagCompensation;
 using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.BattleScene.ECS
@@ -13,8 +14,8 @@ namespace Code.Scenes.BattleScene.ECS
     public class PredictionСheckSystem:IExecuteSystem
     {
         private int lastSavedTickNumber;
-        private readonly PredictionManager predictionManager;
         private readonly ISnapshotCatalog snapshotCatalog;
+        private readonly PredictionManager predictionManager;
         private readonly ILog log = LogManager.CreateLogger(typeof(PredictionСheckSystem));
         
         public PredictionСheckSystem(ISnapshotCatalog snapshotCatalog, PredictionManager predictionManager)
@@ -33,12 +34,11 @@ namespace Code.Scenes.BattleScene.ECS
                 {
                     //Обновить локальный счётчик
                     lastSavedTickNumber = newestTickNumber;
-                
-                    var newest = snapshotCatalog.GetNewestSnapshot();
+                    SnapshotWithLastInputId newest = snapshotCatalog.GetNewestSnapshot();
                     ushort playerEntityId = PlayerIdStorage.PlayerEntityId;
-
                     if (playerEntityId == 0)
                     {
+                        //todo изменить порядок установки playerEntityId
                         throw new Exception("PlayerEntityId не установлен");
                     }
                     //проверить, что игрок правильно предсказан или пересоздать текущее состояние

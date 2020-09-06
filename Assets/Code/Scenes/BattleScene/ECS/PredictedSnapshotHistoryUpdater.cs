@@ -7,6 +7,7 @@ using Entitas;
 using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.LagCompensation;
 using Plugins.submodules.SharedCode.Logger;
+using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS
 {
@@ -32,7 +33,8 @@ namespace Code.Scenes.BattleScene.ECS
             Snapshot snapshot = snapshotFactory.Create();
             DateTime now = DateTime.UtcNow;
             uint lastInputId = lastInputIdStorage.GetLastInputId();
-            PredictedSnapshot predictedSnapshot = new PredictedSnapshot(now, lastInputId);
+            float deltaTimeSec = Time.deltaTime;
+            PredictedSnapshot predictedSnapshot = new PredictedSnapshot(now, lastInputId, deltaTimeSec);
             predictedSnapshot.Modify(snapshot);
             predictedGameStateStorage.PutPredicted(predictedSnapshot);
         }
@@ -41,7 +43,7 @@ namespace Code.Scenes.BattleScene.ECS
         {
             DateTime now = DateTime.UtcNow;
             uint lastInputId = 0;
-            PredictedSnapshot predictedSnapshot = new PredictedSnapshot(now, lastInputId);
+            PredictedSnapshot predictedSnapshot = new PredictedSnapshot(now, lastInputId, 0);
             predictedGameStateStorage.PutPredicted(predictedSnapshot);
         }
     }

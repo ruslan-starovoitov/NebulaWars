@@ -1,4 +1,5 @@
 ﻿using System;
+using Code.Common.Storages;
 using Code.Scenes.BattleScene.ECS.NewSystems;
 using Code.Scenes.BattleScene.ECS.Systems.EnvironmentSystems;
 using Code.Scenes.BattleScene.ECS.Systems.InputSystems;
@@ -11,12 +12,13 @@ using Code.Scenes.BattleScene.Udp.Experimental;
 using Code.Scenes.BattleScene.Udp.MessageProcessing;
 using Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers;
 using NetworkLibrary.NetworkLibrary.Http;
+using Plugins.submodules.SharedCode;
+using Plugins.submodules.SharedCode.LagCompensation;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.Physics;
 using Plugins.submodules.SharedCode.Systems.InputHandling;
 using Plugins.submodules.SharedCode.Systems.Spawn;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Code.Scenes.BattleScene.ECS
@@ -51,33 +53,12 @@ namespace Code.Scenes.BattleScene.ECS
             systems.Initialize();
         }
 
-        
-        public void Tick()
-        {
-            if (systems == null)
-            {
-                return;
-            }
-
-            pingSystem.Execute();
-            
-            if (!snapshotManager.IsReady())
-            {
-                int bufferLength = snapshotManager.GetBufferLength();
-                log.Debug($"Буффер не заполнен. bufferLength = {bufferLength}");
-                return;
-            }
-
-            systems.Execute();
-            systems.Cleanup();
-        }
-
         private Entitas.Systems CreateSystems(UdpSendUtils udpSendUtils, BattleRoyaleClientMatchModel matchModel,
             PingStatisticsStorage statisticsStorage)
         {
             
-            var loadSceneParameters = new LoadSceneParameters(LoadSceneMode.Additive, LocalPhysicsMode.Physics3D);
-            Scene matchScene = SceneManager.LoadScene("EmptyScene", loadSceneParameters);
+            GameSceneFactory gameSceneFactory = new GameSceneFactory();
+            var matchScene = gameSceneFactory.Create();
             var physicsScene = matchScene.GetPhysicsScene();
             
             PhysicsSpawner physicsSpawner = new PhysicsSpawner(matchScene);
@@ -108,14 +89,21 @@ namespace Code.Scenes.BattleScene.ECS
             
             PhysicsVelocityManager physicsVelocityManager = new PhysicsVelocityManager(); 
 
-            PhysicsRollbackManager physicsRollbackManager = new PhysicsRollbackManager();
+            ArrangeTransformSystem[] arrangeCollidersSystems = 
+            {
+                new WithHpArrangeTransformSystem(contexts)
+            };
+            PhysicsRollbackManager physicsRollbackManager = new PhysicsRollbackManager(arrangeCollidersSystems);
+            
             PhysicsRotationManager physicsRotationManager = new PhysicsRotationManager();
-            PlayerPredictor playerPredictor = new PlayerPredictor(clientInputMessagesHistory, physicsRollbackManager, physicsScene,
-                 contexts.serverGame, physicsVelocityManager, physicsRotationManager) ;
+            SnapshotFactory snapshotFactory = new SnapshotFactory(contexts.serverGame);
+            PlayerPredictor playerPredictor = new PlayerPredictor(physicsRollbackManager, matchScene,
+                 contexts.serverGame, physicsVelocityManager, physicsRotationManager, snapshotFactory) ;
             PlayerEntityComparer playerEntityComparer = new PlayerEntityComparer();
             PredictedGameStateStorage predictedGameStateStorage = new PredictedGameStateStorage();
+            
             var predictionManager = new PredictionManager(playerPredictor, predictedGameStateStorage, 
-                playerEntityComparer, pingStatisticsStorage);
+                playerEntityComparer,  clientInputMessagesHistory);
 
             Joystick movementJoystick = battleUiController.GetMovementJoystick();
             Joystick attackJoystick = battleUiController.GetAttackJoystick();
@@ -149,15 +137,15 @@ namespace Code.Scenes.BattleScene.ECS
             
             systems = new Entitas.Systems()
                     .Add(matchTimeSystem)
-                    .Add(new ServerGameStateDebugSystem(snapshotCatalog, prefabsStorage))
+                    // .Add(new ServerGameStateDebugSystem(snapshotCatalog, prefabsStorage))
                     .Add(new PredictionСheckSystem(snapshotCatalog, predictionManager))
                     .Add(updateTransformSystem)
                     .Add(updatePlayersSystem)
                     .Add(new PrefabSpawnerSystem(contexts, prefabsStorage, physicsSpawner))
 
-                    .Add(new InputSystem(movementJoystick, attackJoystick, clientInputMessagesHistory,
-                        snapshotManager, matchTimeStorage, lastInputIdStorage))
+                    .Add(new InputSystem(movementJoystick, attackJoystick, clientInputMessagesHistory, snapshotManager, matchTimeStorage, lastInputIdStorage))
                     
+                    .Add(new PlayerStopSystem(contexts))
                     .Add(new PlayerPredictionSystem(contexts, clientInputMessagesHistory, playerPredictor))
                     
                     .Add(new CameraMoveSystem(contexts, battleUiController.GetMainCamera(), cameraShift))
@@ -182,10 +170,36 @@ namespace Code.Scenes.BattleScene.ECS
                     .Add(new InputSenderSystem(udpSendUtils, clientInputMessagesHistory))
                     .Add(new RudpMessagesSenderSystem(udpSendUtils))
                     .Add(new GameContextClearSystem(contexts))
-                    .Add(new PredictedSnapshotHistoryUpdater(contexts, predictedGameStateStorage, matchTimeStorage,
-                        lastInputIdStorage))
+                    .Add(new PredictedSnapshotHistoryUpdater(contexts, predictedGameStateStorage, matchTimeStorage, lastInputIdStorage))
                 ;
             return systems;
+        }
+        
+        
+        public void Tick()
+        {
+            if (systems == null)
+            {
+                return;
+            }
+
+            pingSystem.Execute();
+            
+            if (!snapshotManager.IsReady())
+            {
+                int bufferLength = snapshotManager.GetBufferLength();
+                log.Info($"Буффер не заполнен. bufferLength = {bufferLength}");
+                return;
+            }
+
+            if (PlayerIdStorage.PlayerEntityId == 0)
+            {
+                log.Info("Пустой id аккаунта.");
+                return;
+            }
+            
+            systems.Execute();
+            systems.Cleanup();
         }
         
         public void StopSystems()

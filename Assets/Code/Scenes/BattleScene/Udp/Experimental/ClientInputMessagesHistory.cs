@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.PlayerToServer;
 
 namespace Code.Scenes.BattleScene.Udp.Experimental
@@ -13,6 +12,7 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
     {
         private readonly int matchId;
         private readonly ushort playerTmpId;
+        private const int MaxSizeOfCollection = 60;
         private readonly SelfCleaningDictionary<InputMessageModel> dict;
         private readonly InputModelValidator inputModelValidator = new InputModelValidator();
         private readonly InputMessageIdFactory inputMessageIdFactory = new InputMessageIdFactory();
@@ -21,7 +21,7 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
         {
             this.playerTmpId = playerTmpId;
             this.matchId = matchId;
-            dict = new SelfCleaningDictionary<InputMessageModel>(10);
+            dict = new SelfCleaningDictionary<InputMessageModel>(MaxSizeOfCollection);
         }
         
         public uint AddInput(InputMessageModel model)
@@ -35,30 +35,29 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
 
         public InputMessagesPack GetInputModelsPack()
         {
-            Dictionary<uint, InputMessageModel> history = dict.Read();
-            if (history.Count > 10)
+            Dictionary<uint, InputMessageModel> latestInput = dict.GetLast(10);
+            if (latestInput.Count > 10)
             {
                 throw new Exception("Коллекция работает неправильно");
             }
             
-            InputMessagesPack pack = new InputMessagesPack()
+            InputMessagesPack pack = new InputMessagesPack
             {
                 MatchId = matchId,
                 TemporaryId = playerTmpId,
-                History = history
+                History = latestInput
             };
             return pack;
-        }
-
-        public List<InputMessageModel> Get(int tickNumber)
-        {
-            Dictionary<uint, InputMessageModel> allHistory = dict.Read();
-            return allHistory.Values.Where(model => model.TickNumber == tickNumber).ToList();
         }
 
         public InputMessageModel GetLast()
         {
             return dict.GetLast();
+        }
+
+        public List<KeyValuePair<uint, InputMessageModel>> GetAllFromId(uint lastProcessedInputId)
+        {
+            return dict.GetAllFromId(lastProcessedInputId);
         }
     }
 }

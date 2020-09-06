@@ -49,7 +49,7 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
         {
             lock (lockObj)
             {
-                log.Info($"Добавление нового тика № = {snapshotArg.tickNumber} time = {snapshotArg.tickTime}");
+                // log.Info($"Добавление нового тика № = {snapshotArg.tickNumber} time = {snapshotArg.tickTime}");
                 if (history.TryGetValue(snapshotArg.tickNumber, out var snapshot))
                 {
                     snapshot.Modify(snapshotArg);
@@ -71,7 +71,10 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
 
         public float GetPenultimateSnapshotTickTime()
         {
-            return searchUtil.GetPenultimateSnapshotTickTime();
+            lock(lockObj)
+            {
+                return searchUtil.GetPenultimateSnapshotTickTime();
+            }
         }
 
         public void GetSnapshots(float matchTime, 

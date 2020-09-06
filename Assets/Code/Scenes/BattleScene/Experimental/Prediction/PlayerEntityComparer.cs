@@ -15,7 +15,7 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
         /// <summary>
         /// Сравнивает предсказанное игровое состояние и настоящее состояние с сервера для сущности игрока
         /// </summary>
-        public bool IsSame(Snapshot snapshot1, Snapshot snapshot2, ushort avatarId)
+        public bool IsSame(Snapshot snapshot1, Snapshot snapshot2, ushort playerAvatarId)
         {
             if (snapshot1 == null)
             {
@@ -29,15 +29,15 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
                 return false;
             }
             
-            if(!snapshot1.transforms.TryGetValue(avatarId, out var viewTransform1))
+            if(!snapshot1.transforms.TryGetValue(playerAvatarId, out var viewTransform1))
             {
-                log.Debug($"snapshot1 не содержит сущности игрока avatarId = {avatarId}");
+                log.Debug($"snapshot1 не содержит сущности игрока avatarId = {playerAvatarId}");
                 return false;
             }
             
-            if(!snapshot2.transforms.TryGetValue(avatarId, out var viewTransform2))
+            if(!snapshot2.transforms.TryGetValue(playerAvatarId, out var viewTransform2))
             {
-                log.Debug($"snapshot2 не содержит сущности игрока avatarId = {avatarId}");
+                log.Debug($"snapshot2 не содержит сущности игрока avatarId = {playerAvatarId}");
                 return false;
             }
             

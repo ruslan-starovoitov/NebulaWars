@@ -1,13 +1,23 @@
-﻿using System;
-using Plugins.submodules.SharedCode;
+﻿using Plugins.submodules.SharedCode;
+using Plugins.submodules.SharedCode.LagCompensation;
 
 namespace Code.Scenes.BattleScene.Experimental.Prediction
 {
     public class PhysicsRollbackManager
     {
-        public void Rollback(Snapshot clientSnapshot, ServerGameContext gameContext)
+        private readonly ArrangeTransformSystem[] arrangeTransformSystems;
+
+        public PhysicsRollbackManager(ArrangeTransformSystem[] arrangeTransformSystems)
         {
-            throw new NotImplementedException();
+            this.arrangeTransformSystems = arrangeTransformSystems;
+        }
+        
+        public void Rollback(Snapshot clientSnapshot)
+        {
+            foreach (var system in arrangeTransformSystems)
+            {
+                system.Execute(clientSnapshot);
+            }
         }
     }
 }

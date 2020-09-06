@@ -1,0 +1,21 @@
+{
+    "name": "Client",
+    "references": [
+        "GUID:a35efad8797223d499f8c68b1f545dbc",
+        "GUID:6d1cd2be5ba39024fb7362476c42d023",
+        "GUID:d60799ab2a985554ea1a39cd38695018",
+        "GUID:f40b851808c81294bac71a52a2bc39de",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:a037b9f808b8c43ae91c527caf71d031",
+        "GUID:e8ff4e8652d1f447d9d0be3086faa332"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

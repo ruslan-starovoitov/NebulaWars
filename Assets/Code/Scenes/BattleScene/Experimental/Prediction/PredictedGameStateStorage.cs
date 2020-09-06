@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using JetBrains.Annotations;
 using Plugins.submodules.SharedCode.LagCompensation;
 using Plugins.submodules.SharedCode.Logger;
 
@@ -12,22 +12,29 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
     public class PredictedGameStateStorage
     {
         private readonly ILog log = LogManager.CreateLogger(typeof(PredictedGameStateStorage));
-        private readonly SortedDictionary<DateTime, PredictedSnapshot> history =
-            new SortedDictionary<DateTime, PredictedSnapshot>();
+        //key is inputId 
+        private readonly SortedDictionary<uint, PredictedSnapshot> history =
+            new SortedDictionary<uint, PredictedSnapshot>();
 
         public void PutPredicted(PredictedSnapshot predictedSnapshot)
         {
-            var time = predictedSnapshot.dateTime;
-            if (!history.ContainsKey(time))
+            if (!history.ContainsKey(predictedSnapshot.lastInputId))
             {
-                history.Add(time, predictedSnapshot);
+                history.Add(predictedSnapshot.lastInputId, predictedSnapshot);
             }
             else
             {
-                log.Error($"Игровое состояние с таким временем уже есть. time = {time}");
+                log.Error($"Игровое состояние с таким lastInputId уже есть. time = {predictedSnapshot.lastInputId}");
             }
         }
         
+        /// <summary>
+        /// todo плохо, что снимки могут изменяться вне хранилища
+        /// </summary>
+        /// <param name="lastProcessedInputId"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        [CanBeNull]
         public PredictedSnapshot GetByInputId(uint lastProcessedInputId)
         {
             if (history.Values.Count == 0)
@@ -35,38 +42,28 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
                 log.Error($"Нет предсказанных состояний lastProcessedInputId {lastProcessedInputId}");
                 return null;
             }
-            
-            List<PredictedSnapshot> list = history.Values.ToList();
-            for (int index = list.Count - 1; index >= 0; index--)
+
+            if (history.TryGetValue(lastProcessedInputId, out var predictedSnapshot))
             {
-                PredictedSnapshot snapshot = list[index];
-                if (snapshot.lastInputId == lastProcessedInputId)
-                {
-                    return snapshot;
-                }
-                
-                if (snapshot.lastInputId < lastProcessedInputId)
-                {
-                    return list[index + 1];
-                }
+                return predictedSnapshot;
             }
-            
-            throw new Exception("Не удалось найти состояние по вводу. " +
-                                $"lastProcessedInputId = {lastProcessedInputId} " +
-                                $"кол-во предсказанных состояний = {list.Count} " +
-                                $"maxInputId = {list.LastOrDefault()?.lastInputId} " +
-                                $"minInputId = {list.FirstOrDefault()?.lastInputId} ");
+            else
+            {
+                return null;
+            }
         }
 
         public void PutCorrect(PredictedSnapshot predictedSnapshot)
         {
-            if (history.ContainsKey(predictedSnapshot.dateTime))
+            log.Debug("Замена плохо предсказанного тика");
+            if (history.ContainsKey(predictedSnapshot.lastInputId))
             {
-                history[predictedSnapshot.dateTime] = predictedSnapshot;
+                history.Remove(predictedSnapshot.lastInputId);
+                history[predictedSnapshot.lastInputId] = predictedSnapshot;
             }
             else
             {
-                log.Error("Нет состояния с таким временем");
+                throw new Exception("В истории нет снимка с таким lastInputId.");
             }
         }
     }

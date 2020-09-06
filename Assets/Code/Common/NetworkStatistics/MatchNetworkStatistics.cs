@@ -83,6 +83,7 @@ namespace Code.Common.NetworkStatistics
             
             return 0;
         }
+        
         public void RegisterDatagram(int datagramLength, int datagramId)
         {
 #if ENABLE_NETWORK_LOGS

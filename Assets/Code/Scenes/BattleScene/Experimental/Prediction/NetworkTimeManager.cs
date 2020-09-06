@@ -93,7 +93,7 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
                                                    - matchTimeCorrection
                     ;
                 matchStartTime = estimatedMatchStartTime;
-                log.Debug($"Установка времени старта матча {estimatedMatchStartTime.ToLongTimeString()}");
+                log.Info($"Установка времени старта матча {estimatedMatchStartTime.ToLongTimeString()}");
             }
         }
     }

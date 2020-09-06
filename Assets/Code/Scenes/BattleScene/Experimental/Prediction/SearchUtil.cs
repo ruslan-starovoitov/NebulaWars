@@ -163,7 +163,7 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
             }
             
             List<SnapshotWithLastInputId> snapshots = history.Values.ToList();
-            return snapshots[snapshots.Count-2].tickTime;
+            return snapshots[snapshots.Count - 2].tickTime;
         }
     }
 }

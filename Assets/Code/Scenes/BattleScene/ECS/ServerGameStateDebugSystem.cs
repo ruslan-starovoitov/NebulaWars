@@ -4,6 +4,7 @@ using Entitas;
 using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.LagCompensation;
 using Plugins.submodules.SharedCode.Logger;
+using Plugins.submodules.SharedCode.Physics;
 using Plugins.submodules.SharedCode.Systems.Spawn;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,13 +18,13 @@ namespace Code.Scenes.BattleScene.ECS
     public class ServerGameStateDebugSystem : IExecuteSystem, IInitializeSystem
     {
         private int lastShowedTickNumber;
-        private PhysicsScene physicsScene;
+        private PhysicsSpawner physicsSpawner;
         private readonly PrefabsStorage prefabsStorage;
         private readonly ISnapshotCatalog snapshotCatalog;
         private readonly VectorValidator vectorValidator = new VectorValidator();
         private readonly ILog log = LogManager.CreateLogger(typeof(ServerGameStateDebugSystem));
         private readonly Dictionary<ushort, GameObject> dictionary = new Dictionary<ushort, GameObject>();
-        
+
         public ServerGameStateDebugSystem(ISnapshotCatalog snapshotCatalog, PrefabsStorage prefabsStorage)
         {
             this.snapshotCatalog = snapshotCatalog;
@@ -32,9 +33,9 @@ namespace Code.Scenes.BattleScene.ECS
         
         public void Initialize()
         {
-            var loadSceneParameters = new LoadSceneParameters(LoadSceneMode.Additive, LocalPhysicsMode.Physics3D);
-            Scene matchScene = SceneManager.LoadScene("EmptyScene", loadSceneParameters);
-            physicsScene = matchScene.GetPhysicsScene();
+            GameSceneFactory gameSceneFactory = new GameSceneFactory();
+            Scene matchScene = gameSceneFactory.Create();
+            physicsSpawner = new PhysicsSpawner(matchScene);
         }
         
         public void Execute()
@@ -75,7 +76,7 @@ namespace Code.Scenes.BattleScene.ECS
                 {
                     //Создать
                     GameObject prefab = prefabsStorage.GetPrefab(viewTransform.viewTypeEnum);
-                    GameObject go = Object.Instantiate(prefab, position, rotation);
+                    GameObject go = physicsSpawner.Spawn(prefab, position, rotation);
                     dictionary.Add(entityId, go);
                 }
             }
