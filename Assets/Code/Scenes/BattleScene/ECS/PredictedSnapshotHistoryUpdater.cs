@@ -16,13 +16,13 @@ namespace Code.Scenes.BattleScene.ECS
         private readonly SnapshotFactory snapshotFactory;
         private readonly IMatchTimeStorage matchTimeStorage;
         private readonly ILastInputIdStorage lastInputIdStorage;
-        private readonly PredictedGameStateStorage predictedGameStateStorage;
+        private readonly PredictedSnapshotsStorage predictedSnapshotsStorage;
         private readonly ILog log = LogManager.CreateLogger(typeof(PredictedSnapshotHistoryUpdater));
 
-        public PredictedSnapshotHistoryUpdater(Contexts contexts, PredictedGameStateStorage predictedGameStateStorage, 
+        public PredictedSnapshotHistoryUpdater(Contexts contexts, PredictedSnapshotsStorage predictedSnapshotsStorage, 
             IMatchTimeStorage matchTimeStorage, ILastInputIdStorage lastInputIdStorage)
         {
-            this.predictedGameStateStorage = predictedGameStateStorage;
+            this.predictedSnapshotsStorage = predictedSnapshotsStorage;
             this.matchTimeStorage = matchTimeStorage;
             this.lastInputIdStorage = lastInputIdStorage;
             snapshotFactory = new SnapshotFactory(contexts.serverGame);
@@ -36,7 +36,7 @@ namespace Code.Scenes.BattleScene.ECS
             float deltaTimeSec = Time.deltaTime;
             PredictedSnapshot predictedSnapshot = new PredictedSnapshot(now, lastInputId, deltaTimeSec);
             predictedSnapshot.Modify(snapshot);
-            predictedGameStateStorage.PutPredicted(predictedSnapshot);
+            predictedSnapshotsStorage.PutPredicted(predictedSnapshot);
         }
 
         public void Initialize()
@@ -44,7 +44,7 @@ namespace Code.Scenes.BattleScene.ECS
             DateTime now = DateTime.UtcNow;
             uint lastInputId = 0;
             PredictedSnapshot predictedSnapshot = new PredictedSnapshot(now, lastInputId, 0);
-            predictedGameStateStorage.PutPredicted(predictedSnapshot);
+            predictedSnapshotsStorage.PutPredicted(predictedSnapshot);
         }
     }
 }

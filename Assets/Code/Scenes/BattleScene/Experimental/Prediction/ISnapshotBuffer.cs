@@ -2,7 +2,7 @@
 
 namespace Code.Scenes.BattleScene.Experimental.Prediction
 {
-    public interface ISnapshotCatalog
+    public interface ISnapshotBuffer
     {
         int GetLength();
         SnapshotWithLastInputId GetNewestSnapshot();

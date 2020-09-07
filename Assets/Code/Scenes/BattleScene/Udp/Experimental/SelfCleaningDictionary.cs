@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Plugins.submodules.SharedCode.Logger;
 
 namespace Code.Scenes.BattleScene.Udp.Experimental
@@ -62,6 +64,18 @@ namespace Code.Scenes.BattleScene.Udp.Experimental
                 .Where(item => item.Key > id)
                 .OrderBy(pair=>pair.Key)
                 .ToList();
+            
+            if (id + 1 != result.First().Key)
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                foreach (var inputId in result.Select(pair=>pair.Key))
+                {
+                    stringBuilder.Append(" " + inputId);
+                }
+                throw new Exception($"В истории не найдены нужные вводы. " +
+                                    $"lastProcessedInputId = {id}" +
+                                    $" inputs.First().Key = {stringBuilder}");
+            }
 
             return result;
         }

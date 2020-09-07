@@ -4,19 +4,19 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
 {
     public class SnapshotManager:ISnapshotManager
     {
-        private readonly ISnapshotCatalog snapshotCatalog;
+        private readonly ISnapshotBuffer snapshotBuffer;
         private readonly ISnapshotInterpolator snapshotInterpolator;
 
-        public SnapshotManager(ISnapshotCatalog snapshotCatalog,
+        public SnapshotManager(ISnapshotBuffer snapshotBuffer,
             ISnapshotInterpolator snapshotInterpolator)
         {
-            this.snapshotCatalog = snapshotCatalog;
+            this.snapshotBuffer = snapshotBuffer;
             this.snapshotInterpolator = snapshotInterpolator;
         }
 
         public bool IsReady()
         {
-            return snapshotCatalog.GetLength() >= 4;
+            return snapshotBuffer.GetLength() >= 4;
         }
 
         public Snapshot CreateInterpolatedSnapshot(float matchTime)
@@ -27,12 +27,12 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
 
         public int? GetCurrentTickNumber(float matchTime)
         {
-            return snapshotCatalog.GetTickNumberByTime(matchTime);
+            return snapshotBuffer.GetTickNumberByTime(matchTime);
         }
 
         public int GetBufferLength()
         {
-            return snapshotCatalog.GetLength();
+            return snapshotBuffer.GetLength();
         }
     }
 }

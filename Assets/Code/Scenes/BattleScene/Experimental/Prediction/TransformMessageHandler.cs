@@ -7,18 +7,18 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
     public class TransformMessageHandler : ITransformStorage
     {
         private readonly ITimeUpdater timeUpdater;
-        private readonly ISnapshotCatalog snapshotCatalog;
+        private readonly ISnapshotBuffer snapshotBuffer;
 
-        public TransformMessageHandler(ISnapshotCatalog snapshotCatalog, ITimeUpdater timeUpdater)
+        public TransformMessageHandler(ISnapshotBuffer snapshotBuffer, ITimeUpdater timeUpdater)
         {
-            this.snapshotCatalog = snapshotCatalog;
+            this.snapshotBuffer = snapshotBuffer;
             this.timeUpdater = timeUpdater;
         }
         
         public void SetNewTransforms(TransformPackMessage message)
         {
             SnapshotWithLastInputId snapshot = new SnapshotWithLastInputId(message);
-            snapshotCatalog.Add(snapshot);
+            snapshotBuffer.Add(snapshot);
 
             timeUpdater.NewSnapshotReceived(message.TickNumber, message.TickStartTimeSec);
         }

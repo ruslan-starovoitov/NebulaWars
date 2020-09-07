@@ -41,8 +41,8 @@ namespace Tests
                 contexts.serverGame, physicsVelocityManager, physicsRotationManager, snapshotFactory);
             
             playerEntity = contexts.serverGame.CreateEntity();
-            PrefabsStorage prefabsStorage = new PrefabsStorage();
-            GameObject warshipPrefab = prefabsStorage.GetPrefab(ViewTypeEnum.StarSparrow1);
+            ClientPrefabsStorage clientPrefabsStorage = new ClientPrefabsStorage();
+            GameObject warshipPrefab = clientPrefabsStorage.GetPrefab(ViewTypeEnum.StarSparrow1);
             GameObject go = Object.Instantiate(warshipPrefab, Vector3.zero, Quaternion.identity);
             SceneManager.MoveGameObjectToScene(go, matchScene);
             ushort playerEntityId = 100;

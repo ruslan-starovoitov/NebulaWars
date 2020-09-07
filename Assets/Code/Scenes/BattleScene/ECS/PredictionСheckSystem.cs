@@ -14,13 +14,13 @@ namespace Code.Scenes.BattleScene.ECS
     public class PredictionСheckSystem:IExecuteSystem
     {
         private int lastSavedTickNumber;
-        private readonly ISnapshotCatalog snapshotCatalog;
+        private readonly ISnapshotBuffer snapshotBuffer;
         private readonly PredictionManager predictionManager;
         private readonly ILog log = LogManager.CreateLogger(typeof(PredictionСheckSystem));
         
-        public PredictionСheckSystem(ISnapshotCatalog snapshotCatalog, PredictionManager predictionManager)
+        public PredictionСheckSystem(ISnapshotBuffer snapshotBuffer, PredictionManager predictionManager)
         {
-            this.snapshotCatalog = snapshotCatalog;
+            this.snapshotBuffer = snapshotBuffer;
             this.predictionManager = predictionManager;
         }
         
@@ -28,13 +28,13 @@ namespace Code.Scenes.BattleScene.ECS
         {
             try
             {
-                int newestTickNumber = snapshotCatalog.GetNewestTickNumber();
+                int newestTickNumber = snapshotBuffer.GetNewestTickNumber();
                 //Пришла новая информация
                 if (lastSavedTickNumber < newestTickNumber)
                 {
                     //Обновить локальный счётчик
                     lastSavedTickNumber = newestTickNumber;
-                    SnapshotWithLastInputId newest = snapshotCatalog.GetNewestSnapshot();
+                    SnapshotWithLastInputId newest = snapshotBuffer.GetNewestSnapshot();
                     ushort playerEntityId = PlayerIdStorage.PlayerEntityId;
                     if (playerEntityId == 0)
                     {
@@ -42,7 +42,7 @@ namespace Code.Scenes.BattleScene.ECS
                         throw new Exception("PlayerEntityId не установлен");
                     }
                     //проверить, что игрок правильно предсказан или пересоздать текущее состояние
-                    predictionManager.Reconcile(newest, playerEntityId);
+                    // predictionManager.Reconcile(newest, playerEntityId);
                 }
                 else
                 {

@@ -5,16 +5,16 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
 {
     public class SnapshotInterpolator:ISnapshotInterpolator
     {
-        private readonly SnapshotCatalog snapshotCatalog;
+        private readonly SnapshotBuffer snapshotBuffer;
 
-        public SnapshotInterpolator(SnapshotCatalog snapshotCatalog)
+        public SnapshotInterpolator(SnapshotBuffer snapshotBuffer)
         {
-            this.snapshotCatalog = snapshotCatalog;
+            this.snapshotBuffer = snapshotBuffer;
         }
         
         public Snapshot Interpolate(float matchTime)
         {
-            snapshotCatalog.GetSnapshots(matchTime, 
+            snapshotBuffer.GetSnapshots(matchTime, 
                 out SnapshotWithTime s0, out SnapshotWithTime s1,
                 out SnapshotWithTime s2, out SnapshotWithTime s3);
             

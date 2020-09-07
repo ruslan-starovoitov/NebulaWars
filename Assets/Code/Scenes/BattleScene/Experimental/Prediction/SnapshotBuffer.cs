@@ -8,18 +8,12 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
     /// <summary>
     /// Хранит снимки от сервера.
     /// </summary>
-    public class SnapshotCatalog : ISnapshotCatalog
+    public class SnapshotBuffer : ISnapshotBuffer
     {
-        private readonly SearchUtil searchUtil;
         private readonly object lockObj = new object();
-        private readonly ILog log = LogManager.CreateLogger(typeof(SnapshotCatalog));
-        private readonly SortedDictionary<int, SnapshotWithLastInputId> history 
+        private readonly ILog log = LogManager.CreateLogger(typeof(SnapshotBuffer));
+        private readonly SortedDictionary<int, SnapshotWithLastInputId> history
             = new SortedDictionary<int, SnapshotWithLastInputId>();
-
-        public SnapshotCatalog()
-        {
-            searchUtil = new SearchUtil(history);
-        }
         
         public int GetLength()
         {
@@ -65,7 +59,7 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
         {
             lock (lockObj)
             {
-                return searchUtil.GetTickNumber(matchTime);
+                return history.GetTickNumber(matchTime);
             }
         }
 
@@ -73,7 +67,7 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
         {
             lock(lockObj)
             {
-                return searchUtil.GetPenultimateSnapshotTickTime();
+                return history.GetPenultimateSnapshotTickTime();
             }
         }
 
@@ -83,7 +77,7 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
         {
             lock (lockObj)
             {
-                searchUtil.GetSnapshots(matchTime, out s0, out s1, out s2, out s3);
+                history.GetSnapshots(matchTime, out s0, out s1, out s2, out s3);
             }
         }
     }

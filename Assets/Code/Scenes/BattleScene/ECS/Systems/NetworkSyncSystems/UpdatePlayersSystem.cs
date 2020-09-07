@@ -62,11 +62,10 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                     int currentPlayerAccountId = PlayerIdStorage.AccountId;
                     if (accountId == currentPlayerAccountId)
                     {
-                        log.Debug($"Установка PlayerEntityId={entityId} accountId={accountId}");
+                        log.Info($"Установка PlayerEntityId={entityId} accountId={accountId}");
                         PlayerIdStorage.PlayerEntityId = entityId;
                     }
-                    
-                    
+
                     if (entity != null)
                     {
                         entity.ReplaceNickname(playerInfos[accountId].Nickname);

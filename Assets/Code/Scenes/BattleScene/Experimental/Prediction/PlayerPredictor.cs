@@ -67,16 +67,19 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
 
             //todo опасно
             warshipRigidbody.velocity = Vector3.zero;
-            
-            
-            physicsVelocityManager.ApplyVelocity(warshipRigidbody, inputVector, maxSpeed);
+
+            if (inputVector.sqrMagnitude > 0.001f)
+            {
+                // log.Debug("Линейное движение игрока");
+                physicsVelocityManager.ApplyVelocity(warshipRigidbody, inputVector, maxSpeed);
+            }
             
             //вращательное движение игрока
             if (!float.IsNaN(inputMessageModel.Angle))
             {
-                float angularVelocity = 3;
+                float angularVelocity = 90;
                 physicsRotationManager.ApplyRotation(playerEntity.rigidbody.value, inputMessageModel.Angle,
-                    angularVelocity);
+                    angularVelocity, physicsSimulationDuration);
             }
 
             //todo спавн пуль игрока

@@ -9,16 +9,16 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
         private DateTime? matchStartTime;
         private float interpolationDelaySec = 0.1f;
         private float snapshotBufferFillingDelay = 0;
-        private readonly ISnapshotCatalog snapshotCatalog;
+        private readonly ISnapshotBuffer snapshotBuffer;
         private readonly IPingStatisticsStorage pingStatisticsStorage;
         private readonly INetworkProblemWarningView networkProblemWarningView;
         private readonly ILog log = LogManager.CreateLogger(typeof(NetworkTimeManager));
 
         public NetworkTimeManager(IPingStatisticsStorage pingStatisticsStorage,
-            ISnapshotCatalog snapshotCatalog, INetworkProblemWarningView networkProblemWarningView)
+            ISnapshotBuffer snapshotBuffer, INetworkProblemWarningView networkProblemWarningView)
         {
             this.pingStatisticsStorage = pingStatisticsStorage;
-            this.snapshotCatalog = snapshotCatalog;
+            this.snapshotBuffer = snapshotBuffer;
             this.networkProblemWarningView = networkProblemWarningView;
         }
         
@@ -41,7 +41,7 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
             float showMatchTime = GetSnowMatchTime();
 
             //проверить, что в буффере есть тик с таким временм
-            float newestSnapshotTickTime = snapshotCatalog.GetPenultimateSnapshotTickTime();
+            float newestSnapshotTickTime = snapshotBuffer.GetPenultimateSnapshotTickTime();
             if (newestSnapshotTickTime < showMatchTime)
             {
                 string message = $"1 Ещё нет тика с таким временем " +

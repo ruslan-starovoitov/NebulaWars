@@ -13,12 +13,10 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 {
     public class MatchTimeIsTooShort:Exception
     {
-        
     }
     
     public class MatchTimeIsTooLong:Exception
     {
-        
     }
     /// <summary>
     /// Отображает позиции всех обьектов с интерполяцией.
@@ -48,7 +46,6 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                 .Select(item => item.id.value));
             
             float matchTime = matchTimeStorage.GetMatchTime();
-
             Snapshot snapshot;
             try
             {
@@ -83,7 +80,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 
             foreach (ushort id in ids)
             {
-                // log.Debug($"Удаление объекта id = {id}");
+                log.Debug($"Удаление объекта id = {id}");
                 ServerGameEntity gameEntity = gameContext.GetEntityWithId(id);
                 gameEntity.isDestroyed = true;
             }

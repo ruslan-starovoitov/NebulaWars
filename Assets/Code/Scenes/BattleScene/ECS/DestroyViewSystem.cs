@@ -29,7 +29,8 @@ namespace Code.Scenes.BattleScene.ECS
                         gameObject.Unlink();
                         Object.Destroy(gameObject);   
                     }
-                    log.Info("Уничтожение объекта "+entity.view.gameObject.name);
+                    
+                    log.Debug("Уничтожение объекта "+entity.view.gameObject.name);
                 }
                 
                 entity.Destroy();

@@ -16,6 +16,7 @@ using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.LagCompensation;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.Physics;
+using Plugins.submodules.SharedCode.Systems;
 using Plugins.submodules.SharedCode.Systems.InputHandling;
 using Plugins.submodules.SharedCode.Systems.Spawn;
 using UnityEngine;
@@ -56,25 +57,12 @@ namespace Code.Scenes.BattleScene.ECS
         private Entitas.Systems CreateSystems(UdpSendUtils udpSendUtils, BattleRoyaleClientMatchModel matchModel,
             PingStatisticsStorage statisticsStorage)
         {
-            
             GameSceneFactory gameSceneFactory = new GameSceneFactory();
             var matchScene = gameSceneFactory.Create();
-            var physicsScene = matchScene.GetPhysicsScene();
-            
             PhysicsSpawner physicsSpawner = new PhysicsSpawner(matchScene);
-            PhysicsRaycaster physicsRaycaster = new PhysicsRaycaster(matchScene);
-            PhysicsDestroyer physicsDestroyer = new PhysicsDestroyer();
-            
-            
-            
             contexts = Contexts.sharedInstance;
-            int aliveCount = matchModel.PlayerModels.Length;
-            
-            
             var updatePlayersSystem = new UpdatePlayersSystem(contexts, matchModel);
             playersStorage = updatePlayersSystem;
-            
-            
             var healthUpdaterSystem = new HealthUpdaterSystem(contexts);
             healthPointsStorage = healthUpdaterSystem;  
             var maxHealthUpdaterSystem = new MaxHealthUpdaterSystem(contexts);
@@ -85,65 +73,51 @@ namespace Code.Scenes.BattleScene.ECS
             Text pingText = battleUiController.GetPingText();
             pingSystem = new PingSystem(pingText, statisticsStorage);
             ClientInputMessagesHistory clientInputMessagesHistory = new ClientInputMessagesHistory(playerTmpId, matchId);
-            PrefabsStorage prefabsStorage = new PrefabsStorage();
-            
-            PhysicsVelocityManager physicsVelocityManager = new PhysicsVelocityManager(); 
-
+            ClientPrefabsStorage clientPrefabsStorage = new ClientPrefabsStorage();
+            PhysicsVelocityManager physicsVelocityManager = new PhysicsVelocityManager();
             ArrangeTransformSystem[] arrangeCollidersSystems = 
             {
                 new WithHpArrangeTransformSystem(contexts)
             };
             PhysicsRollbackManager physicsRollbackManager = new PhysicsRollbackManager(arrangeCollidersSystems);
-            
             PhysicsRotationManager physicsRotationManager = new PhysicsRotationManager();
             SnapshotFactory snapshotFactory = new SnapshotFactory(contexts.serverGame);
             PlayerPredictor playerPredictor = new PlayerPredictor(physicsRollbackManager, matchScene,
                  contexts.serverGame, physicsVelocityManager, physicsRotationManager, snapshotFactory) ;
             PlayerEntityComparer playerEntityComparer = new PlayerEntityComparer();
-            PredictedGameStateStorage predictedGameStateStorage = new PredictedGameStateStorage();
-            
-            var predictionManager = new PredictionManager(playerPredictor, predictedGameStateStorage, 
-                playerEntityComparer,  clientInputMessagesHistory);
-
+            PredictedSnapshotsStorage predictedSnapshotsStorage = new PredictedSnapshotsStorage();
+            AverageInputManager averageInputManager = new AverageInputManager();
+            PredictionChecker predictionChecker = new PredictionChecker(playerEntityComparer, predictedSnapshotsStorage);
+            SimulationCorrector simulationCorrector = new SimulationCorrector(playerPredictor, averageInputManager,
+                clientInputMessagesHistory, predictedSnapshotsStorage);
+            var predictionManager = new PredictionManager(predictionChecker, simulationCorrector);
             Joystick movementJoystick = battleUiController.GetMovementJoystick();
             Joystick attackJoystick = battleUiController.GetAttackJoystick();
-
-            
-            
-            
             LastInputIdStorage lastInputIdStorage = new LastInputIdStorage();
-            
-            
-            
-            SnapshotCatalog snapshotCatalog = new SnapshotCatalog();
-            var snapshotInterpolator = new SnapshotInterpolator(snapshotCatalog);
-
+            SnapshotBuffer snapshotBuffer = new SnapshotBuffer();
+            var snapshotInterpolator = new SnapshotInterpolator(snapshotBuffer);
             var consoleStub = new ConsoleNetworkProblemWarningView();
-            NetworkTimeManager timeManager = new NetworkTimeManager(pingStatisticsStorage, snapshotCatalog,
+            NetworkTimeManager timeManager = new NetworkTimeManager(pingStatisticsStorage, snapshotBuffer,
                 consoleStub);
             INetworkTimeManager networkTimeManager = timeManager;
             ITimeUpdater timeUpdater = timeManager;
-            
-            snapshotManager  = new SnapshotManager(snapshotCatalog, snapshotInterpolator);
-            
-            
-            transformStorage = new TransformMessageHandler(snapshotCatalog, timeUpdater);
-            
-            
+            snapshotManager  = new SnapshotManager(snapshotBuffer, snapshotInterpolator);
+            transformStorage = new TransformMessageHandler(snapshotBuffer, timeUpdater);
             MatchTimeSystem matchTimeSystem = new MatchTimeSystem(networkTimeManager);
             IMatchTimeStorage matchTimeStorage = matchTimeSystem;
-            
             var updateTransformSystem = new UpdateTransformSystem(contexts, snapshotManager, matchTimeStorage);
+            SpawnManager spawnManager = new SpawnManager(clientPrefabsStorage, physicsSpawner);
             
             systems = new Entitas.Systems()
                     .Add(matchTimeSystem)
-                    // .Add(new ServerGameStateDebugSystem(snapshotCatalog, prefabsStorage))
-                    .Add(new PredictionСheckSystem(snapshotCatalog, predictionManager))
+                    // .Add(new ServerGameStateDebugSystem(snapshotBuffer, clientPrefabsStorage))
+                    .Add(new PredictionСheckSystem(snapshotBuffer, predictionManager))
                     .Add(updateTransformSystem)
                     .Add(updatePlayersSystem)
-                    .Add(new PrefabSpawnerSystem(contexts, prefabsStorage, physicsSpawner))
-
-                    .Add(new InputSystem(movementJoystick, attackJoystick, clientInputMessagesHistory, snapshotManager, matchTimeStorage, lastInputIdStorage))
+                    
+                    .Add(new PrefabSpawnerSystem(contexts, spawnManager))
+                    .Add(new InputSystem(movementJoystick, attackJoystick, clientInputMessagesHistory, snapshotManager,
+                        matchTimeStorage, lastInputIdStorage))
                     
                     .Add(new PlayerStopSystem(contexts))
                     .Add(new PlayerPredictionSystem(contexts, clientInputMessagesHistory, playerPredictor))
@@ -170,7 +144,7 @@ namespace Code.Scenes.BattleScene.ECS
                     .Add(new InputSenderSystem(udpSendUtils, clientInputMessagesHistory))
                     .Add(new RudpMessagesSenderSystem(udpSendUtils))
                     .Add(new GameContextClearSystem(contexts))
-                    .Add(new PredictedSnapshotHistoryUpdater(contexts, predictedGameStateStorage, matchTimeStorage, lastInputIdStorage))
+                    .Add(new PredictedSnapshotHistoryUpdater(contexts, predictedSnapshotsStorage, matchTimeStorage, lastInputIdStorage))
                 ;
             return systems;
         }

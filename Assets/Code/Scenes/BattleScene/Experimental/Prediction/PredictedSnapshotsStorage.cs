@@ -9,9 +9,9 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
     /// <summary>
     /// Хранит игровые состояния в которых позиция клиента предсказана.
     /// </summary>
-    public class PredictedGameStateStorage
+    public class PredictedSnapshotsStorage
     {
-        private readonly ILog log = LogManager.CreateLogger(typeof(PredictedGameStateStorage));
+        private readonly ILog log = LogManager.CreateLogger(typeof(PredictedSnapshotsStorage));
         //key is inputId 
         private readonly SortedDictionary<uint, PredictedSnapshot> history =
             new SortedDictionary<uint, PredictedSnapshot>();

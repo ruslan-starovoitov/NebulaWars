@@ -19,16 +19,16 @@ namespace Code.Scenes.BattleScene.ECS
     {
         private int lastShowedTickNumber;
         private PhysicsSpawner physicsSpawner;
-        private readonly PrefabsStorage prefabsStorage;
-        private readonly ISnapshotCatalog snapshotCatalog;
+        private readonly ClientPrefabsStorage clientPrefabsStorage;
+        private readonly ISnapshotBuffer snapshotBuffer;
         private readonly VectorValidator vectorValidator = new VectorValidator();
         private readonly ILog log = LogManager.CreateLogger(typeof(ServerGameStateDebugSystem));
         private readonly Dictionary<ushort, GameObject> dictionary = new Dictionary<ushort, GameObject>();
 
-        public ServerGameStateDebugSystem(ISnapshotCatalog snapshotCatalog, PrefabsStorage prefabsStorage)
+        public ServerGameStateDebugSystem(ISnapshotBuffer snapshotBuffer, ClientPrefabsStorage clientPrefabsStorage)
         {
-            this.snapshotCatalog = snapshotCatalog;
-            this.prefabsStorage = prefabsStorage;
+            this.snapshotBuffer = snapshotBuffer;
+            this.clientPrefabsStorage = clientPrefabsStorage;
         }
         
         public void Initialize()
@@ -40,14 +40,14 @@ namespace Code.Scenes.BattleScene.ECS
         
         public void Execute()
         {
-            int newestTickNumber = snapshotCatalog.GetNewestTickNumber();
+            int newestTickNumber = snapshotBuffer.GetNewestTickNumber();
             if (newestTickNumber == lastShowedTickNumber)
             {
                 return;
             }
             
             lastShowedTickNumber = newestTickNumber;
-            SnapshotWithLastInputId newestGameState = snapshotCatalog.GetNewestSnapshot();
+            SnapshotWithLastInputId newestGameState = snapshotBuffer.GetNewestSnapshot();
             
             HashSet<ushort> needDelete = new HashSet<ushort>(dictionary.Keys);
             foreach (var pair in newestGameState.transforms)
@@ -75,7 +75,7 @@ namespace Code.Scenes.BattleScene.ECS
                 else
                 {
                     //Создать
-                    GameObject prefab = prefabsStorage.GetPrefab(viewTransform.viewTypeEnum);
+                    GameObject prefab = clientPrefabsStorage.GetPrefab(viewTransform.viewTypeEnum);
                     GameObject go = physicsSpawner.Spawn(prefab, position, rotation);
                     dictionary.Add(entityId, go);
                 }
