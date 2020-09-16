@@ -1,9 +1,10 @@
 {
-    "name": "TestS",
+    "name": "Tests",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Client"
+        "Client",
+        "UniRx"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -11,7 +12,8 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "nunit.framework.dll",
-        "Entitas.dll"
+        "Entitas.dll",
+        ""
     ],
     "autoReferenced": false,
     "defineConstraints": [

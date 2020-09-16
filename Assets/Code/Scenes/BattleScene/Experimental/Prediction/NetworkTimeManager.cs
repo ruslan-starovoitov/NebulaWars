@@ -44,13 +44,13 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
             float newestSnapshotTickTime = snapshotBuffer.GetPenultimateSnapshotTickTime();
             if (newestSnapshotTickTime < showMatchTime)
             {
-                string message = $"1 Ещё нет тика с таким временем " +
-                                 $"{nameof(newestSnapshotTickTime)} = {newestSnapshotTickTime} " +
-                                 $"запрашиваемое время = {showMatchTime}";
-                log.Debug(message);
-                log.Debug("2 Сдвиг времени матча назад");
+                
                 float delay = showMatchTime - newestSnapshotTickTime;
-                log.Debug($"3 Величина сдвига = {delay}");
+                string message = $" Ещё нет тика с таким временем " +
+                                 $" {nameof(newestSnapshotTickTime)} = {newestSnapshotTickTime} " +
+                                 $" запрашиваемое время = {showMatchTime}" +
+                                 $" Сдвиг времени матча назад " +
+                                 $" Величина сдвига = {delay}";
                 //ещё нет тика с таким временем
                 networkProblemWarningView.ShowWarning();
                 //увеличить задержку для заполнения буффера
@@ -63,11 +63,10 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
                     log.Error(mes);
                 }
                 
-                log.Debug($"4 Новое значение задержки для накопления снимков = {snapshotBufferFillingDelay}");
-                log.Debug("5 Пересчёт времени");
+                log.Debug($"Новое значение задержки для накопления снимков = {snapshotBufferFillingDelay}");
                 //пересчитать время
                 showMatchTime = GetSnowMatchTime();
-                log.Debug($"6 Сдвинутое значение = {showMatchTime}");
+                log.Debug($"Сдвинутое значение = {showMatchTime}");
                 if (newestSnapshotTickTime < showMatchTime)
                 {
                     string mes = $"7 Не удалось сдвинуть время назад." +

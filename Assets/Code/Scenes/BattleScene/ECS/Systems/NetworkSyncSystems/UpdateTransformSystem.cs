@@ -11,13 +11,6 @@ using UnityEngine;
 
 namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 {
-    public class MatchTimeIsTooShort:Exception
-    {
-    }
-    
-    public class MatchTimeIsTooLong:Exception
-    {
-    }
     /// <summary>
     /// Отображает позиции всех обьектов с интерполяцией.
     /// </summary>
@@ -80,7 +73,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
 
             foreach (ushort id in ids)
             {
-                log.Debug($"Удаление объекта id = {id}");
+                // log.Debug($"Удаление объекта id = {id}");
                 ServerGameEntity gameEntity = gameContext.GetEntityWithId(id);
                 gameEntity.isDestroyed = true;
             }

@@ -12,12 +12,6 @@ using UnityEngine;
 
 namespace Code.Common.NetworkStatistics
 {
-    public class DatagramPerSecondModel
-    {
-        public DateTime dateTime;
-        public int pps;
-        public int totalLength;
-    }
     /// <summary>
     /// Хранит информацию о статистике сети в бою.
     /// </summary>

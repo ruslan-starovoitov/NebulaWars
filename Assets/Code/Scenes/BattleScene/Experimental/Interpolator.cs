@@ -35,7 +35,9 @@ namespace Code.Scenes.BattleScene.Experimental
                 if (v0Exists && v1Exists && v2Exists && v3Exists)
                 {
                     //интерполяция между черытьмя точками
-                    Vector3 position = CatmullRomSpline.GetCatmullRomPosition(t, v0.GetPosition(), v1.GetPosition(), v2.GetPosition(), v3.GetPosition());
+                    Vector3 position = CatmullRomSpline
+                        .GetCatmullRomPosition(t, v0.GetPosition(), v1.GetPosition(),
+                            v2.GetPosition(), v3.GetPosition());
                     float angle = Mathf.LerpAngle(v1.Angle, v2.Angle, t);
                     interpolated = new ViewTransformCompressed(position.x, position.z, angle, v2.viewTypeEnum);
                 }

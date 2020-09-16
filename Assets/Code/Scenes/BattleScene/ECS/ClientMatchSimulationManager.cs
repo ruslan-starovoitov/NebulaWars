@@ -1,5 +1,6 @@
 ﻿using Code.Common.Storages;
 using Code.Scenes.BattleScene.ECS.NewSystems;
+using Code.Scenes.BattleScene.ECS.Systems;
 using Code.Scenes.BattleScene.Experimental.Prediction;
 using Code.Scenes.BattleScene.Scripts;
 using Code.Scenes.BattleScene.Scripts.Ui;
@@ -38,9 +39,16 @@ namespace Code.Scenes.BattleScene.ECS
             var transformStorage = clientMatchSimulation.GetTransformStorage();
             var healthPointsStorage = clientMatchSimulation.GetHealthPointsStorage();
             var maxHealthPointsMessagePackStorage = clientMatchSimulation.GetMaxHealthPointsMessagePackStorage();
+            IKillMessageStorage killMessageStorage = clientMatchSimulation.GetKillMessageStorage();
             
-            var messageWrapperHandler = new MessageWrapperHandler(udpSendUtils, matchModel.MatchId, transformStorage,
-                playersStorage, healthPointsStorage, maxHealthPointsMessagePackStorage, pingStatisticsStorage);
+            var messageWrapperHandler = new MessageWrapperHandler(udpSendUtils, 
+                matchModel.MatchId,
+                transformStorage,
+                playersStorage,
+                healthPointsStorage,
+                maxHealthPointsMessagePackStorage,
+                pingStatisticsStorage,
+                killMessageStorage);
            
             IByteArrayHandler byteArrayHandler = new ByteArrayHandler(messageWrapperHandler);
             

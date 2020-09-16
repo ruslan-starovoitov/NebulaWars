@@ -11,9 +11,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/2dLootboxScene.unity
     guid: be8b2e15cf03ae94c9ddade8caa85d2d
-  - enabled: 0
-    path: Assets/Scenes/BattleScene.unity
-    guid: 21b1b4922675a5140a5b9365bc63f927
   - enabled: 1
     path: Assets/Scenes/Test.unity
     guid: 689e3872e6c3c034299558c4067d2e4d

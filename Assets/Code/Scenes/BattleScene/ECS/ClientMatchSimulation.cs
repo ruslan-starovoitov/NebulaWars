@@ -1,6 +1,7 @@
 ﻿using System;
 using Code.Common.Storages;
 using Code.Scenes.BattleScene.ECS.NewSystems;
+using Code.Scenes.BattleScene.ECS.Systems;
 using Code.Scenes.BattleScene.ECS.Systems.EnvironmentSystems;
 using Code.Scenes.BattleScene.ECS.Systems.InputSystems;
 using Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems;
@@ -38,6 +39,7 @@ namespace Code.Scenes.BattleScene.ECS
         private readonly PingStatisticsStorage pingStatisticsStorage;
         private IMaxHealthPointsMessagePackStorage maxHealthPointsMessagePackStorage;
         private readonly ILog log = LogManager.CreateLogger(typeof(ClientMatchSimulation));
+        private IKillMessageStorage killMessageStorage;
 
         public ClientMatchSimulation(BattleUiController battleUiController, UdpSendUtils udpSendUtils,
             BattleRoyaleClientMatchModel matchModel, PingStatisticsStorage pingStatisticsStorage)
@@ -107,10 +109,16 @@ namespace Code.Scenes.BattleScene.ECS
             IMatchTimeStorage matchTimeStorage = matchTimeSystem;
             var updateTransformSystem = new UpdateTransformSystem(contexts, snapshotManager, matchTimeStorage);
             SpawnManager spawnManager = new SpawnManager(clientPrefabsStorage, physicsSpawner);
+
+            var killsIndicatorSystem = new KillsIndicatorSystem(battleUiController.GetKillMessage(), battleUiController.GetKillIndicator(),
+                battleUiController.GetKillsText(), battleUiController.GetAliveText(), matchModel.PlayerModels.Length,
+                new PlayerNameHelper(matchModel));
+
+            killMessageStorage = killsIndicatorSystem;
             
             systems = new Entitas.Systems()
                     .Add(matchTimeSystem)
-                    // .Add(new ServerGameStateDebugSystem(snapshotBuffer, clientPrefabsStorage))
+                    .Add(new ServerGameStateDebugSystem(snapshotBuffer, clientPrefabsStorage))
                     .Add(new PredictionСheckSystem(snapshotBuffer, predictionManager))
                     .Add(updateTransformSystem)
                     .Add(updatePlayersSystem)
@@ -125,6 +133,7 @@ namespace Code.Scenes.BattleScene.ECS
                     .Add(new CameraMoveSystem(contexts, battleUiController.GetMainCamera(), cameraShift))
                     .Add(new LoadingImageSwitcherSystem(contexts, battleUiController.GetLoadingImage()))
                     
+                    .Add(killsIndicatorSystem)
                     
                     .Add(healthUpdaterSystem)
                     .Add(maxHealthUpdaterSystem)
@@ -226,6 +235,11 @@ namespace Code.Scenes.BattleScene.ECS
             }
             
             return maxHealthPointsMessagePackStorage;
+        }
+
+        public IKillMessageStorage GetKillMessageStorage()
+        {
+            return killMessageStorage;
         }
     }
 }

@@ -9,6 +9,7 @@ using Plugins.submodules.SharedCode.LagCompensation;
 using Plugins.submodules.SharedCode.NetworkLibrary.Udp.PlayerToServer;
 using Plugins.submodules.SharedCode.Systems.InputHandling;
 using Plugins.submodules.SharedCode.Systems.Spawn;
+using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
@@ -16,11 +17,36 @@ using Object = UnityEngine.Object;
 
 namespace Tests
 {
+    public class UnityRxExample
+    {
+        public bool wasChanged;
+        public ReactiveProperty<int> hp = new ReactiveProperty<int>();
+
+        public UnityRxExample()
+        {
+            hp.Subscribe(Changed);
+        }
+
+        private void Changed(int i)
+        {
+            wasChanged = true;
+        }
+    }
+    public class UniRxTests
+    {
+        [Test]
+        public void Test1()
+        {
+            UnityRxExample unityRxExample = new UnityRxExample();
+            unityRxExample.hp.Value = 4665;
+            Assert.IsTrue(unityRxExample.wasChanged);
+        }
+    }
     public class PlayerPredictorTests
     {
-        private Contexts contexts = new Contexts();
-        private PlayerPredictor playerPredictor;
         private ServerGameEntity playerEntity;
+        private PlayerPredictor playerPredictor;
+        private Contexts contexts = new Contexts();
 
         [SetUp]
         public void SetUp()

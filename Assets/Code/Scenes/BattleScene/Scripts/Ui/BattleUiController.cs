@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
 
-//TODO большое говно
 namespace Code.Scenes.BattleScene.Scripts.Ui
 {
     /// <summary>
@@ -15,8 +14,7 @@ namespace Code.Scenes.BattleScene.Scripts.Ui
     public class BattleUiController : MonoBehaviour
     {
         private readonly ILog log = LogManager.CreateLogger(typeof(BattleUiController));
-        #region Объекты для систем
-#pragma warning disable 649 // присваивается через Unity Editor
+
         [SerializeField] private GameObject zoneGroup;
         [SerializeField] private GameObject overlayCanvas;
         [SerializeField] private GameObject gameViews;
@@ -32,7 +30,7 @@ namespace Code.Scenes.BattleScene.Scripts.Ui
         [SerializeField] private Slider shieldSlider;
         [SerializeField] private Text shieldText;
         [SerializeField] private Transform killsIndicatorContainer;
-        [SerializeField] private KillInfoObject killMessage;
+        [SerializeField] private KillModel killMessage;
         [SerializeField] private Image arrowToCenter;
         [SerializeField] private Text killsText;
         [SerializeField] private Text aliveText;
@@ -43,31 +41,12 @@ namespace Code.Scenes.BattleScene.Scripts.Ui
         [SerializeField] private GameObject menuImage;
         [SerializeField] private Material nicknameFontMaterial;
         [SerializeField] private Text pingText;
-#pragma warning restore 649
-        #endregion
-
-        // private LobbyLoaderController lobbyLoaderController;
-
+        
         private void Awake()
         {
             overlayCanvas.SetActive(true);
-            if (QualitySettings.GetQualityLevel() < 2)
-            {
-                UseSingleBackground();
-            }
         }
-
-        private void UseSingleBackground()
-        {
-            singleBackground.gameObject.SetActive(true);
-            foreach (var (img, _) in backgrounds)
-            {
-                img.gameObject.SetActive(false);
-            }
-
-            backgrounds = new[] {new MovingBackgroundInfo {coefficient = 0.25f, image = singleBackground} };
-        }
-
+        
         public void DisableZoneAndOverlayCanvas()
         {
             log.Info("DisableZoneAndOverlayCanvas start");
@@ -93,7 +72,7 @@ namespace Code.Scenes.BattleScene.Scripts.Ui
         public Slider GetShieldSlider() => shieldSlider;
         public Text GetShieldText() => shieldText;
         public Transform GetKillIndicator() => killsIndicatorContainer;
-        public KillInfoObject GetKillMessage() => killMessage;
+        public KillModel GetKillMessage() => killMessage;
         public Image GetArrowToCenter() => arrowToCenter;
         public Text GetKillsText() => killsText;
         public Text GetAliveText() => aliveText;

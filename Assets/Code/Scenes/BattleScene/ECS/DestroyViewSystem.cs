@@ -30,7 +30,7 @@ namespace Code.Scenes.BattleScene.ECS
                         Object.Destroy(gameObject);   
                     }
                     
-                    log.Debug("Уничтожение объекта "+entity.view.gameObject.name);
+                    // log.Debug("Уничтожение объекта "+entity.view.gameObject.name);
                 }
                 
                 entity.Destroy();

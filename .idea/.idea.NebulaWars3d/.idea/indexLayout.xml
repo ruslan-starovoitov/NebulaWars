@@ -3,6 +3,7 @@
   <component name="ContentModelUserStore">
     <attachedFolders />
     <explicitIncludes>
+      <Path>Assets</Path>
       <Path>Library/PackageCache/com.google.android.appbundle@1.1.1</Path>
       <Path>Library/PackageCache/com.google.external-dependency-manager@1.2.156</Path>
       <Path>Library/PackageCache/com.google.play.billing@3.0.0</Path>

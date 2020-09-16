@@ -55,7 +55,7 @@ namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSyncSystems
                 {
                     int accountId = pair.Key;
                     ushort entityId = pair.Value;
-                    log.Debug($"accountId={accountId} entityId={entityId}");
+                    // log.Debug($"accountId={accountId} entityId={entityId}");
                     ServerGameEntity entity = gameContext.GetEntityWithId(entityId);
 
                     //todo обновление id сущности игрока
