@@ -4,7 +4,6 @@ using Entitas;
 using Plugins.submodules.SharedCode.Logger;
 using UnityEngine;
 
-//TODO использовать контейнер
 namespace Code.Scenes.BattleScene.ECS.Systems.NetworkSenderSystems
 {
     public class RudpMessagesSenderSystem:IExecuteSystem

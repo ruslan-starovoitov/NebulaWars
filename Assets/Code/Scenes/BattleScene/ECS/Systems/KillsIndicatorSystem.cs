@@ -12,6 +12,7 @@ using Object = UnityEngine.Object;
 
 namespace Code.Scenes.BattleScene.ECS.Systems
 {
+    //todo это нужно разбить
     /// <summary>
     /// Отвечает за показ сообщений при смерти
     /// </summary>

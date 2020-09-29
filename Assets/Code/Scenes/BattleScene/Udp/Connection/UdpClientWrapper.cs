@@ -61,7 +61,14 @@ namespace Code.Scenes.BattleScene.Udp.Connection
 
         public void Send(byte[] data)
         {
-            udpClient.SendAsync(data, data.Length);
+            try
+            {
+                udpClient.SendAsync(data, data.Length);
+            }
+            catch (Exception e)
+            {
+                log.Error(e.FullMessage());
+            }
         }
         
         public void Stop()

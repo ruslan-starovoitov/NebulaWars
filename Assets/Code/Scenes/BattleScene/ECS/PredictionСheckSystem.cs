@@ -42,7 +42,7 @@ namespace Code.Scenes.BattleScene.ECS
                         throw new Exception("PlayerEntityId не установлен");
                     }
                     //проверить, что игрок правильно предсказан или пересоздать текущее состояние
-                    // predictionManager.Reconcile(newest, playerEntityId);
+                    predictionManager.Reconcile(newest, playerEntityId);
                 }
                 else
                 {

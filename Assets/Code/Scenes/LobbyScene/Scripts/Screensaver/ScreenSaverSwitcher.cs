@@ -9,7 +9,7 @@ namespace Code.Scenes.LobbyScene.Scripts.Screensaver
     /// </summary>
     public class ScreenSaverSwitcher : MonoBehaviour
     {
-        private AuthSingleton authSingleton;
+        // private AuthSingleton authSingleton;
         private LobbyEcsController lobbyEcsController;
         [SerializeField] private GameObject screenSaverImage;
         private readonly ILog log = LogManager.CreateLogger(typeof(ScreenSaverSwitcher));
@@ -20,7 +20,7 @@ namespace Code.Scenes.LobbyScene.Scripts.Screensaver
         
         private void Awake()
         {
-            authSingleton = FindObjectOfType<AuthSingleton>();
+            // authSingleton = FindObjectOfType<AuthSingleton>();
             lobbyEcsController = FindObjectOfType<LobbyEcsController>();
         }
 
@@ -45,7 +45,8 @@ namespace Code.Scenes.LobbyScene.Scripts.Screensaver
         
         private bool IsInitializationCompleted()
         {
-            bool isAuthorizationCompleted = authSingleton.IsAuthorizationCompleted();
+            // bool isAuthorizationCompleted = authSingleton.IsAuthorizationCompleted();
+            bool isAuthorizationCompleted = true;
             bool warshipsCreationCompleted = lobbyEcsController.IsWarshipsCreationCompleted();
             bool isUnityEditor = IsUnityEditor();
             bool initializationCompleted = isAuthorizationCompleted && warshipsCreationCompleted;

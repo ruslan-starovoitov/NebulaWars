@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Code.Common;
-using Code.Scenes.LobbyScene.Scripts.Purchasing;
 using Code.Scenes.LobbyScene.Scripts.Shop.Spawners;
 using NetworkLibrary.NetworkLibrary.Http;
 using Plugins.submodules.SharedCode.Logger;
@@ -23,7 +22,7 @@ namespace Code.Scenes.LobbyScene.Scripts.Shop
     {
         private ShopUiSpawner shopUiSpawner;
         private CancellationTokenSource cts;
-        private PurchasingService purchasingService;
+        private IPurchasingService purchasingService;
         private LobbyEcsController lobbyEcsController;
         private readonly ILog log = LogManager.CreateLogger(typeof(ShopModelLoadingInitiator));
 
@@ -31,10 +30,10 @@ namespace Code.Scenes.LobbyScene.Scripts.Shop
         {
             shopUiSpawner = FindObjectOfType<ShopUiSpawner>()
                     ?? throw new NullReferenceException(nameof(ShopUiSpawner));
-            purchasingService = FindObjectOfType<PurchasingService>()
-                    ?? throw new NullReferenceException(nameof(PurchasingService));
+            purchasingService = FindObjectOfType<PurchasingServiceStub>()
+                    ?? throw new NullReferenceException(nameof(PurchasingServiceStub));
             lobbyEcsController = FindObjectOfType<LobbyEcsController>()
-                    ?? throw new NullReferenceException(nameof(PurchasingService));
+                    ?? throw new NullReferenceException(nameof(PurchasingServiceStub));
         }
         
         private void Start()

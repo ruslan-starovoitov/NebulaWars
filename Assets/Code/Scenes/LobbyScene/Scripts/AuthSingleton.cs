@@ -4,16 +4,34 @@ using System.Threading;
 using System.Threading.Tasks;
 using Code.Common;
 using Code.Common.Storages;
-using Code.Scenes.LobbyScene.Scripts.Shop;
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
-using NetworkLibrary.NetworkLibrary.Http;
 using Plugins.submodules.SharedCode;
 using Plugins.submodules.SharedCode.Logger;
 using Plugins.submodules.SharedCode.NetworkLibrary.Http;
 using UnityEngine;
 namespace Code.Scenes.LobbyScene.Scripts
 {
+   public interface IAuthPlatform
+   {
+      bool IsAuthenticated();
+      void Activate();
+   }
+
+   public class AuthPlatform:IAuthPlatform
+   {
+      public bool IsAuthenticated()
+      {
+         return true;
+      }
+
+      public void Activate()
+      {
+         // PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder()
+         //    .RequestServerAuthCode(false /*forceRefresh*/)
+         //    .Build();
+         // PlayGamesPlatform.InitializeInstance(config);
+         // PlayGamesPlatform.Activate();
+      }
+   }
    /// <summary>
    /// Отвечает за авторизацию. Остаётся на сцене всегда.
    /// </summary>
@@ -25,37 +43,40 @@ namespace Code.Scenes.LobbyScene.Scripts
       protected override bool DontDestroy { get; } = true;
       private readonly ILog log = LogManager.CreateLogger(typeof(AuthSingleton));
 
+      private readonly IAuthPlatform authPlatform = new AuthPlatform();
       private void Start()
       {
-#if UNITY_ANDROID
-         if (!PlayGamesPlatform.Instance.IsAuthenticated())
-         {
-            log.Info("Игрок ещё не зашёл в аккаунт");
-            StartAuth();
-         }
-         else
-         {
-            log.Debug("Игрок уже зашёл в аккаунт");
-            isAuthorizationCompleted = true;
-            PrintPlayerData();
-            PlayerIdStorage.SetServiceId(Social.localUser.id);
-         }
-#else
-          StartAuth();
+#if (UNITY_EDITOR || FORCE_AUTH)
+         AuthIfDeveloper();
 #endif
+         
+// #if UNITY_ANDROID
+//          if (!authPlatform.IsAuthenticated())
+//          {
+//             log.Info("Игрок ещё не зашёл в аккаунт");
+//             StartAuth();
+//          }
+//          else
+//          {
+//             log.Debug("Игрок уже зашёл в аккаунт");
+//             isAuthorizationCompleted = true;
+//             PrintPlayerData();
+//             PlayerIdStorage.SetServiceId(Social.localUser.id);
+//          }
+// #else
+//           StartAuth();
+// #endif
       }
 
       private void StartAuth()
       {
-#if UNITY_ANDROID
-         PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder()
-            .RequestServerAuthCode(false /*forceRefresh*/)
-            .Build();
-         PlayGamesPlatform.InitializeInstance(config);
-         PlayGamesPlatform.Activate();
-         log.Info("Play Games Configuration initialized");
-#endif
-            Social.localUser.Authenticate(AuthCallback);
+
+         
+// #if UNITY_ANDROID
+//          authPlatform.Activate();
+//          log.Info("Play Games Configuration initialized");
+// #endif
+//             Social.localUser.Authenticate(AuthCallback);
       }
       
       private void AuthCallback(bool success)

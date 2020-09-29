@@ -34,12 +34,12 @@ namespace Code.Scenes.BattleScene.ECS
         private IPlayersStorage playersStorage;
         private ISnapshotManager snapshotManager;
         private ITransformStorage transformStorage;
+        private IKillMessageStorage killMessageStorage;
         private IHealthPointsStorage healthPointsStorage;
         private readonly BattleUiController battleUiController;
         private readonly PingStatisticsStorage pingStatisticsStorage;
         private IMaxHealthPointsMessagePackStorage maxHealthPointsMessagePackStorage;
         private readonly ILog log = LogManager.CreateLogger(typeof(ClientMatchSimulation));
-        private IKillMessageStorage killMessageStorage;
 
         public ClientMatchSimulation(BattleUiController battleUiController, UdpSendUtils udpSendUtils,
             BattleRoyaleClientMatchModel matchModel, PingStatisticsStorage pingStatisticsStorage)

@@ -38,8 +38,8 @@ namespace Code.Scenes.BattleScene.ECS.Systems.InputSystems
             float x = movementJoystick.Horizontal;
             float y = movementJoystick.Vertical;
             
-#if UNITY_EDITOR_WIN
             float tolerance = 0.001f;
+#if UNITY_EDITOR_WIN
             if (Mathf.Abs(x) < tolerance && Mathf.Abs(y) < tolerance)
             {
                 x = Input.GetAxis("Horizontal");

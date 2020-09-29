@@ -1,6 +1,5 @@
 using System;
 using Code.Common;
-using Code.Scenes.LobbyScene.Scripts.Purchasing;
 using Code.Scenes.LobbyScene.Scripts.Shop.PurchaseConfirmation.UiWindow;
 using JetBrains.Annotations;
 using NetworkLibrary.NetworkLibrary.Http;
@@ -15,16 +14,16 @@ namespace Code.Scenes.LobbyScene.Scripts.Shop
     public class ProductClickHandlerScript : MonoBehaviour
     {
         private TextTooltip textTooltip;
-        private PurchasingService purchasingService;
+        private IPurchasingService purchasingService;
         private LobbyEcsController lobbyEcsController;
         private readonly ILog log = LogManager.CreateLogger(typeof(ProductClickHandlerScript));
 
         private void Awake()
         {
-            purchasingService = FindObjectOfType<PurchasingService>()
-                                ?? throw new NullReferenceException(nameof(PurchasingService));
+            purchasingService = FindObjectOfType<PurchasingServiceStub>()
+                            ?? throw new NullReferenceException(nameof(IPurchasingService));
             lobbyEcsController = FindObjectOfType<LobbyEcsController>()
-                                 ?? throw new NullReferenceException(nameof(lobbyEcsController));
+                            ?? throw new NullReferenceException(nameof(lobbyEcsController));
             textTooltip = FindObjectOfType<TextTooltip>()
                            ?? throw new NullReferenceException(nameof(TextTooltip));
         }

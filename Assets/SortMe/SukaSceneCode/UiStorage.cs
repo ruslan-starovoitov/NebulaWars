@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Code.Scenes.LobbyScene.Scripts;
+using Code.Scenes.LobbyScene.Scripts.Shop;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Code.Scenes.SukaScene
@@ -7,11 +9,11 @@ namespace Code.Scenes.SukaScene
     {
         [SerializeField] private Button currencyButton;
         [SerializeField] private Button confirmAllButton;
-        private Purchaser purchaser;
+        private IPurchasingService purchaser;
 
         private void Awake()
         {
-            purchaser = FindObjectOfType<Purchaser>();
+            purchaser = FindObjectOfType<PurchasingServiceStub>();
         }
 
         private void Start()

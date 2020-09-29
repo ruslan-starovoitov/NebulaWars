@@ -1,4 +1,4 @@
-﻿// #define LocalTesting
+﻿#define LocalTesting
 #if !UNITY_EDITOR
 #undef LocalTesting
 #endif

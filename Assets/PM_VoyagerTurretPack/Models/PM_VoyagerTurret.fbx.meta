@@ -1,0 +1,261 @@
+fileFormatVersion: 2
+guid: a8677810116375a47866f8e10fbf922d
+timeCreated: 1508075292
+licenseType: Store
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: Ammo_
+    100002: Base
+    100004: battery
+    100006: canon
+    100008: Canon_cap
+    100010: Canon_pivot__paired
+    100012: Canon_rim_L
+    100014: Canon_rim_R
+    100016: Canon_Ring_bottom
+    100018: Canon_Spout
+    100020: Central_Tracks_
+    100022: Front_arm_A
+    100024: Front_arm_B
+    100026: Front_arm_Joint_Middle
+    100028: Front_joint_Base
+    100030: Front_Joint_Cannon
+    100032: //RootNode
+    100034: Rear_arm_A
+    100036: Rear_Arm_B
+    100038: Rear_arm_join_Middle
+    100040: Rear_arm_Joint_Base
+    100042: Rear_arm_joint_Canon
+    100044: Rotating_base
+    400000: Ammo_
+    400002: Base
+    400004: battery
+    400006: canon
+    400008: Canon_cap
+    400010: Canon_pivot__paired
+    400012: Canon_rim_L
+    400014: Canon_rim_R
+    400016: Canon_Ring_bottom
+    400018: Canon_Spout
+    400020: Central_Tracks_
+    400022: Front_arm_A
+    400024: Front_arm_B
+    400026: Front_arm_Joint_Middle
+    400028: Front_joint_Base
+    400030: Front_Joint_Cannon
+    400032: //RootNode
+    400034: Rear_arm_A
+    400036: Rear_Arm_B
+    400038: Rear_arm_join_Middle
+    400040: Rear_arm_Joint_Base
+    400042: Rear_arm_joint_Canon
+    400044: Rotating_base
+    2300000: Ammo_
+    2300002: Base
+    2300004: battery
+    2300006: canon
+    2300008: Canon_cap
+    2300010: Canon_pivot__paired
+    2300012: Canon_rim_L
+    2300014: Canon_rim_R
+    2300016: Canon_Ring_bottom
+    2300018: Canon_Spout
+    2300020: Central_Tracks_
+    2300022: Front_arm_A
+    2300024: Front_arm_B
+    2300026: Front_arm_Joint_Middle
+    2300028: Front_joint_Base
+    2300030: Front_Joint_Cannon
+    2300032: Rear_arm_A
+    2300034: Rear_Arm_B
+    2300036: Rear_arm_join_Middle
+    2300038: Rear_arm_Joint_Base
+    2300040: Rear_arm_joint_Canon
+    2300042: Rotating_base
+    3300000: Ammo_
+    3300002: Base
+    3300004: battery
+    3300006: canon
+    3300008: Canon_cap
+    3300010: Canon_pivot__paired
+    3300012: Canon_rim_L
+    3300014: Canon_rim_R
+    3300016: Canon_Ring_bottom
+    3300018: Canon_Spout
+    3300020: Central_Tracks_
+    3300022: Front_arm_A
+    3300024: Front_arm_B
+    3300026: Front_arm_Joint_Middle
+    3300028: Front_joint_Base
+    3300030: Front_Joint_Cannon
+    3300032: Rear_arm_A
+    3300034: Rear_Arm_B
+    3300036: Rear_arm_join_Middle
+    3300038: Rear_arm_Joint_Base
+    3300040: Rear_arm_joint_Canon
+    3300042: Rotating_base
+    4300000: Base
+    4300002: Rotating_base
+    4300004: Central_Tracks_
+    4300006: Front_joint_Base
+    4300008: Front_arm_A
+    4300010: Front_arm_Joint_Middle
+    4300012: Front_arm_B
+    4300014: Front_Joint_Cannon
+    4300016: Canon_Ring_bottom
+    4300018: Rear_arm_Joint_Base
+    4300020: Rear_Arm_B
+    4300022: Rear_arm_join_Middle
+    4300024: Rear_arm_A
+    4300026: Rear_arm_joint_Canon
+    4300028: canon
+    4300030: Canon_Spout
+    4300032: Canon_pivot__paired
+    4300034: Canon_rim_L
+    4300036: Canon_rim_R
+    4300038: Canon_cap
+    4300040: Ammo_
+    4300042: battery
+    7400000: Activation
+    7400002: Shoot
+    9500000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mat
+    second: {fileID: 2100000, guid: 4d1bbf0dac892fb4eaf4f532efc7274a, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 2
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Activation
+      takeName: CINEMA_4D_Main
+      firstFrame: 0
+      lastFrame: 45
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Shoot
+      takeName: CINEMA_4D_Main
+      firstFrame: 49
+      lastFrame: 59
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
