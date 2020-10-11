@@ -20,7 +20,7 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
             this.predictedSnapshotsStorage = predictedSnapshotsStorage;
         }
         
-        public bool IsPredictionCorrect(SnapshotWithLastInputId correctServerSnapshot, ushort playerAvatarId)
+        public bool IsPredictionCorrect(SnapshotWithLastInputId correctServerSnapshot, ushort playerEntityId)
         {
             PredictedSnapshot predictedSnapshot = predictedSnapshotsStorage
                 .GetByInputId(correctServerSnapshot.lastProcessedInputId);
@@ -40,7 +40,7 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
             }
             
             bool isPredictionCorrect = playerEntityComparer
-                .IsSame(predictedSnapshot, correctServerSnapshot, playerAvatarId);
+                .IsSame(predictedSnapshot, correctServerSnapshot, playerEntityId);
 
             return isPredictionCorrect;
         }

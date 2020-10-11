@@ -51,6 +51,7 @@ namespace Code.Scenes.LobbyScene.Scripts
         private ShopUiSpawner shopUiSpawner;
         private ShopUiStorage shopUiStorage;
         private LobbyUiStorage lobbyUiStorage;
+        private int warshipsCount=int.MaxValue;
         private UiLayersStorage uiLayersStorage;
         private WarshipsUiStorage warshipsUiStorage;
         private LobbySceneSwitcher lobbySceneSwitcher;
@@ -257,7 +258,7 @@ namespace Code.Scenes.LobbyScene.Scripts
              return spawnedWarshipsCount==warshipsCount;
         }
 
-        private int warshipsCount=int.MaxValue;
+        
         public void SetLobbyModel(LobbyModel lobbyModel)
         {
             AccountDto accountDto = lobbyModel.AccountDto.Subtract(lobbyModel.RewardsThatHaveNotBeenShown);

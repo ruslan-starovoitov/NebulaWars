@@ -18,6 +18,5 @@ namespace Code.Scenes.LootboxScene.Scripts
         public GameObject hardCurrencyPrefab;
         public GameObject warshipPowerPointsPrefab;
         public GameObject lootboxPrefab;
-
     }
 }

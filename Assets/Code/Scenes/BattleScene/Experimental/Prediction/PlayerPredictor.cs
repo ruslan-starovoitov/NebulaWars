@@ -65,7 +65,6 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
             Vector3 inputVector = inputMessageModel.GetVector3();
             float maxSpeed = 10f;
 
-            //todo опасно
             warshipRigidbody.velocity = Vector3.zero;
 
             if (inputVector.sqrMagnitude > 0.001f)

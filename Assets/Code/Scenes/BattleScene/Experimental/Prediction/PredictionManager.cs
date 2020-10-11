@@ -20,7 +20,7 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
             this.simulationCorrector = simulationCorrector;
         }
 
-        public void Reconcile(SnapshotWithLastInputId correctServerSnapshot, ushort playerAvatarId)
+        public void Reconcile(SnapshotWithLastInputId correctServerSnapshot, ushort playerEntityId)
         {
             uint lastProcessedInputId = correctServerSnapshot.lastProcessedInputId;
             if (lastProcessedInputId == 0)
@@ -29,9 +29,9 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
                 return;
             }
 
-            if (!predictionChecker.IsPredictionCorrect(correctServerSnapshot, playerAvatarId))
+            if (!predictionChecker.IsPredictionCorrect(correctServerSnapshot, playerEntityId))
             {
-                simulationCorrector.Resimulate(correctServerSnapshot, playerAvatarId);
+                simulationCorrector.Resimulate(correctServerSnapshot, playerEntityId);
             }
             else
             {

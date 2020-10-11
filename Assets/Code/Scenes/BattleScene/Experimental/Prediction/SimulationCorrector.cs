@@ -26,15 +26,15 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
         }
 
         public void Resimulate(SnapshotWithLastInputId correctServerSnapshot, 
-            ushort playerAvatarId)
+            ushort playerEntityId)
         {
             log.Info($"Пересчёт тика inputId = {correctServerSnapshot.lastProcessedInputId}.");
 
             ReplaceWrongSnapshot(correctServerSnapshot);
-            ResimulateSnapshots(correctServerSnapshot, playerAvatarId);
+            ResimulateSnapshots(correctServerSnapshot, playerEntityId);
         }
 
-        private void ResimulateSnapshots(SnapshotWithLastInputId correctServerSnapshot, ushort playerAvatarId)
+        private void ResimulateSnapshots(SnapshotWithLastInputId correctServerSnapshot, ushort playerEntityId)
         {
             //достать все вводы после заменённого снимка
             var allInputs = clientInputMessagesHistory
@@ -61,7 +61,7 @@ namespace Code.Scenes.BattleScene.Experimental.Prediction
                 }
 
                 log.Debug($"Пересчёт снимка {averageInput.inputId}");
-                Snapshot snapshot = playerPredictor.Predict(baseSnapshot, playerAvatarId,
+                Snapshot snapshot = playerPredictor.Predict(baseSnapshot, playerEntityId,
                     averageInput.inputMessageModel, physicsSimulationDuration);
 
                 foreach (uint inputId in averageInput.replacedInputsIds)

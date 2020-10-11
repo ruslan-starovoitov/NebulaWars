@@ -23,6 +23,7 @@ namespace Code.Scenes.BattleScene.Udp.MessageProcessing.Handlers
                 int playerAccountId = PlayerIdStorage.AccountId;
                 if (message.entityIds.ContainsKey(playerAccountId))
                 {
+                    log.Debug("Установка playerEntityId = "+message.entityIds[playerAccountId]);
                     PlayerIdStorage.PlayerEntityId = message.entityIds[playerAccountId];
                 }
                 else
